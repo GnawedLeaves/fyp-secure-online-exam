@@ -3,7 +3,7 @@ import "./App.css";
 import StudentHomepage from "./pages/student/StudentHomepage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
-import Loginpage from "./pages/Loginpage";
+import Loginpage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Suspense>
         <Routes>
           <Route path="/" element={<Loginpage />} />
-          <Route path="/studentHome" element={<StudentHomepage />} />
+          <Route path="/student" element={<StudentHomepage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
