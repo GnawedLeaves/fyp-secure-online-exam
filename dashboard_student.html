@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<link rel="stylesheet" href="css/style_student.css">
+<style>
+    #wrapper { 
+        background-color: navy; 
+        width: 100%;
+    }
+    #leftcolumn { 
+        float: left;
+	    width: 20%;
+    } 
+    #rightcolumn { 
+        margin-left: 20%;
+        background-color: lightblue;
+        padding: 50px;
+    } 
+    #logo {
+        display: block;
+        margin: 10px auto 30px;
+    }
+    nav {
+        text-align: center;
+    }
+    nav a {
+        display: block;
+        color: white;
+    }
+
+    #profile-section{
+        float:right;
+    }
+    #footer {
+        color: white;
+        background-color: black;
+        text-align: center;
+    }
+    #copyright {
+        margin: 0px;
+    }
+
+    
+    
+</style>
+<!--insert php and convert the file to php type file ; student_id-->
+<body>
+    <div id="wrapper">
+        <div id="leftcolumn">
+            <img id="logo" title="logo" src="images/logo_template.png" alt="logo" width="100px" height="50px"><br>
+            <nav>
+                <!--insert file-->
+                <a href="dashboard_student.html"><b>Home</b></a><br>
+                <a href="exam_student.html">Exam</a><br>
+                <a href="###">Help</a><br>
+                <a href="###">Settings</a><br>
+            </nav>
+        </div>
+        <div id="rightcolumn">
+            <div id="profile-section">
+                <a href="###" id="profile">
+                    <img title="profile" src="images/profile.svg" alt="profile" width="12px" height="12px">
+                    Max Jordan
+                </a>
+                <a href="logout.php" id="logout">Log Out</a>
+            </div>
+            <h1>Dashboard</h1>
+            <p>Welcome Max Jordan.</p>
+            <div id="face-registration">
+                <h3>Face Registration</h3>
+                <p>Please register your face before you attend any exam. If you did not do so, you are forbidden to sit for the exam.</p>
+                <button>Register my face</button>
+            </div>
+            <div id="system-check">
+                <h2>System Check</h2>
+                <p>You are encouraged to have a system check before you are going to sit for any exam. This will ensure your exam are conducted smoothly.</p>
+                <button>Check my system</button>
+            </div>
+            <div id="exam-demo">
+                <h2>Exam Demo</h2>
+                <p>You are encouraged to have a exam demo before you are going to sit for any exam. This will ensure your exam are conducted smoothly.</p>
+                <button>Start a demo</button>
+            </div>
+        </div>
+        <div id="footer">
+            <p id="copyright">&copy; 2023 All rights are reserved. leechinyap </p>
+        </div>
+    </div>
+
+</body>
+</html>

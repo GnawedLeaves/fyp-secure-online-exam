@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Exam</title>
+<link rel="stylesheet" href="css/style_student.css">
+<style>
+    #wrapper { 
+        background-color: navy; 
+        width: 100%;
+    }
+    #leftcolumn { 
+        float: left;
+	    width: 20%;
+    } 
+    #rightcolumn { 
+        margin-left: 20%;
+        background-color: lightblue;
+        padding: 50px;
+    } 
+    #logo {
+        display: block;
+        margin: 10px auto 30px;
+    }
+    nav {
+        text-align: center;
+    }
+    nav a {
+        display: block;
+        color: white;
+    }
+
+    #profile-section{
+        float:right;
+    }
+    #footer {
+        color: white;
+        background-color: black;
+        text-align: center;
+    }
+    #copyright {
+        margin: 0px;
+    }
+
+
+    .exam-table {
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 90%;
+    }
+    .exam-table td{
+        text-align: center;
+        padding: 5px;
+        margin: 10px;
+    }
+
+    
+</style>
+<!--insert php and convert the file to php type file ; student_id-->
+<body>
+    <div id="wrapper">
+        <div id="leftcolumn">
+            <img id="logo" title="logo" src="images/logo_template.png" alt="logo" width="100px" height="50px"><br>
+            <nav>
+                <!--insert file-->
+                <a href="dashboard_student.html">Home</a><br>
+                <a href="exam_student.html"><b>Exam</b></a><br>
+                <a href="###">Help</a><br>
+                <a href="###">Settings</a><br>
+            </nav>
+        </div>
+        <div id="rightcolumn">
+            <div id="profile-section">
+                <a href="###" id="profile">
+                    <img title="profile" src="images/profile.svg" alt="profile" width="12px" height="12px">
+                    Max Jordan
+                </a>
+                <a href="logout.php" id="logout">Log Out</a>
+            </div>
+            <h1>Exams</h1>
+            <p>Welcome Max Jordan. Here you can find all your exams in the following table.</p>
+            <div id="open-exam-table">
+                <h3>Open</h3>
+                <table class="exam-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td>IE4717 Web Application & Design </td>
+                        <td>22 Oct 2023</td>
+                        <td>10:00 am</td>
+                        <td>12:00 pm</td>
+                        <td>2 hrs</td>
+                        <td>Not submitted yet</td>
+                        <td>Start</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="upcoming-exam-table">
+                <h3>Upcoming</h3>
+                <table class="exam-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                    </tr>
+                    <tr>
+                        <td>IE9212 Secure Online Examination 1</td>
+                        <td>28 Oct 2023</td>
+                        <td>11:00 am</td>
+                        <td>01:30 pm</td>
+                        <td>2 hrs 30 mins</td>
+                    </tr>
+                    <tr>
+                        <td>IE4483 Data Mining & Artificial Intelligence </td>
+                        <td>29 Oct 2023</td>
+                        <td>02:00 pm</td>
+                        <td>05:00 pm</td>
+                        <td>3 hrs</td>
+                    </tr>
+                </table>
+                
+            </div>
+            <div id="past-exam-table">
+                <h3>Past</h3>
+                <table class="exam-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Submission Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td>IE1314 Proctoring System</td>
+                        <td>21 Oct 2023</td>
+                        <td>11:28:03 am</td>
+                        <td>Submitted</td>
+                        <td>Review</td>
+                    </tr>
+                    <tr>
+                        <td>IE0520 Meeting Host Research</td>
+                        <td>19 Oct 2023</td>
+                        <td>10:15:55 am</td>
+                        <td>Graded</td>
+                        <td>Review</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="footer">
+            <p id="copyright">&copy; 2023 All rights are reserved. leechinyap </p>
+        </div>
+    </div>
+
+</body>
+</html>
