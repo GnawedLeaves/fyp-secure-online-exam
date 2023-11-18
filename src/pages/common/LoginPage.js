@@ -14,8 +14,9 @@ import {
   PasswordInputContainer,
 } from "./PagesStyles";
 import { ThemeProvider } from "styled-components";
-import theme from "../theme";
+
 import { useNavigate } from "react-router-dom";
+import { theme } from "../../theme";
 
 const Loginpage = () => {
   const navigate = useNavigate();
