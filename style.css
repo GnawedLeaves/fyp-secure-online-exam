@@ -86,7 +86,7 @@ header {
 }
 
 header .top {
-    /* width: 100%; might not need this. this will expend whole page making the search bar overlap */ 
+    /* width: 100%; might not need this. this will expend whole page making the search bar overlap  */
     height: 90px;
     padding: 20px 30px 0 30px;
     border-bottom: 2px solid #ddd; 
@@ -268,7 +268,7 @@ ul.nav2 a:hover {
 }
   
 .span_1_of_3 {
-    width: 32%;
+    width: 31%;
 }
 
 .page {
