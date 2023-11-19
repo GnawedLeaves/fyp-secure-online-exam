@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invigilator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+<div class="sidebar">
+	
+    <div class="user">
+      <span class="username">Welcome to Our Online Examination</span>
+      </div>
+    
+    <nav class='nav'>
+      <ul>
+        <li><a href="invigilator.html">DASHBOARD</a></li>
+        <li><a href="courses.html">Course</a></li>
+        <li><a href="#">Library</a></li>
+        <li><a href="exams.html">Exams</a></li>
+        <li><a href="#">Proctor</a></li>
+        <li><a href="notifyAdmin.html">Notify Admin</a></li>
+        <li><a class="active" href="#">Setting</a></li>
+      </ul>
+    </nav>	
+  
+  </div>
+
+<!-- MAIN CONTENT-->
+<div class="main">
+	
+<header>
+    <div class="top">
+        
+    <div class="shorcuts">
+          <span class="icon">Icon</span>
+          <span class="icon">icon</span>
+          <span class="icon">icon</span>
+    </div>
+        
+    <div class="logo">Logo</div>
+       
+    <input class="search" type="text" placeholder="Type for search" />
+      </div>
+
+    <div class="bottom">
+    <!-- can be use to input student face or invigilator face here -->
+    <div class="identity">
+    <!-- <img src="put photo here" /> -->
+    <span class="name">Niam Neeson</span> <br/>
+    <span class="info">Invigilator/ <a href="#">Edit Profile</a></span>
+    <br>
+    <span class="info">Welcome!</span>
+    </div>
+  
+    <!-- TBC, planning to link log out to the index_student.html  -->
+    <a href="#"><span class="logout">Log out</span></a>
+
+  </div>
+</header>
+
+  <!-- course content portion of the dashboard -->
+  <div class="section">
+      <h2 style="padding-left: 2%;">Exam Settings</h2>
+    <div class="col span_1_of_1">
+
+      <div class="examSettings">
+      <form id="exam_settings" action=" " method="post">
+
+        <div class="mergesettings">
+        <div class="userGroup"><label for="userGroup">User Group:</label></div>
+
+        <select id="userGroup" name="userGroup" required>
+            <option value="EE3102">EE3102</option>
+            <option value="IE4717">IE4717</option>
+        </select>
+        
+        <div class="selectquizoption">
+        <div class="selectQuizMode"><label for="quizMode">Select Quiz Mode:</label></div>
+
+        <select id="select_quizmode" name="quizMode">
+            <option value="timeExam">Timed Exam</option>
+            <option value="openexam">Open Exam</option>
+        </select>
+    </div>
+    </div>
+
+        <div class="settingIndex"><label for="index">Index:</label>
+            <select id="index" name="index">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+        <br>
+
+        <div class="timertext">Timer:</div>
+        <div class="timerSettings">
+            <label for="hours">Hours:</label>
+        <input type="number" id="hours" name="hours" min="0" placeholder="0">
+        
+        <label for="minutes">Minutes:</label>
+        <input type="number" id="minutes" name="minutes" min="0" max="59" placeholder="0">
+        
+        <label for="seconds">Seconds:</label>
+        <input type="number" id="seconds" name="seconds" min="0" max="59" placeholder="0">
+        </div>
+        <br><br>
+
+        <div class="securitySettings">
+            <label>Security Options:</label>
+            <label><input type="radio" name="security" value="disable"> Disable Key Shortcuts</label>
+            <label><input type="radio" name="security" value="enable"> Enable Key Shortcuts</label>
+        </div><br>
+
+        <div class="shuffleSettings">
+            <label>Shuffle Selection:</label>
+            <label><input type="radio" name="shuffle" value="yes"> Yes</label>
+            <label><input type="radio" name="shuffle" value="no"> No</label>
+
+        </div><br>
+
+        <div class="flaggingSettings">
+            <label>Flagging Options:</label>
+            <label><input type="radio" name="flagging" value="show"> Show</label>
+            <label><input type="radio" name="flagging" value="no"> No</label>
+
+        </div>
+        
+        <div class="buttonSettings">
+        <div class="resultSettings"><input type="submit" value="Results"></div>
+        <div class="saveSettings"><input type="submit" value="Save"></div>
+        </div>
+
+    </form></div>
+  
+    </div>
+  </div>
+
+</div>
+<footer>
+    <p>This is under property of Final Year Project: An Online Secure Examination, 2023 &copy;</p>
+</footer>
+</div>
+
+</body>
+</html>
+
+<!-- <div class="section">
+  <div class="col span_1_of_3">
+      Testing 1,2,3
+    <a target="_blank" href="#">here</a>.
+  </div>
+  <div class="col span_1_of_3">View 2</div>
+  <div class="col span_1_of_3">View 3</div>
+  </div>
+<div class="section">
+    <div class="col span_3_of_3">Hello</div>
+</div> -->

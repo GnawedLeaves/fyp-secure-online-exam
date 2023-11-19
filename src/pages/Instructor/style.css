@@ -260,7 +260,7 @@ ul.nav2 a:hover {
 }
   
 .span_3_of_3 {
-    width: 100%;
+    width: 95%;
 }
 
 .span_2_of_3 {
@@ -269,6 +269,11 @@ ul.nav2 a:hover {
   
 .span_1_of_3 {
     width: 31%;
+}
+
+.span_1_of_1 {
+    width: 95%;
+    min-height: 500px;
 }
 
 .page {
@@ -282,4 +287,64 @@ footer{
     width: 100%;
     position:absolute;
     margin: 0 auto;
+}
+
+/* dashboard exam calender examcalender */
+.calendar1 {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.calendar1 th, .calendar1 td {
+    border: 1px solid #949494;
+    padding: 10px;
+    text-align: center;
+}
+
+.calendar1 th {
+    background-color: #f2f2f2;
+}
+
+.todayCalendar {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* for notify admin page */
+.notifyadminLabel{
+    float: left;
+    width: 10%;
+}
+
+.descriptionLabel{
+    float: left;
+    width: 10%;
+    padding-left: 2.8%;
+}
+
+.attachementForm {
+    float: left;
+    width: 5%;
+    padding-left: 2.8%;
+}
+
+.adminSubmit {
+    float: left;
+    margin-left: 20%;
+}
+
+.attachmentbutton{
+    margin-left: 10%;
+}
+
+/* exams setting and results setting page */
+
+.buttonSettings {
+    display: inline-flex;
+    margin-left: 30%;
+}
+
+.shuffleSettings, .securitySettings, .flaggingSettings {
+    display: grid;
 }

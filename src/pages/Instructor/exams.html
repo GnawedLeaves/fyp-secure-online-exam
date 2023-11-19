@@ -17,9 +17,9 @@
     <nav class='nav'>
       <ul>
         <li><a href="invigilator.html">DASHBOARD</a></li>
-        <li><a class="active" href="#">Course</a></li>
+        <li><a href="courses.html">Course</a></li>
         <li><a href="#">Library</a></li>
-        <li><a href="exams.html">Exams</a></li>
+        <li><a class="active" href="#">Exams</a></li>
         <li><a href="#">Proctor</a></li>
         <li><a href="notifyAdmin.html">Notify Admin</a></li>
         <li><a href="settings.html">Setting</a></li>
@@ -36,8 +36,8 @@
         
     <div class="shorcuts">
           <span class="icon">Icon</span>
-          <span class="icon">icon</span>
-          <span class="icon">icon</span>
+          <span class="icon"> icon</span>
+          <span class="icon"> icon</span>
     </div>
         
     <div class="logo">Logo</div>
@@ -57,27 +57,48 @@
   
     <!-- TBC, planning to link log out to the index_student.html  -->
     <a href="#"><span class="logout">Log out</span></a>
-    
-    <!-- The nav portion for showing the sub contents of each category -->
-    <ul id="navborder" class="nav2">
-      <li><a class="active1">GROUP</a></li>
-    </ul>	
+
   </div>
 </header>
     
 <!-- content of each individual category -->
 
   <!-- course content portion of the dashboard -->
-  <div id="courseContent" class="section">
-      <h2 style="padding-left: 2%;">Group</h2>
-      <p style="padding-left: 2%;">This is the content for the Group section. Tutorial Group</p>
+  <div id="examContent" class="section">
+      <h2 style="padding-left: 2%;">Exam</h2>
+      <p style="padding-left: 2%;">Create your first Exam!</p>
+      <div class="col span_2_of_3">
+        Create, schedule and manage tests that needs to be condudcted in exam conditions.
+      <a target="_blank" href="#">here</a>.
+      <br><br>
+      <div class="setExamButtons">
+      <input type="submit" value="Set Exam" id="setExam">
+      <input type="submit" value="Learn More" id="learnMore">
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Exam Content of the dash board -->
+  <div id="examContent" class="section" style="display: none;">
+      <h2>Exam</h2>
       <div class="col span_2_of_3">
         Testing 1,2,3
       <a target="_blank" href="#">here</a>.
     </div>
-    <div class="col span_2_of_3">View 2</div>
-  </div>
+    </div>
 
+
+    <!-- Tutorial group information content -->
+  <div id="tutorialGroupContent" class="section" style="display: none;">
+      <h2>Tutorial Group</h2>
+      <div class="col span_1_of_3">
+        Testing 1,2,3
+      <a target="_blank" href="#">here</a>.
+    </div>
+    <div class="col span_1_of_3">View 2</div>
+    <div class="col span_1_of_3">View 3</div>
+  </div>
 
 </div>
 <footer>
