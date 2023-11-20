@@ -106,6 +106,10 @@ header .top {
     border-radius: 5px;
 }
 
+.icon{
+    padding-left: 8px;
+}
+
 .logo {
     position: absolute;
     display: inline-block;
