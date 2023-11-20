@@ -348,3 +348,22 @@ footer{
 .shuffleSettings, .securitySettings, .flaggingSettings {
     display: grid;
 }
+
+/* this is for the proctoring page  */
+.proctorNotification{
+    display: flex;
+}
+
+.emptyProctoring{
+    text-align: center;
+}
+
+.scheduleTime{
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.scheduleTime:hover {
+    color: #00c555;
+    text-decoration: none;
+}

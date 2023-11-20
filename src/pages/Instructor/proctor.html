@@ -19,8 +19,8 @@
         <li><a href="invigilator.html">DASHBOARD</a></li>
         <li><a href="courses.html">Course</a></li>
         <li><a href="#">Library</a></li>
-        <li><a class="active" href="#">Exams</a></li>
-        <li><a href="proctor.html">Proctor</a></li>
+        <li><a href="exams.html">Exams</a></li>
+        <li><a class="active" href="#">Proctor</a></li>
         <li><a href="notifyAdmin.html">Notify Admin</a></li>
         <li><a href="settings.html">Setting</a></li>
       </ul>
@@ -35,9 +35,9 @@
     <div class="top">
         
     <div class="shorcuts">
-          <span class="icon">Icon</span>
-          <span class="icon"> icon</span>
-          <span class="icon"> icon</span>
+          <span class="icon">Icon </span>
+          <span class="icon">icon</span>
+          <span class="icon">icon</span>
     </div>
         
     <div class="logo">Logo</div>
@@ -60,44 +60,35 @@
 
   </div>
 </header>
-    
-<!-- content of each individual category -->
 
   <!-- course content portion of the dashboard -->
-  <div id="examContent" class="section">
-      <h2 style="padding-left: 2%;">Exam</h2>
-      <p style="padding-left: 2%;">Create your first Exam!</p>
-      <div class="col span_2_of_3">
-        Create, schedule and manage tests that needs to be condudcted in exam conditions.
-      <a target="_blank" href="#">here</a>.
-      <br><br>
-      <div class="setExamButtons">
-      <input type="submit" value="Set Exam" id="setExam">
-      <input type="submit" value="Learn More" id="learnMore">
-      </div>
-    </div>
-  </div>
+  <div class="section">
+      <h2 style="padding-left: 2%;">Proctor</h2>
+    <div class="col span_1_of_1">
 
+      <div class="notifyadminform">
+      <form id="submissionForm" action=" " method="post">
 
-  <!-- Exam Content of the dash board -->
-  <div id="examContent" class="section" style="display: none;">
-      <h2>Exam</h2>
-      <div class="col span_2_of_3">
-        Testing 1,2,3
-      <a target="_blank" href="#">here</a>.
-    </div>
-    </div>
+        <div class="proctorNotification">
+        <div class="userGroup"><label for="userGroup">User Group:</label>
+        </div>
 
+        <select id="userGroup" name="userGroup" required>
+            <option value="EE3102">EE3102</option>
+            <option value="IE4717">IE4717</option>
+        </select>
+        
+        </div>
+        <br><br>
 
-    <!-- Tutorial group information content -->
-  <div id="tutorialGroupContent" class="section" style="display: none;">
-      <h2>Tutorial Group</h2>
-      <div class="col span_1_of_3">
-        Testing 1,2,3
-      <a target="_blank" href="#">here</a>.
+        <div class="emptyProctoring">
+            <h1>It's Empty Here.....</h1>
+            <p>There is currently no live proctoring. Come back at the <a class="scheduleTime" href="invigilator.html">Schedule Time</a></p>
+        </div>
+
+    </form></div>
+    
     </div>
-    <div class="col span_1_of_3">View 2</div>
-    <div class="col span_1_of_3">View 3</div>
   </div>
 
 </div>
@@ -105,7 +96,7 @@
     <p>This is under property of Final Year Project: An Online Secure Examination, 2023 &copy;</p>
 </footer>
 </div>
-<script src="dashboard.js"></script>
+
 </body>
 </html>
 
