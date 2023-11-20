@@ -118,13 +118,19 @@ header .top {
     margin: 0 auto;
     width: 40px;
     height: 40px;
-    border: 3px solid #2DCC70;
-    border-radius: 100%;
+    /* border: 3px solid #2DCC70;
+    border-radius: 100%; */
     text-align: center;
     line-height: 42px;
     font-size: 40px;
     font-weight: bold;
     color: #2DCC70; 
+}
+
+.logo img{
+    /* max-width: 100%; */
+    max-height: 105%;
+    display: block;
 }
 
 .search {
