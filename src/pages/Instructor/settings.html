@@ -84,8 +84,8 @@
             <option value="timeExam">Timed Exam</option>
             <option value="openexam">Open Exam</option>
         </select>
-    </div>
-    </div>
+      </div>
+      </div>
 
         <div class="settingIndex"><label for="index">Index:</label>
             <select id="index" name="index">
@@ -130,12 +130,62 @@
         </div>
         
         <div class="buttonSettings">
-        <div class="resultSettings"><input type="submit" value="Results"></div>
-        <div class="saveSettings"><input type="submit" value="Save"></div>
+
+          <div class="resultSettings">
+            <button id="showResultSettings" type="button">Show Results</button>
+        </div>
+        <div class="saveSettings">
+            <button id="saveResultSettings" type="button">Save</button>
         </div>
 
-    </form></div>
+        </div>
+
+      </form>
+      </div>
   
+      <!-- Results setting page -->
+
+      <div class="result-settings-content">
+        <form id="result_settings" action="" method="post">
+        <label for="releaseResults">Release results:</label>
+        <select id="releaseResults" name="releaseResults">
+            <option value="always">Always</option>
+            <option value="onSet">on Set</option>
+            <option value="none">None</option>
+        </select>
+        <br>
+        <br>
+
+        <div class="metricResults">
+            <label>Individual metrics:</label>
+            <div>
+                <label><input type="checkbox" name="individualMetrics" value="score"> Score</label><br>
+                <label><input type="checkbox" name="individualMetrics" value="timeSpent"> Time Spent</label><br>
+                <label><input type="checkbox" name="individualMetrics" value="grade"> Grade</label><br>
+                <label><input type="checkbox" name="individualMetrics" value="questionBreakdown"> Question Breakdown</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="cohortResults">
+            <label>Cohort metrics:</label>
+            <div>
+                <label><input type="radio" name="cohortMetrics" value="cohortAverage"> Cohort Average</label><br>
+                <label><input type="radio" name="cohortMetrics" value="highest"> Highest</label><br>
+                <label><input type="radio" name="cohortMetrics" value="least"> Least</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="buttonSettings">
+            <div class="saveSettings">
+                <button id="backToExamSettings" type="button">Save</button>
+            </div>
+        </div>
+      </form>
+      <!-- end of result settings content -->
+      </div>
+
     </div>
   </div>
 
@@ -144,7 +194,7 @@
     <p>This is under property of Final Year Project: An Online Secure Examination, 2023 &copy;</p>
 </footer>
 </div>
-
+<script src="settings.js"></script>
 </body>
 </html>
 
