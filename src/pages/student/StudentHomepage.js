@@ -7,7 +7,6 @@ import {
   PageButton
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
-import  StudentNavbar from "../../components/Navbar/StudentNavbar";
 import  StudentHeader from "../../components/Header/StudentHeader";
 import  Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
@@ -16,7 +15,6 @@ import { Link } from "react-router-dom";
 const StudentHomepage = () => {
   return (
       <ThemeProvider theme={theme}>
-        <StudentNavbar/>
         <StudentHeader/>
         <PageTitle>Dashboard</PageTitle>
         <PageTitleDesc>Welcome User 1!</PageTitleDesc>

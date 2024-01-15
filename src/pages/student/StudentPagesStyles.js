@@ -10,6 +10,9 @@ export const PageTitleDesc = styled.p`
 export const PageSubtitle = styled.h3`
     margin:20px 20px 5px;
 `;
+export const PageDescription= styled.p`
+    margin:0px 20px 5px;
+`;
 export const PageDesc = styled.p`
     margin:0 20px;
 `;
@@ -28,4 +31,9 @@ export const PageButton = styled.button`
     background-color: ${(props) => props.theme.primary};
     color: ${(props) => props.theme.white};
   }
+`;
+export const PageContainer = styled.div`
+    margin: 50px 35%;
+`;
+export const PageEnterSpace = styled.br`
 `;
