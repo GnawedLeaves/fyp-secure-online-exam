@@ -14,7 +14,7 @@ const StudentHeader = () => {
           <p>User 1</p>
         
       </ProfileAnchor>
-      <LogoutAnchor href="###">Log Out</LogoutAnchor>
+      <LogoutAnchor href="/">Log Out</LogoutAnchor>
     </HeaderContainer>
     
   );

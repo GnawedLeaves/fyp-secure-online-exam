@@ -22,7 +22,7 @@ const Loginpage = () => {
   const navigate = useNavigate();
 
   const changePage = () => {
-    navigate("/student");
+    navigate("/student/dashboard");
   };
   return (
     <ThemeProvider theme={theme}>
