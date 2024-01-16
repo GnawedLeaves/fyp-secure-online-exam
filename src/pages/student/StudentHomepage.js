@@ -28,7 +28,9 @@ const StudentHomepage = () => {
         <PageButton>Check my system</PageButton>
         <PageSubtitle>Exam Demo</PageSubtitle>
         <PageDesc>You are encouraged to have a exam demo before you are going to sit for any exam. This will ensure your exam are conducted smoothly.</PageDesc>
-        <PageButton>Start a demo</PageButton>
+        <Link to="/student/exam/exam_detail">
+          <PageButton>Start a demo</PageButton>
+        </Link>
         <Footer/>
       </ThemeProvider>
   );
