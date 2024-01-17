@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 export const NavbarContainer = styled.div`
   display: flex;
@@ -11,18 +11,18 @@ export const NavbarSidebar = styled.div`
   width: 300px;
 `;
 export const NavbarTopsection = styled.div`
-  display:flex;
+  display: flex;
   align-items: center;
   padding: 10px 15px;
 `;
 export const NavbarBar = styled.div`
-  font-size:25px;
+  font-size: 25px;
   display: flex;
-  margin-left:20px;
+  margin-left: 20px;
 `;
 export const NavbarLogo = styled.div``;
 export const NavbarLogoTitle = styled.h1`
-  font-size:30px;
+  font-size: 30px;
   margin: 0 20px;
 `;
 export const NavbarAnchorLogo = styled.div`
@@ -36,7 +36,7 @@ export const NavbarMain = styled.main`
   padding: 20px;
 `;
 export const NavBarLink = styled(NavLink)`
-  text-decoration:none;
+  text-decoration: none;
   display: flex;
   color: black;
   padding: 10px 15px;
@@ -53,6 +53,3 @@ export const NavBarLink = styled(NavLink)`
     color: white;
   }
 `;
-
-
-

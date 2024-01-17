@@ -65,12 +65,12 @@ export const LoginButton = styled.button`
   border-radius: 15rem;
   border: 1px solid ${(props) => props.theme.primary};
   color: ${(props) => props.theme.primary};
-  background-color: ${(props) => props.theme.white};
+  background-color: ${(props) => props.theme.background};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 
   &:hover {
     background-color: ${(props) => props.theme.primary};
-    color: ${(props) => props.theme.white};
+    color: ${(props) => props.theme.background};
   }
 `;
