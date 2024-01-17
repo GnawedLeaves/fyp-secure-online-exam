@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { 
+import React, { useState } from "react";
+import {
   NavbarContainer,
   NavbarSidebar,
   NavbarTopsection,
@@ -8,48 +8,60 @@ import {
   NavbarAnchor,
   NavbarLogoTitle,
   NavbarMain,
-  NavBarLink
-} from "./NavbarStyles";
+  NavBarLink,
+} from "./StudentNavbarStyles";
 import { ThemeProvider } from "styled-components";
 import { theme as importedTheme } from "../../theme";
-import {
-  FaTh,
-  FaBook,
-  FaBug,
-  FaWhmcs,
-  FaBars
-}from "react-icons/fa";
+import { FaTh, FaBook, FaBug, FaWhmcs, FaBars } from "react-icons/fa";
 
-const StudentNavbar = ({children}) => {
-  const[isOpen ,setIsOpen] = useState(false);
-  const toggle = () => setIsOpen (!isOpen);
-  
-const theme = importedTheme;
+const StudentNavbar = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
+
+  const theme = importedTheme;
   return (
     <ThemeProvider theme={theme}>
       <NavbarContainer>
-        <NavbarSidebar style={{width: isOpen ? "300px" : "50px"}}>
+        <NavbarSidebar style={{ width: isOpen ? "300px" : "50px" }}>
           <NavbarTopsection>
-            <NavbarLogoTitle style={{display: isOpen ? "block" : "none"}}>ExamPulse</NavbarLogoTitle>
-            <NavbarBar style={{marginLeft: isOpen ? "50px" : "0px"}}>
-              <FaBars onClick={toggle}/>
+            <NavbarLogoTitle style={{ display: isOpen ? "block" : "none" }}>
+              ExamPulse
+            </NavbarLogoTitle>
+            <NavbarBar style={{ marginLeft: isOpen ? "50px" : "0px" }}>
+              <FaBars onClick={toggle} />
             </NavbarBar>
           </NavbarTopsection>
           <NavBarLink to="/student/dashboard">
-            <NavbarAnchorLogo><FaTh /></NavbarAnchorLogo>
-            <NavbarAnchor style={{display: isOpen ? "block" : "none"}}>Dashboard</NavbarAnchor>
+            <NavbarAnchorLogo>
+              <FaTh />
+            </NavbarAnchorLogo>
+            <NavbarAnchor style={{ display: isOpen ? "block" : "none" }}>
+              Dashboard
+            </NavbarAnchor>
           </NavBarLink>
           <NavBarLink to="/student/exam">
-            <NavbarAnchorLogo><FaBook /></NavbarAnchorLogo>
-            <NavbarAnchor style={{display: isOpen ? "block" : "none"}}>Exam</NavbarAnchor>
+            <NavbarAnchorLogo>
+              <FaBook />
+            </NavbarAnchorLogo>
+            <NavbarAnchor style={{ display: isOpen ? "block" : "none" }}>
+              Exam
+            </NavbarAnchor>
           </NavBarLink>
           <NavBarLink to="/student/bug_report">
-            <NavbarAnchorLogo><FaBug /></NavbarAnchorLogo>
-            <NavbarAnchor style={{display: isOpen ? "block" : "none"}}>Bug Report</NavbarAnchor>
+            <NavbarAnchorLogo>
+              <FaBug />
+            </NavbarAnchorLogo>
+            <NavbarAnchor style={{ display: isOpen ? "block" : "none" }}>
+              Bug Report
+            </NavbarAnchor>
           </NavBarLink>
           <NavBarLink to="/student/settings">
-            <NavbarAnchorLogo><FaWhmcs /></NavbarAnchorLogo>
-            <NavbarAnchor style={{display: isOpen ? "block" : "none"}}>Settings</NavbarAnchor>
+            <NavbarAnchorLogo>
+              <FaWhmcs />
+            </NavbarAnchorLogo>
+            <NavbarAnchor style={{ display: isOpen ? "block" : "none" }}>
+              Settings
+            </NavbarAnchor>
           </NavBarLink>
         </NavbarSidebar>
         <NavbarMain>{children}</NavbarMain>
