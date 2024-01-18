@@ -4,7 +4,7 @@ export const TempNavbarContainer = styled.div`
   width: 15rem;
   height: 100vh;
   overflow-y: auto;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
   background: ${(props) => props.theme.background};
@@ -16,8 +16,8 @@ export const TempNavbarContainer = styled.div`
   padding: 0.5rem 0.2rem;
 `;
 export const TempNavbarHandle = styled.div`
-  position: absolute;
-  right: ${(props) => (props.open ? "14rem" : "-1rem")};
+  position: fixed;
+  right: ${(props) => (props.open ? "15rem" : "-1rem")};
   top: 50%;
   width: 2rem;
   height: 5rem;

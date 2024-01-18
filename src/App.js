@@ -12,6 +12,7 @@ import { Suspense } from "react";
 import Loginpage from "./pages/common/LoginPage";
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
+import Navbar from "./components/Navbar/Navbar";
 
 export const adminRoutes = [
   {
@@ -60,30 +61,29 @@ function App() {
   return (
     <BrowserRouter>
       <TempNavbar />
-      <StudentNavbar>
-        <Suspense>
-          <Routes>
-            <Route path="/" element={<Loginpage />} />
-            {adminRoutes.map((route, index) => {
-              return (
-                <Route key={index} path={route.link} element={route.element} />
-              );
-            })}
 
-            {studentRoutes.map((route, index) => {
-              return (
-                <Route key={index} path={route.link} element={route.element} />
-              );
-            })}
+      <Suspense>
+        <Routes>
+          <Route path="/*" element={<Loginpage />} />
+          {adminRoutes.map((route, index) => {
+            return (
+              <Route key={index} path={route.link} element={route.element} />
+            );
+          })}
 
-            {teacherRoutes.map((route, index) => {
-              return (
-                <Route key={index} path={route.link} element={route.element} />
-              );
-            })}
-          </Routes>
-        </Suspense>
-      </StudentNavbar>
+          {studentRoutes.map((route, index) => {
+            return (
+              <Route key={index} path={route.link} element={route.element} />
+            );
+          })}
+
+          {teacherRoutes.map((route, index) => {
+            return (
+              <Route key={index} path={route.link} element={route.element} />
+            );
+          })}
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

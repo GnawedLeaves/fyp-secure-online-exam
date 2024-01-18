@@ -5,16 +5,15 @@ export const NavbarContainer = styled.div`
   left: 0;
   top: 0;
   height: 100vh;
-
   z-index: 99;
   height: 100vh;
   background-color: ${(props) => props.theme.background};
   display: flex;
   flex-direction: column;
   align-items: center;
-
   background: #ffffff;
-  box-shadow: 5px 5px 10px #e8e8e8, -5px -5px 10px #ffffff;
+  box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;
+  width: 16rem;
 `;
 export const NavbarLogoContainer = styled.div`
   display: flex;
