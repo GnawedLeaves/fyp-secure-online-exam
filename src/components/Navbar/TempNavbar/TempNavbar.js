@@ -15,7 +15,7 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { adminRoutes, studentRoutes, teacherRoutes } from "../../../App";
 
 const TempNavbar = () => {
-  const [navbarOpen, setNavbarOpen] = useState(true);
+  const [navbarOpen, setNavbarOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [studentOpen, setStudentOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
