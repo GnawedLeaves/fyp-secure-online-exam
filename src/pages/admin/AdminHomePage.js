@@ -29,22 +29,22 @@ export const adminNavbarItems = [
   },
   {
     title: "Exams",
-    path: "/admin/home",
+    path: "/admin/exams",
     logo: <IoBookOutline />,
   },
   {
     title: "Personnel",
-    path: "/admin/home",
+    path: "/admin/personnel",
     logo: <IoPeopleOutline />,
   },
   {
     title: "Messages",
-    path: "/admin/home",
+    path: "/admin/messages",
     logo: <IoMailOutline />,
   },
   {
     title: "Settings",
-    path: "/admin/home",
+    path: "/admin/settings",
     logo: <IoSettingsOutline />,
   },
 ];

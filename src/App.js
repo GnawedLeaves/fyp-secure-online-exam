@@ -13,12 +13,24 @@ import Loginpage from "./pages/common/LoginPage";
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
+import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
+import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
 
 export const adminRoutes = [
   {
     title: "Admin Home",
     link: "/admin/home",
     element: <AdminHomePage />,
+  },
+  {
+    title: "Admin Settings",
+    link: "/admin/settings",
+    element: <AdminSettingsPage />,
+  },
+  {
+    title: "Admin Messages",
+    link: "/admin/messages",
+    element: <AdminMessagesPage />,
   },
 ];
 

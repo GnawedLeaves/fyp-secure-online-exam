@@ -13,7 +13,6 @@ export const NavbarContainer = styled.div`
   align-items: center;
   background: #ffffff;
   box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;
-  width: 16rem;
 `;
 export const NavbarLogoContainer = styled.div`
   display: flex;
