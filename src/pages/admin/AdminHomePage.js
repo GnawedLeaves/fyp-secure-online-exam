@@ -12,7 +12,42 @@ import {
 } from "./AdminPagesStyles";
 import Navbar from "../../components/Navbar/Navbar";
 import Exambox from "../../components/Exambox/Exambox";
+import { LuBookMarked } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { RiHome4Line } from "react-icons/ri";
+import { IoBookOutline } from "react-icons/io5";
+import { IoSettingsOutline } from "react-icons/io5";
+import { IoPeopleOutline } from "react-icons/io5";
+import { IoMailOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
+
+export const adminNavbarItems = [
+  {
+    title: "Home",
+    path: "/admin/home",
+    logo: <RiHome4Line />,
+  },
+  {
+    title: "Exams",
+    path: "/admin/home",
+    logo: <IoBookOutline />,
+  },
+  {
+    title: "Personnel",
+    path: "/admin/home",
+    logo: <IoPeopleOutline />,
+  },
+  {
+    title: "Messages",
+    path: "/admin/home",
+    logo: <IoMailOutline />,
+  },
+  {
+    title: "Settings",
+    path: "/admin/home",
+    logo: <IoSettingsOutline />,
+  },
+];
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
@@ -60,7 +95,7 @@ const AdminHomePage = () => {
   return (
     <ThemeProvider theme={theme}>
       <AdminHomePageContainer>
-        <Navbar />
+        <Navbar linksArray={adminNavbarItems} />
         <AdminNavbarContentContainer>
           <PageTitle>Exams</PageTitle>
           <OngoingExamsContainer>

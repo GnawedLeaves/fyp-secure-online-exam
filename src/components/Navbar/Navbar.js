@@ -24,45 +24,17 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
-const Navbar = () => {
+
+const Navbar = (props) => {
   const navigate = useNavigate();
 
-  const changePage = (url) => {
-    console.log(`/${url}`);
-    navigate(`/${url}`);
+  const changePage = (path) => {
+    console.log(`/${path}`);
+    navigate(`/${path}`);
   };
   //TODO: Change depending on who is logged in
-  const navbarItems = [
-    {
-      title: "Home",
-      url: "adminhome",
-      logo: <RiHome4Line />,
-    },
-    {
-      title: "Exams",
-      url: "adminhome",
-      logo: <IoBookOutline />,
-    },
-    {
-      title: "Personnel",
-      url: "adminhome",
-      logo: <IoPeopleOutline />,
-    },
-    {
-      title: "Messages",
-      url: "adminhome",
-      logo: <IoMailOutline />,
-    },
-    {
-      title: "Settings",
-      url: "adminhome",
-      logo: <IoSettingsOutline />,
-    },
-  ];
+
   const [selected, setSelected] = useState(0);
-  useEffect(() => {
-    console.log(selected);
-  }, [selected]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -74,24 +46,27 @@ const Navbar = () => {
           <NavbarTitle>ExamPulse</NavbarTitle>
         </NavbarLogoContainer>
         <NavbarContentContainer>
-          {navbarItems.map((item, index) => (
-            <NavbarLinkContainer
-              selected={selected === index}
-              key={index}
-              onClick={() => {
-                setSelected(index);
-                const string = "/" + item.url;
-                navigate(string);
-              }}
-            >
-              <NavbarAlignContainer>
-                <NavbarLinkLogo>{item.logo}</NavbarLinkLogo>
+          {props.linksArray ? (
+            props.linksArray.map((item, index) => (
+              <NavbarLinkContainer
+                selected={selected === index}
+                key={index}
+                onClick={() => {
+                  setSelected(index);
+                  navigate(item.path);
+                }}
+              >
+                <NavbarAlignContainer>
+                  <NavbarLinkLogo>{item.logo}</NavbarLinkLogo>
 
-                {item.title}
-              </NavbarAlignContainer>
-              <NavbarItemSelected selected={selected === index} />
-            </NavbarLinkContainer>
-          ))}
+                  {item.title}
+                </NavbarAlignContainer>
+                <NavbarItemSelected selected={selected === index} />
+              </NavbarLinkContainer>
+            ))
+          ) : (
+            <>Navbar Empty</>
+          )}
         </NavbarContentContainer>
         <NavbarProfileContainer>
           <NavbarProfile>Admin_01</NavbarProfile>
