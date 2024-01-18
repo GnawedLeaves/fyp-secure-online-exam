@@ -34,7 +34,7 @@ const Navbar = (props) => {
   };
   //TODO: Change depending on who is logged in
 
-  const [selected, setSelected] = useState(0);
+  const currentURL = window.location.href;
 
   return (
     <ThemeProvider theme={theme}>
@@ -49,10 +49,9 @@ const Navbar = (props) => {
           {props.linksArray ? (
             props.linksArray.map((item, index) => (
               <NavbarLinkContainer
-                selected={selected === index}
+                selected={currentURL.includes(item.path)}
                 key={index}
                 onClick={() => {
-                  setSelected(index);
                   navigate(item.path);
                 }}
               >
@@ -61,7 +60,7 @@ const Navbar = (props) => {
 
                   {item.title}
                 </NavbarAlignContainer>
-                <NavbarItemSelected selected={selected === index} />
+                <NavbarItemSelected selected={currentURL.includes(item.path)} />
               </NavbarLinkContainer>
             ))
           ) : (
