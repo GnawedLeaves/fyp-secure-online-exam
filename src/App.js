@@ -15,6 +15,7 @@ import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
 import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
 import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
+import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
 
 export const adminRoutes = [
   {
@@ -31,6 +32,16 @@ export const adminRoutes = [
     title: "Admin Messages",
     link: "/admin/messages",
     element: <AdminMessagesPage />,
+  },
+  {
+    title: "Admin Personnel",
+    link: "/admin/personnel",
+    element: <AdminPersonnelPage />,
+  },
+  {
+    title: "Admin Exams",
+    link: "/admin/exams",
+    element: <AdminHomePage />,
   },
 ];
 
