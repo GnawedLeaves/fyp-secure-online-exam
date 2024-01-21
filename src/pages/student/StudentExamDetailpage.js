@@ -1,45 +1,55 @@
 import React from "react";
 import {
-    PageTitle,
+  StudentHomePageContainer,
+  StudentExamDetailContainer,
+  PageTitle,
   PageSubtitle,
   PageDescription,
   PageList,
   PageOrderList,
+  SectionContainer,
+  RuleContainer,
   PageButton,
-  PageEnterSpace
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
-import  StudentHeader from "../../components/Header/StudentHeader";
+import Navbar from "../../components/Navbar/Navbar";
 import  Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
-import { Link } from "react-router-dom";
+import { studentNavbarItems } from "./StudentHomepage";
+import { useNavigate } from "react-router-dom";
 
 const StudentExamDetailpage = () => {
+  const navigate = useNavigate();
   return (
       <ThemeProvider theme={theme}>
-        <StudentHeader/>
-        <PageTitle>IE4717 Web Application & Design</PageTitle>
-        <PageSubtitle>Section Description</PageSubtitle>
-        <PageList>
-            <PageOrderList>Section A --- 50%</PageOrderList>
-            <PageOrderList>Section B --- 30%</PageOrderList>
-            <PageOrderList>Section C --- 20%</PageOrderList>
-        </PageList>
-        <PageDescription>Time Duration: 2 hrs</PageDescription>
-        <PageDescription>Rule and Regulation</PageDescription>
-        <PageList>
-            <PageOrderList>rule</PageOrderList>
-            <PageOrderList>rule</PageOrderList>
-            <PageOrderList>rule</PageOrderList>
-            <PageOrderList>rule</PageOrderList>
-            <PageOrderList>rule</PageOrderList>
-            <PageOrderList>rule</PageOrderList>
-        </PageList>
-        <Link to="/student/exam/question">
-            <PageButton style={{ float: 'right' }}>Start</PageButton>
-        </Link>
-        <PageEnterSpace/>
-        <Footer/>
+        <StudentHomePageContainer>
+          <Navbar linksArray={studentNavbarItems} />
+          <StudentExamDetailContainer>
+            <PageTitle>IE4717 Web Application & Design</PageTitle>
+            <SectionContainer>
+              <PageSubtitle>Section Description</PageSubtitle>
+              <PageList>
+                <PageOrderList>Section A --- 50%</PageOrderList>
+                <PageOrderList>Section B --- 30%</PageOrderList>
+                <PageOrderList>Section C --- 20%</PageOrderList>
+              </PageList>
+            </SectionContainer>
+            <PageDescription>Time Duration: 2 hrs</PageDescription>
+            <RuleContainer>
+              <PageDescription>Rule and Regulation</PageDescription>
+              <PageList>
+                  <PageOrderList>rule</PageOrderList>
+                  <PageOrderList>rule</PageOrderList>
+                  <PageOrderList>rule</PageOrderList>
+                  <PageOrderList>rule</PageOrderList>
+                  <PageOrderList>rule</PageOrderList>
+                  <PageOrderList>rule</PageOrderList>
+              </PageList>
+            </RuleContainer>
+            <PageButton style={{ float: 'right' }} onClick={() => navigate("/student/exam/question")}>Start</PageButton>
+            <Footer/>
+          </StudentExamDetailContainer>
+        </StudentHomePageContainer>
       </ThemeProvider>
   );
 };
