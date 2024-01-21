@@ -7,4 +7,5 @@ export const FooterParagraph = styled.p`
     text-align: center;
     padding: 1px;
     display:block;
+    width:100%;
 `;

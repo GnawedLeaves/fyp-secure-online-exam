@@ -1,35 +1,36 @@
 import React from "react";
 import {
-    PageTitle,
-  PageTitleDesc,
-  PageContainer,
+  StudentHomePageContainer,
+  StudentNavbarContentContainer,
+  PageTitle,
   PageButton,
   PageEnterSpace
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
-import  StudentHeader from "../../components/Header/StudentHeader";
+import Navbar from "../../components/Navbar/Navbar";
 import  Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
-import { Link } from "react-router-dom";
+import { studentNavbarItems } from "./StudentHomepage";
+import { useNavigate } from "react-router-dom";
 
 const StudentBugReportpage = () => {
+  const navigate = useNavigate();
   return (
       <ThemeProvider theme={theme}>
-        <StudentHeader/>
-        <PageTitle>Bug Report</PageTitle>
-        <PageTitleDesc>Welcome User 1! Here you'll find all of your bug report history and submit new bug report.</PageTitleDesc>
-        <PageContainer>
-            <Link to="###">
-            <PageButton>Request A New Query</PageButton>
-            </Link><PageEnterSpace/>
-            <Link to="###">
-            <PageButton>Check Opened Query</PageButton>
-            </Link><PageEnterSpace/>
-            <Link to="###">
-            <PageButton>Check Closed Query</PageButton>
-            </Link><PageEnterSpace/>
-        </PageContainer>
-        <Footer/>
+        <StudentHomePageContainer>
+          <Navbar linksArray={studentNavbarItems} />
+          <StudentNavbarContentContainer>
+            <PageTitle>Bug Report</PageTitle>
+            <PageEnterSpace/><PageEnterSpace/><PageEnterSpace/>
+            <PageButton onClick={() => navigate("/student/exam/question")}>Request A New Query</PageButton>
+            <PageEnterSpace/>
+            <PageButton onClick={() => navigate("/student/exam/question")}>Check Opened Query</PageButton>
+            <PageEnterSpace/>
+            <PageButton onClick={() => navigate("/student/exam/question")}>Check Closed Query</PageButton>
+            <PageEnterSpace/>
+            <Footer/>
+          </StudentNavbarContentContainer>
+        </StudentHomePageContainer>
       </ThemeProvider>
   );
 };
