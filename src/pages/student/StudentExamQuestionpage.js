@@ -1,157 +1,121 @@
 import React from "react";
 import {
-    PageTitle,
+  PageTitle,
+  StudentHomePageContainer,
+  StudentExamDetailContainer,
+  QuestionContainer,
+  QuestionSection,
+  LeftContainer,
+  RightContainer,
+  QuestionBox,
+  QuestionGrid,
+  QuestionRow,
   PageDescription,
   PageChoice,
   PageInput,
   PageLabel,
   PageButton,
-  ExamPageContainer,
-  ExamPageContainer2,
   PageEnterSpace,
-  QuestionTable,
-  QuestionTableRow,
-  QuestionTableCell,
-  QuestionTableData,
   QuestionLegend,
   LegendRow,
   LegendData,
-  LegendColor,
+  LegendBlueColor,
+  LegendRedColor,
+  LegendGreyColor,
   LegendText
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
-import  StudentHeader from "../../components/Header/StudentHeader";
+import Navbar from "../../components/Navbar/Navbar";
 import  Footer from "../../components/Footer/Footer";
+import  Timer from "../../components/Timer/Timer";
 import { theme } from '../../theme';
-import { Link } from "react-router-dom";
+import { studentNavbarItems } from "./StudentHomepage";
+import { useNavigate } from "react-router-dom";
 import {
   FaClock
 }from "react-icons/fa";
 
 const StudentExamQuestionpage = () => {
+  const navigate = useNavigate();
+  const TotalQuestion = 27;
+
+  const grid = [];
+
+  for (let i = 0; i < Math.ceil(TotalQuestion/5); i++) {
+    const row=[];
+    for (let j = 0; j < 5; j++) {
+      if(5*i+j+1 <=TotalQuestion){
+        row.push(<QuestionBox>{5*i+j+1}</QuestionBox>);
+      }
+    }
+    grid.push(<QuestionRow>{row}</QuestionRow>);
+  }
+
   return (
       <ThemeProvider theme={theme}>
-        <StudentHeader/>
-        <PageTitle>IE4717 Web Application & Design</PageTitle>
-        <ExamPageContainer>
-          <PageDescription>Question 1:</PageDescription>
-          <PageDescription>Which is the tallest animal on the earth? </PageDescription>
-          <PageEnterSpace/>
-          <PageChoice>
-              <PageInput type="radio" name="Answer" value="A"/><PageLabel>A</PageLabel><PageEnterSpace/>
-              <PageInput type="radio" name="Answer" value="B"/><PageLabel>B</PageLabel><PageEnterSpace/>
-              <PageInput type="radio" name="Answer" value="C"/><PageLabel>C</PageLabel><PageEnterSpace/>
-              <PageInput type="radio" name="Answer" value="D"/><PageLabel>D</PageLabel><PageEnterSpace/>
-          </PageChoice>
-          <Link to="/student/exam/question">
-            <PageButton style={{ margin: '100px auto' }}>Next</PageButton>
-          </Link>
-          <PageEnterSpace/>
-        </ExamPageContainer>
-        <ExamPageContainer2>
-          <FaClock style={{ float: 'left', marginTop: '3px' }} />
-          <PageDescription>01:56:20</PageDescription>
-          <QuestionTable>
-            <QuestionTableRow>
-              <QuestionTableCell>
-              <QuestionTableData>1</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>2</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>3</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>4</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>5</QuestionTableData>
-              </QuestionTableCell>
-            </QuestionTableRow>
-            <QuestionTableRow>
-              <QuestionTableCell>
-              <QuestionTableData>6</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>7</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>8</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>9</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>10</QuestionTableData>
-              </QuestionTableCell>
-            </QuestionTableRow>
-            <QuestionTableRow>
-              <QuestionTableCell>
-              <QuestionTableData>11</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>12</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>13</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>14</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>15</QuestionTableData>
-              </QuestionTableCell>
-            </QuestionTableRow>
-            <QuestionTableRow>
-              <QuestionTableCell>
-              <QuestionTableData>16</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>17</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>18</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>19</QuestionTableData>
-              </QuestionTableCell>
-              <QuestionTableCell>
-              <QuestionTableData>20</QuestionTableData>
-              </QuestionTableCell>
-            </QuestionTableRow>
-          </QuestionTable>
-          <QuestionLegend>
-            <LegendRow>
-              <LegendData colSpan="2" style={{ backgroundColor: 'grey'}}>Overall Summary</LegendData>
-            </LegendRow>
-            <LegendRow>
-              <LegendData>
-                <LegendColor style={{ backgroundColor: 'blue' }}></LegendColor>
-              </LegendData>
-              <LegendData>
-                <LegendText>Attempted</LegendText>
-              </LegendData>
-            </LegendRow>
-            <LegendRow>
-              <LegendData>
-                <LegendColor style={{ backgroundColor: 'grey' }}></LegendColor>
-              </LegendData>
-              <LegendData>
-                <LegendText>Not Attempted</LegendText>
-              </LegendData>
-            </LegendRow>
-            <LegendRow>
-              <LegendData>
-                <LegendColor style={{ backgroundColor: 'red' }}></LegendColor>
-              </LegendData>
-              <LegendData>
-                <LegendText>Flag</LegendText>
-              </LegendData>
-            </LegendRow>
-          </QuestionLegend>
-        </ExamPageContainer2>
-        <Footer/>
+        <StudentHomePageContainer>
+          <Navbar linksArray={studentNavbarItems} />
+          <StudentExamDetailContainer>
+            <PageTitle>IE4717 Web Application & Design</PageTitle>
+            <QuestionContainer>
+              <LeftContainer>
+                <QuestionSection>
+                  <PageDescription>Question 1:</PageDescription>
+                  <PageDescription>Which is the tallest animal on the earth? </PageDescription>
+                  <PageEnterSpace/>
+                  <PageChoice>
+                      <PageInput type="radio" name="Answer" value="A"/><PageLabel>A</PageLabel><PageEnterSpace/>
+                      <PageInput type="radio" name="Answer" value="B"/><PageLabel>B</PageLabel><PageEnterSpace/>
+                      <PageInput type="radio" name="Answer" value="C"/><PageLabel>C</PageLabel><PageEnterSpace/>
+                      <PageInput type="radio" name="Answer" value="D"/><PageLabel>D</PageLabel><PageEnterSpace/>
+                  </PageChoice>
+                </QuestionSection>
+              </LeftContainer>
+              <RightContainer>
+                <FaClock style={{ float: 'left', marginTop: '3px' }} />
+                <Timer initialDuration={10000} />
+                <QuestionGrid>{grid}</QuestionGrid>
+              </RightContainer>
+            </QuestionContainer>
+            <QuestionContainer>
+              <LeftContainer>
+                <PageButton style={{ margin: '100px auto' }} onClick={() => navigate("/student/exam/question")}>Next</PageButton>
+              </LeftContainer>
+              <RightContainer>
+                <QuestionLegend>
+                  <LegendRow>
+                    <LegendData colSpan="2" style={{ backgroundColor: 'grey'}}>Overall Summary</LegendData>
+                  </LegendRow>
+                  <LegendRow>
+                    <LegendData>
+                      <LegendBlueColor></LegendBlueColor>
+                    </LegendData>
+                    <LegendData>
+                      <LegendText>Attempted</LegendText>
+                    </LegendData>
+                  </LegendRow>
+                  <LegendRow>
+                    <LegendData>
+                      <LegendGreyColor></LegendGreyColor>
+                    </LegendData>
+                    <LegendData>
+                      <LegendText>Not Attempted</LegendText>
+                    </LegendData>
+                  </LegendRow>
+                  <LegendRow>
+                    <LegendData>
+                      <LegendRedColor></LegendRedColor>
+                    </LegendData>
+                    <LegendData>
+                      <LegendText>Flag</LegendText>
+                    </LegendData>
+                  </LegendRow>
+                </QuestionLegend>
+              </RightContainer>
+            </QuestionContainer>
+            <Footer/>
+          </StudentExamDetailContainer>
+        </StudentHomePageContainer>  
       </ThemeProvider>
   );
 };
