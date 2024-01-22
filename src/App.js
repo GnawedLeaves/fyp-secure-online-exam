@@ -38,6 +38,11 @@ export const adminRoutes = [
     link: "/admin/personnel",
     element: <AdminPersonnelPage />,
   },
+  {
+    title: "Admin Exams",
+    link: "/admin/exams",
+    element: <AdminHomePage />,
+  },
 ];
 
 export const studentRoutes = [
