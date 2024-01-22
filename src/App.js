@@ -17,6 +17,7 @@ import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
 import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
 import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
 import Loginpage from "./pages/common/loginPage/LoginPage";
+import AdminExamDetailsPage from "./pages/admin/AdminExamDetailsPage";
 
 export const adminRoutes = [
   {
@@ -43,6 +44,11 @@ export const adminRoutes = [
     title: "Admin Exams",
     link: "/admin/exams",
     element: <AdminHomePage />,
+  },
+  {
+    title: "Admin Exam Details",
+    link: "/admin/exam/:examid",
+    element: <AdminExamDetailsPage />,
   },
 ];
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
@@ -13,6 +13,8 @@ import {
 } from "./AdminPagesStyles";
 import Navbar from "../../components/Navbar/Navbar";
 import Exambox from "../../components/Exambox/Exambox";
+import { useParams } from "react-router-dom";
+import { adminNavbarItems } from "./AdminHomePage";
 
 const AdminExamDetailsPage = () => {
   const examList = [
@@ -53,10 +55,16 @@ const AdminExamDetailsPage = () => {
     },
   ];
 
+  const { examid } = useParams();
+  useEffect(() => {
+    console.log("params", examid);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <AdminHomePageContainer>
-        <Navbar />
+        <Navbar linksArray={adminNavbarItems} />
+
         <AdminNavbarContentContainer>
           <AdminExamDetailsPageTitle>
             IE4171: Web Design

@@ -40,9 +40,6 @@ const Loginpage = () => {
     setDomainSelected(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("domainSelected", domainSelected);
-  }, [domainSelected]);
   return (
     <ThemeProvider theme={theme}>
       <LoginPageContainer>
