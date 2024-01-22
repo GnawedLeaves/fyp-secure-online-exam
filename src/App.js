@@ -9,12 +9,15 @@ import StudentExamDetailPage from "./pages/student/StudentExamDetailpage";
 import StudentExamQuestionPage from "./pages/student/StudentExamQuestionpage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
-import Loginpage from "./pages/common/LoginPage";
+
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
 import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
 import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
+import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
+import Loginpage from "./pages/common/loginPage/LoginPage";
+import AdminExamDetailsPage from "./pages/admin/AdminExamDetailsPage";
 
 export const adminRoutes = [
   {
@@ -31,6 +34,21 @@ export const adminRoutes = [
     title: "Admin Messages",
     link: "/admin/messages",
     element: <AdminMessagesPage />,
+  },
+  {
+    title: "Admin Personnel",
+    link: "/admin/personnel",
+    element: <AdminPersonnelPage />,
+  },
+  {
+    title: "Admin Exams",
+    link: "/admin/exams",
+    element: <AdminHomePage />,
+  },
+  {
+    title: "Admin Exam Details",
+    link: "/admin/exam/:examid",
+    element: <AdminExamDetailsPage />,
   },
 ];
 

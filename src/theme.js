@@ -5,6 +5,9 @@ export const theme = {
   secondaryLight: "#EEFDFF",
   font: "Inter, sans-serif",
   transition: "0.2s",
+  statusGood: "#36D59D",
+  statusError: "#FF8080",
+  statusIntermediate: "#FFCF96",
 };
 
 export const darktheme = {
@@ -14,4 +17,7 @@ export const darktheme = {
   secondaryLight: "#EEFDFF",
   font: "Inter, sans-serif",
   transition: "0.2s",
+  statusGood: "#00CF86",
+  statusError: "#FF8080",
+  statusIntermediate: "#FFCF96",
 };

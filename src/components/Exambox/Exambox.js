@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 const Exambox = (props) => {
   const navigate = useNavigate();
   const changePage = () => {
-    navigate("/adminexamdetails");
+    navigate(`/admin/exam/${props.examId}`);
   };
 
   return (

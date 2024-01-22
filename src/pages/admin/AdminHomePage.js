@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
@@ -20,6 +20,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
+import LoadingPage from "../common/loadingPage/LoadingPage";
 
 export const adminNavbarItems = [
   {
@@ -92,59 +93,69 @@ const AdminHomePage = () => {
     },
   ];
 
+  //edit this when want to add loading screen
+  const [finishedLoading, setFinishedLoading] = useState(true);
+
   return (
     <ThemeProvider theme={theme}>
-      <AdminHomePageContainer>
-        <Navbar linksArray={adminNavbarItems} />
-        <AdminNavbarContentContainer>
-          <PageTitle>Exams</PageTitle>
-          <OngoingExamsContainer>
-            <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
-            <OngoingExams>
-              {examList.map((exam) => (
-                <Exambox
-                  title={exam.title}
-                  examId={exam.examId}
-                  studentsCount={exam.studentsCount}
-                  timeLeft={exam.timeLeft}
-                  alertsCount={exam.alertsCount}
-                  status={exam.status}
-                />
-              ))}
-            </OngoingExams>
-          </OngoingExamsContainer>
-          <OngoingExamsContainer>
-            <OngoingExamsTitle>Upcoming Exams</OngoingExamsTitle>
-            <OngoingExams>
-              {examList2.map((exam) => (
-                <Exambox
-                  title={exam.title}
-                  examId={exam.examId}
-                  studentsCount={exam.studentsCount}
-                  timeLeft={exam.timeLeft}
-                  alertsCount={exam.alertsCount}
-                  status={exam.status}
-                />
-              ))}
-            </OngoingExams>
-          </OngoingExamsContainer>
-          <OngoingExamsContainer>
-            <OngoingExamsTitle>Completed Exams</OngoingExamsTitle>
-            <OngoingExams>
-              {examList2.map((exam) => (
-                <Exambox
-                  title={exam.title}
-                  examId={exam.examId}
-                  studentsCount={exam.studentsCount}
-                  timeLeft={exam.timeLeft}
-                  alertsCount={exam.alertsCount}
-                  status={exam.status}
-                />
-              ))}
-            </OngoingExams>
-          </OngoingExamsContainer>
-        </AdminNavbarContentContainer>
-      </AdminHomePageContainer>
+      {finishedLoading ? (
+        <AdminHomePageContainer>
+          <Navbar linksArray={adminNavbarItems} />
+          <AdminNavbarContentContainer>
+            <PageTitle>Exams</PageTitle>
+            <OngoingExamsContainer>
+              <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
+              <OngoingExams>
+                {examList.map((exam, index) => (
+                  <Exambox
+                    key={index}
+                    title={exam.title}
+                    examId={exam.examId}
+                    studentsCount={exam.studentsCount}
+                    timeLeft={exam.timeLeft}
+                    alertsCount={exam.alertsCount}
+                    status={exam.status}
+                  />
+                ))}
+              </OngoingExams>
+            </OngoingExamsContainer>
+            <OngoingExamsContainer>
+              <OngoingExamsTitle>Upcoming Exams</OngoingExamsTitle>
+              <OngoingExams>
+                {examList2.map((exam, index) => (
+                  <Exambox
+                    key={index}
+                    title={exam.title}
+                    examId={exam.examId}
+                    studentsCount={exam.studentsCount}
+                    timeLeft={exam.timeLeft}
+                    alertsCount={exam.alertsCount}
+                    status={exam.status}
+                  />
+                ))}
+              </OngoingExams>
+            </OngoingExamsContainer>
+            <OngoingExamsContainer>
+              <OngoingExamsTitle>Completed Exams</OngoingExamsTitle>
+              <OngoingExams>
+                {examList2.map((exam, index) => (
+                  <Exambox
+                    key={index}
+                    title={exam.title}
+                    examId={exam.examId}
+                    studentsCount={exam.studentsCount}
+                    timeLeft={exam.timeLeft}
+                    alertsCount={exam.alertsCount}
+                    status={exam.status}
+                  />
+                ))}
+              </OngoingExams>
+            </OngoingExamsContainer>
+          </AdminNavbarContentContainer>
+        </AdminHomePageContainer>
+      ) : (
+        <LoadingPage />
+      )}
     </ThemeProvider>
   );
 };

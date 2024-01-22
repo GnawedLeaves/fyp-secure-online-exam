@@ -25,6 +25,7 @@ export const TempNavbarHandle = styled.div`
   border-radius: 10px;
   border: 1px solid ${(props) => props.theme.text};
   cursor: pointer;
+  background: ${(props) => props.theme.background};
 `;
 export const TempNavbarContent = styled.div`
   display: flex;
