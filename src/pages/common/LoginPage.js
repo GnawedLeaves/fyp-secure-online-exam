@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   DomainOption,
   DomainSelect,
@@ -22,8 +22,27 @@ const Loginpage = () => {
   const navigate = useNavigate();
 
   const changePage = () => {
-    navigate("/student/dashboard");
+    switch (domainSelected) {
+      case "Student":
+        navigate("/student/dashboard");
+        break;
+      case "Teacher":
+        navigate("/Instructor/InstructorPage");
+        break;
+      case "Admin":
+        navigate("/admin/home");
+        break;
+    }
   };
+
+  const [domainSelected, setDomainSelected] = useState("Student");
+  const onDomainChange = (e) => {
+    setDomainSelected(e.target.value);
+  };
+
+  useEffect(() => {
+    console.log("domainSelected", domainSelected);
+  }, [domainSelected]);
   return (
     <ThemeProvider theme={theme}>
       <LoginPageContainer>
@@ -37,7 +56,7 @@ const Loginpage = () => {
             <LoginPasswordInput placeholder={"Password"} />
             <ForgotPassword>Forgot Password</ForgotPassword>
           </PasswordInputContainer>
-          <DomainSelect>
+          <DomainSelect onChange={onDomainChange}>
             <DomainOption>Student</DomainOption>
             <DomainOption>Teacher</DomainOption>
             <DomainOption>Admin</DomainOption>
