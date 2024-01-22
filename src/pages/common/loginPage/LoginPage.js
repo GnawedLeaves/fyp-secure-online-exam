@@ -12,11 +12,11 @@ import {
   LoginPasswordInput,
   LoginUsernameInput,
   PasswordInputContainer,
-} from "./PagesStyles";
+} from "./LoginPagesStyles";
 import { ThemeProvider } from "styled-components";
 
 import { useNavigate } from "react-router-dom";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 
 const Loginpage = () => {
   const navigate = useNavigate();

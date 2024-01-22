@@ -9,13 +9,14 @@ import StudentExamDetailPage from "./pages/student/StudentExamDetailpage";
 import StudentExamQuestionPage from "./pages/student/StudentExamQuestionpage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
-import Loginpage from "./pages/common/LoginPage";
+
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
 import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
 import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
 import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
+import Loginpage from "./pages/common/loginPage/LoginPage";
 
 export const adminRoutes = [
   {
