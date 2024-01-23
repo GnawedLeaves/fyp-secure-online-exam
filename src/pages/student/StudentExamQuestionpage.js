@@ -7,7 +7,6 @@ import {
   QuestionSection,
   LeftContainer,
   RightContainer,
-  QuestionBox,
   QuestionGrid,
   QuestionRow,
   PageDescription,
@@ -34,10 +33,13 @@ import { useNavigate } from "react-router-dom";
 import {
   FaClock
 }from "react-icons/fa";
+import Numberbox from "../../components/Numberbox/Numberbox";
 
 const StudentExamQuestionpage = () => {
+  const endTime = new Date();
+  endTime.setHours(19, 0, 0, 0); //7pm
   const navigate = useNavigate();
-  const TotalQuestion = 27;
+  const TotalQuestion = 31;
 
   const grid = [];
 
@@ -45,7 +47,7 @@ const StudentExamQuestionpage = () => {
     const row=[];
     for (let j = 0; j < 5; j++) {
       if(5*i+j+1 <=TotalQuestion){
-        row.push(<QuestionBox>{5*i+j+1}</QuestionBox>);
+        row.push(<Numberbox number={5 * i + j + 1} />);
       }
     }
     grid.push(<QuestionRow>{row}</QuestionRow>);
@@ -73,7 +75,7 @@ const StudentExamQuestionpage = () => {
               </LeftContainer>
               <RightContainer>
                 <FaClock style={{ float: 'left', marginTop: '3px' }} />
-                <Timer initialDuration={10000} />
+                <Timer endTime={endTime} />
                 <QuestionGrid>{grid}</QuestionGrid>
               </RightContainer>
             </QuestionContainer>

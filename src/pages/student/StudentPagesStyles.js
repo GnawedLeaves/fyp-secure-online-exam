@@ -74,7 +74,7 @@ export const StudentExamDetailContainer = styled.div`
   gap: 2rem;
 `;
 export const PageSubtitle = styled.div`
-  font-size 2rem;
+  font-size: 2rem;
   font-weight: 600;
 `;
 export const PageDescription= styled.div`
@@ -116,20 +116,6 @@ export const LeftContainer = styled.div`
 export const RightContainer = styled.div`
   margin-left: 70%;
 `;
-export const QuestionBox = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 1px solid #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: ${(props) => props.theme.primary};
-    color: ${(props) => props.theme.background};
-    border-color: ${(props) => props.theme.primary};
-  }
-
-`;
 export const QuestionGrid = styled.div`
   display: grid;
 
@@ -159,8 +145,38 @@ export const LegendGreyColor = styled.div`
   margin:5px
 `;
 
+//StudentExamReviewPage
+export const ReviewContainer = styled.div``;
+export const ReviewTable = styled.table`
+  width:100%;
+  border-spacing: 20px 30px;
+  margin: 85px 0;
+`;
+export const ReviewRow = styled.tr``;
+export const ReviewData = styled.td`
+width:100px;
+`;
+export const NameData = styled.td`
+`;
+export const DateData = styled.td``;
+export const StartTimeData = styled.td``;
+export const EndTimeData = styled.td``;
+export const ResultData = styled.td``;
 
-
+//StudentFaceRegistrationpage
+export const FaceRegistrationSection = styled.div`
+  margin:30px 0;
+`;
+export const SampleImage = styled.img`
+  width:100%;
+`;
+export const SampleContainer = styled.div`
+  float:left;
+  width:50%;
+`;
+export const CamContainer = styled.div`
+  margin-left:50%;
+`;
 
 
 
