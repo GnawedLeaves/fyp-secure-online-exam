@@ -155,7 +155,9 @@ const AdminExamDetailsPage = () => {
                 >
                   Start
                 </Button>
-                <Button>Pause</Button>
+                <Button filled={true} onClick={() => {}}>
+                  Pause
+                </Button>
                 <Button>Stop</Button>
               </AdminExamAttributesControlsContainer>
             </AdminExamAttributesContainer>
