@@ -21,6 +21,13 @@ import AdminExamDetailsPage from "./pages/admin/AdminExamDetailsPage";
 import StudentExamReviewpage from "./pages/student/StudentExamReviewpage";
 import StudentFaceRegistrationpage from "./pages/student/StudentFaceRegistrationpage";
 import StudentProfilepage from "./pages/student/StudentProfilepage";
+import InstructorProctorPage from "./pages/Instructor/InstructorProctor";
+import InstructorExamPage from "./pages/Instructor/InstructorExamPage";
+import ContactAdmin from "./pages/Instructor/ContactAdmin";
+import InstructorSettings from "./pages/Instructor/InstructorSettings";
+import InstructorPage from "./pages/Instructor/InstructorPage";
+import InstructorLibrary from "./pages/Instructor/InstructorLibrary";
+
 
 export const adminRoutes = [
   {
@@ -103,7 +110,38 @@ export const studentRoutes = [
   },
 ];
 
-export const teacherRoutes = [{}];
+export const teacherRoutes = [
+  {
+    title: "Teacher Dashboard",
+    link: "/Instructor/InstructorPage",
+    element: <InstructorPage />,
+  },
+  {
+    title: "Teacher Library",
+    link: "/Instructor/InstructorLibrary",
+    element: <InstructorLibrary />,
+  },
+  {
+    title: "Teacher Exam Page",
+    link: "/Instructor/InstructorExamPage",
+    element: <InstructorExamPage />,
+  },
+  {
+    title: "Teacher Proctor",
+    link: "/Instructor/InstructorProctor",
+    element: <InstructorProctorPage />,
+  },
+  {
+    title: "Teacher Contact Admin",
+    link: "/Instructor/ContactAdmin",
+    element: <ContactAdmin />,
+  },
+  {
+    title: "Teacher Setting",
+    link: "/Instructor/InstructorSettings",
+    element: <InstructorSettings />,
+  },
+];
 
 function App() {
   return (
