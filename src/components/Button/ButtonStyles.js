@@ -27,4 +27,8 @@ export const ButtonContainer = styled.div`
     border-color: ${(props) =>
       props.filled ? props.defaultColor : props.filledColor};
   }
+
+  @media screen and (max-width: 1000px) {
+    font-size: 0.8rem;
+  }
 `;
