@@ -78,7 +78,7 @@ export const studentRoutes = [
   },
   {
     title: "Student Exam Detail",
-    link: "/student/exam/exam_detail",
+    link: "/student/exam/:examid",
     element: <StudentExamDetailPage />,
   },
   {
@@ -89,17 +89,17 @@ export const studentRoutes = [
   {
     title: "Student Exam Review",
     link: "/student/exam/review",
-    element: <StudentExamReviewpage/>,
+    element: <StudentExamReviewpage />,
   },
   {
     title: "Student Face Registration",
     link: "/student/face",
-    element: <StudentFaceRegistrationpage/>,
+    element: <StudentFaceRegistrationpage />,
   },
   {
     title: "Student Profile",
     link: "/student/profile",
-    element: <StudentProfilepage/>,
+    element: <StudentProfilepage />,
   },
 ];
 
