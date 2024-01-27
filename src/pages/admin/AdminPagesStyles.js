@@ -1,4 +1,4 @@
-import e from "cors";
+//import e from "cors";
 import styled from "styled-components";
 
 export const AdminHomePageContainer = styled.div`

@@ -9,7 +9,6 @@ import {
   ReviewData,
   NameData,
   DateData,
-  StartTimeData,
   EndTimeData,
   ResultData,
 
@@ -19,8 +18,24 @@ import Navbar from "../../components/Navbar/Navbar";
 import  Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button/Button";
 
 const StudentExamReviewpage = () => {
+  const examReview = [
+    {
+      examId: 1,
+      examName: "IE4171: Web Design",
+      examDate: "12th Feb 2024",
+      examSubmissionTime: "09:45:59",
+      examGrade: "A+",
+    },
+  ];
+
+  const navigate = useNavigate();
+  const NavigateAllExam = () => {
+    navigate("/student/exam");
+  };
   return (
       <ThemeProvider theme={theme}>
         <StudentHomePageContainer>
@@ -31,26 +46,24 @@ const StudentExamReviewpage = () => {
               <ReviewTable>
                 <ReviewRow>
                   <ReviewData>Course: </ReviewData>
-                  <NameData>IE4717 Web application</NameData>
+                  <NameData>{examReview[0].examName}</NameData>
                 </ReviewRow>
                 <ReviewRow>
                 <ReviewData>Date: </ReviewData>
-                  <DateData>22 Jan 2024</DateData>
+                  <DateData>{examReview[0].examDate}</DateData>
                 </ReviewRow>
                 <ReviewRow>
-                  <ReviewData>Start Time: </ReviewData>
-                  <StartTimeData>02:00:08 pm</StartTimeData>
-                </ReviewRow>
-                <ReviewRow>
-                  <ReviewData>End Time: </ReviewData>
-                  <EndTimeData>03:59:55 pm</EndTimeData>
+                  <ReviewData>Submission Time: </ReviewData>
+                  <EndTimeData>{examReview[0].examSubmissionTime}</EndTimeData>
                 </ReviewRow>
                 <ReviewRow>
                   <ReviewData>Grade: </ReviewData>
-                  <ResultData>A+</ResultData>
+                  <ResultData>{examReview[0].examGrade}</ResultData>
                 </ReviewRow>
               </ReviewTable>
-                
+              <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => NavigateAllExam()}>
+                  Back
+                </Button>
             </ReviewContainer>
             <Footer/>
           </StudentNavbarContentContainer>
