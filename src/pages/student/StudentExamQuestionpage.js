@@ -11,9 +11,6 @@ import {
   QuestionRow,
   PageDescription,
   PageChoice,
-  PageInput,
-  PageLabel,
-  PageButton,
   PageEnterSpace,
   QuestionLegend,
   LegendRow,
@@ -26,6 +23,7 @@ import {
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
 import  Footer from "../../components/Footer/Footer";
+import Button from "../../components/Button/Button";
 import  Timer from "../../components/Timer/Timer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
@@ -34,19 +32,42 @@ import {
   FaClock
 }from "react-icons/fa";
 import Numberbox from "../../components/Numberbox/Numberbox";
+import RadioButtonGroup from "../../components/student/RadioButtonGroup/RadioButtonGroup";
 
 const StudentExamQuestionpage = () => {
-  const endTime = new Date();
-  endTime.setHours(19, 0, 0, 0); //7pm
+  const ExamTimeArray = [
+    { 
+      examid: "1", 
+      endTime: "2024-01-27 23:30:00 ", 
+    },
+  ];
+  const examTotalQuestions = [
+    {
+      title: "IE4171: Web Design",
+      TotalQuestion: 26,
+    },
+  ];
+  const examQuestions = [
+    {
+      index: 2,
+      question: "Which is the tallest animal on the earth?!",
+      options: ["elephant", "zebra", "giraffe", "ant","cat"],
+    },
+  ];
+  
+  const endTime = new Date(ExamTimeArray[0].endTime);
+  endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
   const navigate = useNavigate();
-  const TotalQuestion = 31;
+  const nextQuestion = () => {
+    navigate("/student/exam/question");
+  };
 
   const grid = [];
 
-  for (let i = 0; i < Math.ceil(TotalQuestion/5); i++) {
+  for (let i = 0; i < Math.ceil(examTotalQuestions[0].TotalQuestion/5); i++) {
     const row=[];
     for (let j = 0; j < 5; j++) {
-      if(5*i+j+1 <=TotalQuestion){
+      if(5*i+j+1 <=examTotalQuestions[0].TotalQuestion){
         row.push(<Numberbox number={5 * i + j + 1} />);
       }
     }
@@ -62,14 +83,11 @@ const StudentExamQuestionpage = () => {
             <QuestionContainer>
               <LeftContainer>
                 <QuestionSection>
-                  <PageDescription>Question 1:</PageDescription>
-                  <PageDescription>Which is the tallest animal on the earth? </PageDescription>
+                  <PageDescription>Question {examQuestions[0].index} :</PageDescription>
+                  <PageDescription>{examQuestions[0].question} </PageDescription>
                   <PageEnterSpace/>
                   <PageChoice>
-                      <PageInput type="radio" name="Answer" value="A"/><PageLabel>A</PageLabel><PageEnterSpace/>
-                      <PageInput type="radio" name="Answer" value="B"/><PageLabel>B</PageLabel><PageEnterSpace/>
-                      <PageInput type="radio" name="Answer" value="C"/><PageLabel>C</PageLabel><PageEnterSpace/>
-                      <PageInput type="radio" name="Answer" value="D"/><PageLabel>D</PageLabel><PageEnterSpace/>
+                      <RadioButtonGroup index={examQuestions[0].index} options={examQuestions[0].options} />
                   </PageChoice>
                 </QuestionSection>
               </LeftContainer>
@@ -81,7 +99,9 @@ const StudentExamQuestionpage = () => {
             </QuestionContainer>
             <QuestionContainer>
               <LeftContainer>
-                <PageButton style={{ margin: '100px auto' }} onClick={() => navigate("/student/exam/question")}>Next</PageButton>
+                <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => nextQuestion()}>
+                  Next
+                </Button>
               </LeftContainer>
               <RightContainer>
                 <QuestionLegend>

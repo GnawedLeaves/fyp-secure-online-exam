@@ -18,6 +18,9 @@ import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
 import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
 import Loginpage from "./pages/common/loginPage/LoginPage";
 import AdminExamDetailsPage from "./pages/admin/AdminExamDetailsPage";
+import StudentExamReviewpage from "./pages/student/StudentExamReviewpage";
+import StudentFaceRegistrationpage from "./pages/student/StudentFaceRegistrationpage";
+import StudentProfilepage from "./pages/student/StudentProfilepage";
 
 export const adminRoutes = [
   {
@@ -82,6 +85,21 @@ export const studentRoutes = [
     title: "Student Exam Question",
     link: "/student/exam/question",
     element: <StudentExamQuestionPage />,
+  },
+  {
+    title: "Student Exam Review",
+    link: "/student/exam/review",
+    element: <StudentExamReviewpage/>,
+  },
+  {
+    title: "Student Face Registration",
+    link: "/student/face",
+    element: <StudentFaceRegistrationpage/>,
+  },
+  {
+    title: "Student Profile",
+    link: "/student/profile",
+    element: <StudentProfilepage/>,
   },
 ];
 

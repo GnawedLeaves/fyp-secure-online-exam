@@ -24,22 +24,6 @@ export const FeatureCheckTitle = styled.div`
   font-weight: 600;
 `;
 export const FeatureCheckDescription = styled.p``;
-export const FeatureCheckButton = styled.button`
-  padding: 15px;
-  font-weight: 600;
-  width: 20%;
-  border-radius: 15px;
-  border: 1px solid ${(props) => props.theme.primary};
-  color: ${(props) => props.theme.primary};
-  background-color: ${(props) => props.theme.white};
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    background-color: ${(props) => props.theme.primary};
-    color: ${(props) => props.theme.white};
-  }
-`;
 
 //StudentExamPage 
 export const ExamTableContainer = styled.div`
@@ -178,9 +162,15 @@ export const CamContainer = styled.div`
   margin-left:50%;
 `;
 
-
-
-
+//Feedback/Bugreportpage
+export const FeedbackForm = styled.form``;
+export const StudentBugReportContainer = styled.div`
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;
 
 
 export const PageTitleDesc = styled.div`
