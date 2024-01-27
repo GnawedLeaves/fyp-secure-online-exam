@@ -19,6 +19,7 @@ import Button from "../../../components/Button/Button";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import FilterBar from "../../../components/FilterBar/FilterBar";
+import Modal from "../../../components/Modal/Modal";
 
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
