@@ -77,7 +77,6 @@ const Modal = (props) => {
             >
               {props.closingButtonText ? props.closingButtonText : "Cancel"}
             </Button>
-            '
           </ModalButtonContainer>
         );
       default:
