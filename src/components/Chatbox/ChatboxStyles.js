@@ -1,21 +1,13 @@
 import styled from "styled-components";
 
-export const AdminMessagesBigContainer = styled.div`
-  display: flex;
-`;
-export const AdminMessagesContainer = styled.div`
-  padding: 2rem;
-`;
-
 export const AdminMessagingContainer = styled.div`
   border: 2px solid ${(props) => props.theme.text};
-
   box-sizing: border-box;
   overflow: hidden;
 `;
 export const AdminMessagingDisplayContainer = styled.div`
   width: 20rem;
-  height: 30rem;
+  height: 25rem;
   overflow-y: auto;
   padding: 1rem 0;
   &::-webkit-scrollbar {
@@ -111,5 +103,18 @@ export const AdminMessageArrowContainer = styled.div`
 export const MessageDisplayContainer = styled.div`
   display: flex;
   gap: 5rem;
-  flex-wrap: wrap;
+`;
+
+export const ChatboxLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ChatboxHeader = styled.div`
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem 0.5rem;
 `;
