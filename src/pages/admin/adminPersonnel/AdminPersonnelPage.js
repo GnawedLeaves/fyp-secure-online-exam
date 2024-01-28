@@ -237,7 +237,7 @@ const AdminPersonnelPage = () => {
                     <AdminPersonnelSummaryButtonsContainer>
                       <Button filledColor={theme.primary}>Details</Button>
                       <Button
-                        filled={true}
+                        filled={false}
                         defaultColor={theme.statusError}
                         filledColor={theme.statusError}
                         onClick={() => {
