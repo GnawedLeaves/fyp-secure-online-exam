@@ -12,9 +12,7 @@ import { useEffect } from "react";
 
 const AdminMessagesPage = () => {
   const [showModal, setShowModal] = useState(false);
-  useEffect(() => {
-    console.log("showModal in parent", showModal);
-  }, [showModal]);
+
   return (
     <ThemeProvider theme={theme}>
       <AdminMessagesBigContainer>
@@ -22,6 +20,10 @@ const AdminMessagesPage = () => {
           handleModalClose={() => {
             setShowModal(false);
           }}
+          modalType="action"
+          actionButtonText="Delete"
+          actionButtonColor={theme.statusError}
+          actionButtonClick={() => {}}
           show={showModal}
           modalTitle="Delete User"
           modalContent="Are you sure you want to delete this user? This action cannot be undone."

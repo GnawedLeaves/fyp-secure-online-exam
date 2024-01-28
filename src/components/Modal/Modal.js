@@ -1,9 +1,30 @@
 import { useRef } from "react";
 import { useEffect } from "react";
-import { ModalContainer, ModalContent, ModalTitle } from "./ModalStyles";
+import {
+  ModalButtonContainer,
+  ModalContainer,
+  ModalContent,
+  ModalTitle,
+} from "./ModalStyles";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import Button from "../Button/Button";
+
+//Props:
+{
+  /* <Modal
+handleModalClose={() => {
+  setShowModal(false);
+}}
+modalType="action"
+actionButtonText="Delete"
+actionButtonColor={theme.statusError}
+actionButtonClick={() => {}}
+show={showModal}
+modalTitle="Delete User"
+modalContent="Are you sure you want to delete this user? This action cannot be undone."
+/> */
+}
 
 //Usage:
 //1. In the parent element just send a boolean prop (true/false), true will open the modal, false will close it.
@@ -36,12 +57,31 @@ const Modal = (props) => {
   const getModalType = () => {
     switch (modalType) {
       case "action":
-        return <></>;
+        return (
+          <ModalButtonContainer>
+            <Button
+              filled={true}
+              filledColor={props.actionButtonColor}
+              defaultColor={props.actionButtonColor}
+              onClick={() => {
+                closeModal();
+                props.actionButtonClick();
+              }}
+            >
+              {props.actionButtonText ? props.actionButtonText : "OK"}
+            </Button>
+            <Button
+              onClick={() => {
+                closeModal();
+              }}
+            >
+              {props.closingButtonText ? props.closingButtonText : "Cancel"}
+            </Button>
+          </ModalButtonContainer>
+        );
       default:
         return (
-          <>
-            <ModalTitle>{props.modalTitle}</ModalTitle>
-            <ModalContent>{props.modalContent}</ModalContent>
+          <ModalButtonContainer>
             <Button
               onClick={() => {
                 closeModal();
@@ -49,7 +89,7 @@ const Modal = (props) => {
             >
               {props.closingButtonText ? props.closingButtonText : "OK"}
             </Button>
-          </>
+          </ModalButtonContainer>
         );
     }
   };
@@ -57,6 +97,8 @@ const Modal = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <ModalContainer display={props.show} ref={modalRef}>
+        <ModalTitle>{props.modalTitle}</ModalTitle>
+        <ModalContent>{props.modalContent}</ModalContent>
         {getModalType()}
       </ModalContainer>
     </ThemeProvider>

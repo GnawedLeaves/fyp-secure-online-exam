@@ -41,6 +41,8 @@ export const AdminPersonnelHeaderContainer = styled.div`
 export const AdminPersonnelHeader = styled.div`
   width: ${(props) => (props.width ? props.width : "10%")};
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
 `;
 
 export const AdminPersonnelSummaryContainer = styled(
