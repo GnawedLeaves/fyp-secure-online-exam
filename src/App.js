@@ -27,7 +27,7 @@ import ContactAdmin from "./pages/Instructor/ContactAdmin";
 import InstructorSettings from "./pages/Instructor/InstructorSettings";
 import InstructorPage from "./pages/Instructor/InstructorPage";
 import InstructorLibrary from "./pages/Instructor/InstructorLibrary";
-
+import NewPersonnelPage from "./pages/admin/adminPersonnel/NewPersonnelPage";
 
 export const adminRoutes = [
   {
@@ -59,6 +59,11 @@ export const adminRoutes = [
     title: "Admin Exam Details",
     link: "/admin/exam/:examid",
     element: <AdminExamDetailsPage />,
+  },
+  {
+    title: "Admin New Personnel",
+    link: "/admin/personnel/newuser",
+    element: <NewPersonnelPage />,
   },
 ];
 

@@ -29,10 +29,12 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
 import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
+import { useNavigate } from "react-router-dom";
 
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
   const [filtersSelected, setFiltersSelected] = useState(["All"]);
+  const navigate = useNavigate();
 
   const handleFilterBarData = (data) => {
     const lowerCaseFilters = data.map((filter) => filter.toLowerCase());
@@ -125,9 +127,6 @@ const AdminPersonnelPage = () => {
   ]);
 
   const [userData, setUserData] = useState([]);
-  useEffect(() => {
-    console.log("userData", userData);
-  }, [userData]);
 
   const fetchData = async () => {
     try {
@@ -168,7 +167,14 @@ const AdminPersonnelPage = () => {
               handleFilterBarData={handleFilterBarData}
               buttonFilledColor={theme.primary}
             />
-            <Button filled={true}>Add User +</Button>
+            <Button
+              filled={true}
+              onClick={() => {
+                navigate("/admin/personnel/newuser");
+              }}
+            >
+              Add User +
+            </Button>
           </AdminPersonnelNavbarContainer>
 
           <AdminPersonnelTable>
