@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 //will sort your array based on one of the objects's properties
 
 //TODO: sort by date
@@ -28,4 +29,18 @@ export const ascendingAlphabeticalSort = (inputArray, objProp) => {
 export const descendingAlphabeticalSort = (inputArray, objProp) => {
   const sortedArray = ascendingAlphabeticalSort(inputArray, objProp);
   return sortedArray.reverse();
+};
+
+//sort array items based on timestamp
+
+export const sortByFirebaseTimestamp = (arrayOfObjects, key) => {
+  return arrayOfObjects
+    .slice()
+    .sort((a, b) => {
+      const timestampA = a[key] instanceof Timestamp ? a[key].toMillis() : 0;
+      const timestampB = b[key] instanceof Timestamp ? b[key].toMillis() : 0;
+
+      return timestampB - timestampA;
+    })
+    .reverse();
 };

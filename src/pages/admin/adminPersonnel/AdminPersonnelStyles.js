@@ -63,3 +63,36 @@ export const AdminPersonnelSummaryButtonsContainer = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
+export const AdminNewPersonnelContainer = styled(AdminPersonnelContainer)``;
+
+export const AdminNewPersonnelTitle = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+`;
+
+export const AdminNewButtonsContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const AdminNewFieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 20rem;
+  margin: 2rem 0;
+`;
+export const AdminNewFieldTitle = styled.div``;
+export const AdminNewField = styled.input`
+  font-family: "Inter", sans-serif;
+  border: 2px solid ${(props) => props.theme.text};
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 2rem;
+`;
+
+export const ToggleButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+`;
