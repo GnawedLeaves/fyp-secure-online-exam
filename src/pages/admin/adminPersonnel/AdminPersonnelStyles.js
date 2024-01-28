@@ -85,7 +85,7 @@ export const AdminNewFieldContainer = styled.div`
 export const AdminNewFieldTitle = styled.div``;
 export const AdminNewField = styled.input`
   font-family: "Inter", sans-serif;
-  border-color: ${(props) => props.theme.text};
+  border: 2px solid ${(props) => props.theme.text};
   padding: 0.5rem 1rem;
   font-size: 1.1rem;
   border-radius: 2rem;

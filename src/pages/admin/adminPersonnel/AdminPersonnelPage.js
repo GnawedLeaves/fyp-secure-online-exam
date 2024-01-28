@@ -187,19 +187,19 @@ const AdminPersonnelPage = () => {
                       size="1.5rem"
                       downArrowFunction={() => {
                         const sortedArray = ascendingAlphabeticalSort(
-                          dummyUserData,
+                          userData,
                           header.title.toLowerCase()
                         );
 
-                        setDummyUserData([...sortedArray]);
+                        setUserData([...sortedArray]);
                       }}
                       upArrowFunction={() => {
                         const sortedArray = descendingAlphabeticalSort(
-                          dummyUserData,
+                          userData,
                           header.title.toLowerCase()
                         );
 
-                        setDummyUserData([...sortedArray]);
+                        setUserData([...sortedArray]);
                       }}
                     />
                   </AdminPersonnelHeader>
