@@ -17,17 +17,17 @@ const AdminMessagesPage = () => {
     <ThemeProvider theme={theme}>
       <AdminMessagesBigContainer>
         <Modal
+          show={showModal}
           handleModalClose={() => {
             setShowModal(false);
           }}
-          modalType="action"
-          actionButtonText="Delete"
-          actionButtonColor={theme.statusError}
-          actionButtonClick={() => {}}
-          show={showModal}
-          modalTitle="Delete User"
-          modalContent="Are you sure you want to delete this user? This action cannot be undone."
-        />
+          modalType="empty"
+          showCross={true}
+        >
+          <div style={{ width: "20rem", background: "red", height: "20rem" }}>
+            content goes here
+          </div>
+        </Modal>
 
         <Navbar linksArray={adminNavbarItems} />
         <AdminMessagesContainer>

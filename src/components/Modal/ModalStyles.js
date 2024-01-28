@@ -28,3 +28,18 @@ export const ModalButtonContainer = styled.div`
   gap: 1rem;
   justify-content: center;
 `;
+
+export const EmptyModalContainer = styled.dialog`
+  display: ${(props) => (props.display ? "" : "none")};
+  border-radius: 1rem;
+  border: none;
+  min-height: 10rem;
+  min-width: 10rem;
+  padding: 1rem;
+`;
+export const EmptyModalCloseContainer = styled.div`
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  display: ${(props) => (props.display ? "flex" : "none")};
+`;
