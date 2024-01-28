@@ -25,6 +25,10 @@ import {
   descendingAlphabeticalSort,
 } from "../../../functions/sortArray";
 import ToggleArrow from "../../../components/ToggleArrow/ToggleArrow";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../backend/firebase/firebase";
+import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
+import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
 
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
@@ -42,13 +46,17 @@ const AdminPersonnelPage = () => {
   };
 
   const headers = [
-    {
-      title: "ID",
-      width: "10%",
-    },
+    // {
+    //   title: "ID",
+    //   width: "10%",
+    // },
     {
       title: "Name",
       width: "25%",
+    },
+    {
+      title: "Type",
+      width: "10%",
     },
     {
       title: "Course",
@@ -58,13 +66,10 @@ const AdminPersonnelPage = () => {
       title: "Year",
       width: "10%",
     },
-    {
-      title: "Type",
-      width: "10%",
-    },
+
     {
       title: "Date Added",
-      width: "20%",
+      width: "25%",
     },
   ];
 
@@ -119,11 +124,23 @@ const AdminPersonnelPage = () => {
     },
   ]);
 
-  //todo: sort based on name and year etc: https://chat.openai.com/c/97c7668d-6720-4341-8d1a-52a396cbca8e
+  const [userData, setUserData] = useState([]);
+  useEffect(() => {
+    console.log("userData", userData);
+  }, [userData]);
+
+  const fetchData = async () => {
+    try {
+      const productData = await getAllDocuments("users");
+      setUserData(productData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   useEffect(() => {
-    console.log("dummyUserData", dummyUserData);
-  }, [dummyUserData]);
+    fetchData();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -142,6 +159,7 @@ const AdminPersonnelPage = () => {
           modalTitle="Delete User"
           modalContent="Are you sure you want to delete this user? This action cannot be undone."
         />
+
         <Navbar linksArray={adminNavbarItems} />
         <AdminPersonnelContainer>
           <AdminPersonnelNavbarContainer>
@@ -150,7 +168,7 @@ const AdminPersonnelPage = () => {
               handleFilterBarData={handleFilterBarData}
               buttonFilledColor={theme.primary}
             />
-            <Button filled={true}>Add New +</Button>
+            <Button filled={true}>Add User +</Button>
           </AdminPersonnelNavbarContainer>
 
           <AdminPersonnelTable>
@@ -182,41 +200,53 @@ const AdminPersonnelPage = () => {
                 );
               })}
             </AdminPersonnelHeaderContainer>
-            {dummyUserData.map((user, index) => {
-              return (
-                <AdminPersonnelSummaryContainer
-                  key={index}
-                  display={
-                    filtersSelected.includes("all") ||
-                    filtersSelected.includes(user.type)
-                  }
-                >
-                  <AdminPersonnelSummary>{user.id}</AdminPersonnelSummary>
-                  <AdminPersonnelSummary width="25%">
-                    {user.name}
-                  </AdminPersonnelSummary>
-                  <AdminPersonnelSummary>{user.course}</AdminPersonnelSummary>
-                  <AdminPersonnelSummary>{user.year}</AdminPersonnelSummary>
-                  <AdminPersonnelSummary>{user.type}</AdminPersonnelSummary>
-                  <AdminPersonnelSummary>
-                    {user.dateAdded}
-                  </AdminPersonnelSummary>
-                  <AdminPersonnelSummaryButtonsContainer>
-                    <Button filledColor={theme.primary}>Details</Button>
-                    <Button
-                      filled={true}
-                      defaultColor={theme.statusError}
-                      filledColor={theme.statusError}
-                      onClick={() => {
-                        setShowDeleteModal(true);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </AdminPersonnelSummaryButtonsContainer>
-                </AdminPersonnelSummaryContainer>
-              );
-            })}
+            {userData ? (
+              userData.map((user, index) => {
+                return (
+                  <AdminPersonnelSummaryContainer
+                    key={index}
+                    display={
+                      filtersSelected.includes("all") ||
+                      filtersSelected.includes(user.type)
+                    }
+                  >
+                    {/* <AdminPersonnelSummary>{user.id}</AdminPersonnelSummary> */}
+                    <AdminPersonnelSummary width="25%">
+                      {user.name}
+                    </AdminPersonnelSummary>
+                    <AdminPersonnelSummary>
+                      {user.type.charAt(0).toUpperCase() + user.type.slice(1)}
+                    </AdminPersonnelSummary>
+                    <AdminPersonnelSummary>
+                      {user.course ? user.course : "-"}
+                    </AdminPersonnelSummary>
+                    <AdminPersonnelSummary>
+                      {" "}
+                      {user.year ? user.year : "-"}
+                    </AdminPersonnelSummary>
+
+                    <AdminPersonnelSummary width="25%">
+                      {user.dateCreated}
+                    </AdminPersonnelSummary>
+                    <AdminPersonnelSummaryButtonsContainer>
+                      <Button filledColor={theme.primary}>Details</Button>
+                      <Button
+                        filled={true}
+                        defaultColor={theme.statusError}
+                        filledColor={theme.statusError}
+                        onClick={() => {
+                          setShowDeleteModal(true);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </AdminPersonnelSummaryButtonsContainer>
+                  </AdminPersonnelSummaryContainer>
+                );
+              })
+            ) : (
+              <>Loading User Data...</>
+            )}
           </AdminPersonnelTable>
         </AdminPersonnelContainer>
       </AdminPersonnelBigContainer>
