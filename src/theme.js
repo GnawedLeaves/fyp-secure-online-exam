@@ -8,6 +8,7 @@ export const theme = {
   statusGood: "#36D59D",
   statusError: "#FF8080",
   statusIntermediate: "#FFCF96",
+  grey: "#D3D3D3",
 };
 
 export const darktheme = {
@@ -20,4 +21,5 @@ export const darktheme = {
   statusGood: "#00CF86",
   statusError: "#FF8080",
   statusIntermediate: "#FFCF96",
+  grey: "#D3D3D3",
 };
