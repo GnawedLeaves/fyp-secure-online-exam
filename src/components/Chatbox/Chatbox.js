@@ -94,8 +94,8 @@ const Chatbox = (props) => {
         // } catch (e) {
         //   console.log("Error sending message to message_recipient: ", e);
         // }
+        // getAllMessages(userId, otherPersonId);
         setMessageContent("");
-        getAllMessages(userId, otherPersonId);
       } catch (e) {
         console.log("Error sending message: ", e);
       }
