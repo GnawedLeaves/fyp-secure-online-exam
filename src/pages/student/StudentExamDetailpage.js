@@ -33,6 +33,7 @@ import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
 
 const StudentExamDetailpage = () => {
   const courseId = "IE4111";
+  const examDisplayRef = useRef(null);
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const examsRef = collection(db, "exams");
@@ -55,6 +56,8 @@ const StudentExamDetailpage = () => {
         courseId: doc.courseId,
         ...doc.data(),
       }));
+      console.log("examData",examsData);
+      setExams(examsData);
 
       return examsData;
     } catch (error) {
@@ -64,22 +67,20 @@ const StudentExamDetailpage = () => {
   };
 
   //updates the data array whenever the database changes
-  useEffect(() => {
-    const unsubscribe = onSnapshot(examsRef, () => {
-      getExamDetail(courseId);
-    });
 
-    // Clean up the listener when the component unmounts
-    return () => {
-      unsubscribe();
-    };
+
+  useEffect(() => {
+    getExamDetail(courseId);
   }, []);
+
+
+  
 
   return (
     <ThemeProvider theme={theme}>
       <StudentHomePageContainer>
         <Navbar linksArray={studentNavbarItems} />
-        <StudentExamDetailContainer>
+        <StudentExamDetailContainer ref={examDisplayRef}>
           <PageTitle>{exams[0]?.courseId} {exams[0]?.name}</PageTitle>
           <SectionContainer>
             <PageSubtitle>Section Description</PageSubtitle>
