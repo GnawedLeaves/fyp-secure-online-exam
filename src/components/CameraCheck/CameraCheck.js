@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Camera,
   CameraText,
   ProgressBarContainer,
   ProgressBarFill,
+  ProgressBarContainer,
+  ProgressBarFill,
 } from "./CameraCheckStyles";
-import Button from '../Button/Button';
+import Button from "../Button/Button";
+
+import Button from "../Button/Button";
 
 const CameraCheck = () => {
   const [cameraQuality, setCameraQuality] = useState(null);
@@ -13,7 +17,6 @@ const CameraCheck = () => {
 
   const checkCameraQuality = async () => {
     try {
-
       // Request access to the user's camera
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
@@ -29,14 +32,17 @@ const CameraCheck = () => {
       const settings = videoTrack.getSettings();
 
       // Assess camera quality based on resolution
-      const resolutionScore = calculateResolutionScore(settings.width, settings.height);
+      const resolutionScore = calculateResolutionScore(
+        settings.width,
+        settings.height
+      );
 
       setCameraQuality(resolutionScore);
 
       // Stop the video stream
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
-      console.error('Error checking camera quality:', error);
+      console.error("Error checking camera quality:", error);
       setIsCameraDetected(false);
     }
   };
@@ -57,26 +63,27 @@ const CameraCheck = () => {
 
   const handleRetry = () => {
     setIsCameraDetected(true);
-  setCameraQuality(null);
+    setCameraQuality(null);
   };
 
   return (
     <Camera>
-      {!cameraQuality  && (
+      {!cameraQuality && (
         <Button onClick={checkCameraQuality}>Check Camera</Button>
       )}
       {isCameraDetected && cameraQuality !== null && (
         <>
-          <CameraText>Camera Quality: {cameraQuality ? `${cameraQuality.toFixed(2)}%` : 'Calculating...'}</CameraText>
+          <CameraText>
+            Camera Quality:{" "}
+            {cameraQuality ? `${cameraQuality.toFixed(2)}%` : "Calculating..."}
+          </CameraText>
           <ProgressBarContainer>
             <ProgressBarFill value={cameraQuality} max="100" />
           </ProgressBarContainer>
           <Button onClick={handleRetry}>Close</Button>
         </>
       )}
-      {!isCameraDetected && (
-        <CameraText>No Camera Detected</CameraText>
-      )}
+      {!isCameraDetected && <CameraText>No Camera Detected</CameraText>}
     </Camera>
   );
 };

@@ -16,6 +16,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import Button from "../../components/Button/Button";
 import { theme } from "../../theme";
+import { theme } from "../../theme";
 import { studentNavbarItems } from "./StudentHomepage";
 import ExamDetailList from "../../components/student/ExamDetailList/ExamDetailList";
 import { useNavigate } from "react-router-dom";
@@ -85,7 +86,7 @@ const StudentExamDetailpage = () => {
     <ThemeProvider theme={theme}>
       <StudentHomePageContainer>
         <Navbar linksArray={studentNavbarItems} />
-        <StudentExamDetailContainer>
+        <StudentExamDetailContainer ref={examDisplayRef}>
           <PageTitle>
             {exams[0]?.courseId} {exams[0]?.name}
           </PageTitle>
