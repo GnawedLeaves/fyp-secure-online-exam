@@ -2,7 +2,9 @@
 import styled from "styled-components";
 
 export const StudentHomePageContainer = styled.div`
-  display: flex;
+width: 100%;  
+display: flex;
+  position:relative;
 `;
 export const StudentNavbarContentContainer = styled.div`
   width: 100%;
@@ -11,6 +13,7 @@ export const StudentNavbarContentContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  
 `;
 export const PageTitle = styled.div`
   font-size 4rem;
@@ -56,6 +59,7 @@ export const StudentExamDetailContainer = styled.div`
   flex-direction: column;
   align-items: left;
   gap: 2rem;
+  psosition:relative;
 `;
 export const PageSubtitle = styled.div`
   font-size: 2rem;
@@ -171,6 +175,33 @@ export const StudentBugReportContainer = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
+
+//Profilepage
+export const ProfileContainer = styled.div`
+width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;
+export const StudentProfileSection = styled.div`
+  border: 2px solid #000; 
+  border-radius: 10px; 
+  padding: 50px;
+`;
+export const StudentResultSection = styled.div`
+`;
+export const DataSection = styled.div`
+  margin: 0 0 20px 20px;
+`;
+
+
+
+
+
+
+
+
 
 
 export const PageTitleDesc = styled.div`

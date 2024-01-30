@@ -1,43 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Sound,
-  SoundText
+  SoundCheckContainer,
+  SoundText,
+  ButtonSection,
+  OutputText,
 } from "./SoundCheckStyles";
+import Button from '../Button/Button';
+import { theme } from '../../theme';
 
+const audioPath = process.env.PUBLIC_URL + '/sample-test-sound.mp3';
 
 const SoundCheck = () => {
-  const [isSoundOutput, setIsSoundOutput] = useState(false);
+  const [audio] = useState(new Audio(audioPath));
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [soundOutput, setSoundOutput] = useState(false);
+  const [yesClicked, setYesClicked] = useState(false);
+
+  const playAudio = () => {
+    setYesClicked(false); // Reset yesClicked when Play Sample Audio is clicked
+    audio.play();
+    setIsPlaying(true);
+  };
+
+  const stopAudio = useCallback(() => {
+    audio.pause();
+    audio.currentTime = 0;
+    setIsPlaying(false);
+    setSoundOutput(true);
+  }, [audio]);
+
+  const handleRetry = () => {
+    playAudio(); // Call playAudio to replay the music
+    setSoundOutput(false); // Reset the sound output status
+    setYesClicked(false); // Reset the Yes button click status
+  };
+
+  const handleYesClick = () => {
+    setYesClicked(true);
+    stopAudio();
+  };
 
   useEffect(() => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Create an audio buffer (1 second of silence)
-    const buffer = audioContext.createBuffer(1, audioContext.sampleRate, audioContext.sampleRate);
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-
-    // Connect to the audio context destination (speakers)
-    source.connect(audioContext.destination);
-
-    // Play the audio buffer
-    source.start();
-
-    // Set a timeout to check if sound was actually played
-    const timeout = setTimeout(() => {
-      setIsSoundOutput(true);
-    }, 1000); // Adjust the timeout duration as needed
-
+    // Cleanup function to stop audio when the component is unmounted
     return () => {
-      clearTimeout(timeout);
-      // Close the audio context when the component is unmounted
-      audioContext.close();
+      stopAudio();
     };
-  }, []);
+  }, [stopAudio]);
 
   return (
-    <Sound>
-      <SoundText>{isSoundOutput ? 'Sound Output Detected' : 'No Sound Output'}</SoundText>
-    </Sound>
+    <SoundCheckContainer>
+      {!isPlaying && (
+        <Button onClick={playAudio}>Check Audio Output</Button>
+      )}
+      {isPlaying && !yesClicked && (
+        <>
+          <SoundText>Can you hear the audio clearly?</SoundText>
+          <ButtonSection>
+            <Button defaultColor={theme.statusGood} filledColor={theme.statusGood} filled={false} onClick={handleYesClick}>Yes</Button>
+            <Button defaultColor={theme.statusError} filledColor={theme.statusError} filled={false} onClick={handleRetry}>Retry</Button>
+          </ButtonSection>
+        </>
+      )}
+      {yesClicked && soundOutput && <OutputText>Your sound output is functioning well</OutputText>}
+    </SoundCheckContainer>
   );
 };
 

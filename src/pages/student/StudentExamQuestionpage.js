@@ -38,6 +38,7 @@ const StudentExamQuestionpage = () => {
   const ExamTimeArray = [
     { 
       examid: "1", 
+      examName: "IE4717 Web Application & Designa", 
       endTime: "2024-01-27 23:30:00 ", 
     },
   ];
@@ -79,7 +80,7 @@ const StudentExamQuestionpage = () => {
         <StudentHomePageContainer>
           <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
-            <PageTitle>IE4717 Web Application & Design</PageTitle>
+            <PageTitle>{ExamTimeArray[0].examName}</PageTitle>
             <QuestionContainer>
               <LeftContainer>
                 <QuestionSection>
@@ -143,5 +144,3 @@ const StudentExamQuestionpage = () => {
 };
 
 export default StudentExamQuestionpage;
-
-
