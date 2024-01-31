@@ -70,12 +70,12 @@ export const adminRoutes = [
 export const studentRoutes = [
   {
     title: "Student Home",
-    link: "/student/dashboard",
+    link: "/student/home",
     element: <StudentHomepage />,
   },
   {
     title: "Student System Check",
-    link: "/student/systemcheck",
+    link: "/student/home/system_check",
     element: <StudentSystemCheckPage />,
   },
   {
@@ -95,17 +95,17 @@ export const studentRoutes = [
   },
   {
     title: "Student Exam Question",
-    link: "/student/exam/question",
+    link: "/student/exam/:examId/:questionNo",
     element: <StudentExamQuestionPage />,
   },
   {
     title: "Student Exam Review",
-    link: "/student/exam/review",
+    link: "/student/exam/:examId/review",
     element: <StudentExamReviewpage />,
   },
   {
     title: "Student Face Registration",
-    link: "/student/face",
+    link: "/student/home/face_registration",
     element: <StudentFaceRegistrationpage />,
   },
   {

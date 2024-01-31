@@ -24,7 +24,7 @@ const Loginpage = () => {
   const changePage = () => {
     switch (domainSelected) {
       case "Student":
-        navigate("/student/dashboard");
+        navigate("/student/home");
         break;
       case "Teacher":
         navigate("/Instructor/InstructorPage");

@@ -18,6 +18,7 @@ import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import ExamDetailList from "../../components/student/ExamDetailList/ExamDetailList";
 import { useNavigate } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import { useRef } from "react"; 
 import {
   Timestamp,
@@ -32,15 +33,16 @@ import { db } from "../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
 
 const StudentExamDetailpage = () => {
-  const courseId = "IE4111";
+  const { examId } = useParams();
+  const courseId = examId;
   const examDisplayRef = useRef(null);
   const [exams, setExams] = useState([]);
-  const [loading, setLoading] = useState(true);
   const examsRef = collection(db, "exams");
   const navigate = useNavigate();
+  
 
   const startexam = () => {
-    navigate("/student/exam/question");
+    navigate("/student/exam/",examId,"/1");
   };
 
   const getExamDetail = async (courseId) => {
@@ -73,7 +75,7 @@ const StudentExamDetailpage = () => {
     getExamDetail(courseId);
   }, []);
 
-
+  
   
 
   return (
