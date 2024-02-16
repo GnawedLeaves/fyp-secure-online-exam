@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StudentHomePageContainer,
   StudentNavbarContentContainer,
@@ -18,58 +18,157 @@ import { studentNavbarItems } from "./StudentHomepage";
 import Examlist from "../../components/Examlist/Examlist";
 import Pastexamlist from "../../components/Examlist/Pastexamlist";
 import Upcomingexamlist from "../../components/Examlist/Upcomingexamlist";
+import { useRef } from "react"; 
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore"; 
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../backend/firebase/firebase";
+import { storage } from '../../backend/firebase/firebase';
+import { ref, getDownloadURL } from "firebase/storage";
+const usersRef = collection(db, "users");
+const examsRef = collection(db, "exams");
+
+export const getExam = async (studentId) => {
+  try {
+    // Check if studentId is defined
+    if (!studentId) {
+      console.error("Error: studentId is not defined.");
+      return [];
+    }
+
+    // Create a query to get exams for the specific studentId
+    const examsQuery = query(usersRef,where("id","==", studentId));
+
+    // Get the documents based on the query
+    const querySnapshot = await getDocs(examsQuery);
+
+    // Extract the data from the documents
+    const examsData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log("examData", examsData);
+    return examsData;
+  } catch (error) {
+    console.error("Error getting exam list:", error);
+    return [];
+  }
+};
+
+export function formatDateString(date) {
+  const options = { day: '2-digit', month: 'short', year: 'numeric' };
+
+  const formattedDate = date.toLocaleDateString('en-US', options);
+
+  // Extract day, month, and year
+  const [_, month, day, year] = formattedDate.match(/(\w+) (\d+), (\d+)/);
+
+  // Construct the formatted date in the desired format
+  return `${day} ${month} ${year}`;
+}
 
 const StudentExampage = () => {
-  const examList = [
-    {
-      examId: 1,
-      examName: "IE4171: Web Design",
-      examDate: "12th Feb 2024",
-      examStartTime: "10:00:00 am",
-      examEndTime: "02:00:00 pm",
-      examDuration: "4 hrs",
-      examStatus: "Submitted",
-      examAction: "Review",
-    },
-    {
-      examId: "IE4111",
-      examName: "IE4111 Web Application & Design A",
-      examDate: "12th Feb 2024",
-      examStartTime: "10:00:00 am",
-      examEndTime: "02:00:00 pm",
-      examDuration: "2 hrs",
-      examStatus: "Not submitted yet ",
-      examAction: "Start",
-    },
-  ];
-  const examUpcomingList = [
-    {
-      examId: 21,
-      examName: "IE4172: Web fwfwf5y5yh thdrger gerger",
-      examDate: "14th Feb 2024",
-      examStartTime: "10:00:00 am",
-      examEndTime: "02:00:00 pm",
-      examDuration: "4 hrs",
-    },
-  ];
-  const examPastList = [
-    {
-      examId: 31,
-      examName: "IE4171: Web Design",
-      examEndDate: "12th Jan 2024",
-      examSubmissionTime: "10:20:45 am",
-      examStatus: "Submitted",
-      examResult: "Review",
-    },
-    {
-      examId: 32,
-      examName: "IE4172: Web fwfwf5y5yh thdrger ger",
-      examEndDate: "12th Jan 2024",
-      examSubmissionTime: "09:45:59",
-      examStatus: "Graded",
-      examResult: "Review",
-    },
-  ];
+  const studentId = "1221";
+  const examDisplayRef = useRef(null);
+  const [pastExams, setPastExams] = useState([]);
+  const [presentExams, setPresentExams] = useState([]);
+  const [futureExams, setFutureExams] = useState([]);
+
+
+  const getCurrentTime = () => {
+    // Get the current time as a Firestore Timestamp
+    return new Date(); 
+  };
+
+  const getExamDetails = async (examsData, studentId) => {
+    try {
+      const pastExams = [];
+      const presentExams = [];
+      const futureExams = [];
+  
+      if (!examsData || examsData.length === 0 || !examsData[0].exams) {
+        console.warn(`No exams found for student with ID ${studentId}.`);
+        return { pastExams, presentExams, futureExams };
+      }
+  
+      const courseIdArray = examsData[0].exams;
+  
+      for (const courseId of courseIdArray) {
+        // Perform a query to get the document with matching courseId
+        const examsQuery = query(examsRef, where("courseId", "==", courseId));
+  
+        const querySnapshot = await getDocs(examsQuery);
+  
+        // Check if there's a matching document
+        if (!querySnapshot.empty) {
+          const examDoc = querySnapshot.docs[0];
+  
+          // Retrieve the start and end times of the exam
+          const startTime = examDoc.data().startTime?.toDate();
+          const endTime = examDoc.data().endTime?.toDate();
+  
+          // Classify the exam based on the date
+          const currentTime = getCurrentTime();
+
+          if (currentTime < startTime) {
+            futureExams.push({
+              courseId: examDoc.courseId,
+              id: examDoc.id,
+              ...examDoc.data(),
+            });
+          } else if (currentTime >= startTime && currentTime <= endTime) {
+            presentExams.push({
+              courseId: examDoc.courseId,
+              id: examDoc.id,
+              ...examDoc.data(),
+            });
+          } else {
+            pastExams.push({
+              courseId: examDoc.courseId,
+              id: examDoc.id,
+              ...examDoc.data(),
+            });
+          }
+        } else {
+          console.warn(`Exam with courseId ${courseId} not found.`);
+        }
+      }
+  
+      console.log("Past exams:", pastExams);
+      console.log("Present exams:", presentExams);
+      console.log("Future exams:", futureExams);
+  
+      return { pastExams, presentExams, futureExams };
+    } catch (error) {
+      console.error("Error getting detailed exam list:", error);
+      return { pastExams: [], presentExams: [], futureExams: [] };
+    }
+  };
+
+  const fetchExamData = async () => {
+    try {
+      const examsData = await getExam(studentId);
+      const { pastExams, presentExams, futureExams } = await getExamDetails(examsData, studentId);
+
+      setPastExams(pastExams);
+      setPresentExams(presentExams);
+      setFutureExams(futureExams);
+    } catch (error) {
+      console.error("Error fetching exam data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchExamData();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -79,7 +178,7 @@ const StudentExampage = () => {
           <PageTitle>Exam</PageTitle>
           <ExamTableContainer>
             <TableTitle>Open</TableTitle>
-            {examList.length > 0 ? (
+            {presentExams.length > 0 ? (
               <OpenExams>
                 <ExamlistContainer>
                   <ExamDetail style={{ width: "20%" }}>Name</ExamDetail>
@@ -90,18 +189,33 @@ const StudentExampage = () => {
                   <ExamDetail style={{ width: "18%" }}>Status</ExamDetail>
                   <ExamDetail style={{ width: "10%" }}>Action</ExamDetail>
                 </ExamlistContainer>
-                {examList.map((exam) => (
-                  <Examlist
-                    examId={exam.examId}
-                    examName={exam.examName}
-                    examDate={exam.examDate}
-                    examStartTime={exam.examStartTime}
-                    examEndTime={exam.examEndTime}
-                    examDuration={exam.examDuration}
-                    examStatus={exam.examStatus}
-                    examAction={exam.examAction}
-                  />
-                ))}
+                {presentExams.length > 0 ? (
+                  presentExams.map((exam) => {
+                    const studentInfo = exam.students && Object.values(exam.students).find(student => student.id === studentId);
+
+                    // Check if the student with ID '1221' exists for the current exam
+                    if (!studentInfo) {
+                      console.warn(`Student with ID ${studentId} not found for exam with courseId ${exam.courseId}.`);
+                      return null; // Skip rendering this exam
+                    }
+                    return (
+                      <Examlist
+                        key={exam.id}
+                        examId={exam.courseId}
+                        examName={exam.name}
+                        examDate={exam.startTime ? formatDateString(exam.startTime.toDate()) : ''}
+                        examStartTime={exam.startTime ? exam.startTime.toDate().toLocaleTimeString() : ''}
+                        examEndTime={exam.endTime ? exam.endTime.toDate().toLocaleTimeString() : ''}
+                        examDuration={exam.duration}
+                        examStatus={studentInfo ? studentInfo.status : 'Not available'}
+                      />
+                    );
+                  })
+                ) : (
+                  <TableDescription>
+                    Loading exams... {/* Add a loading indicator or message */}
+                  </TableDescription>
+                )}
               </OpenExams>
             ) : (
               <TableDescription>
@@ -111,7 +225,7 @@ const StudentExampage = () => {
           </ExamTableContainer>
           <ExamTableContainer>
             <TableTitle>Upcoming</TableTitle>
-            {examUpcomingList.length > 0 ? (
+            {futureExams.length > 0 ? (
               <OpenExams>
                 <ExamlistContainer>
                   <ExamDetail style={{ width: "20%" }}>Name</ExamDetail>
@@ -120,13 +234,14 @@ const StudentExampage = () => {
                   <ExamDetail style={{ width: "20%" }}>End Time</ExamDetail>
                   <ExamDetail style={{ width: "20%" }}>Duration</ExamDetail>
                 </ExamlistContainer>
-                {examUpcomingList.map((upcomingexam) => (
+                {futureExams.map((upcomingexam) => (
                   <Upcomingexamlist
-                    examName={upcomingexam.examName}
-                    examDate={upcomingexam.examDate}
-                    examStartTime={upcomingexam.examStartTime}
-                    examEndTime={upcomingexam.examEndTime}
-                    examDuration={upcomingexam.examDuration}
+                  examId={upcomingexam.courseId}
+                  examName={upcomingexam.name}
+                  examDate={upcomingexam.startTime ? formatDateString(upcomingexam.startTime.toDate()) : ''}
+                  examStartTime={upcomingexam.startTime ? upcomingexam.startTime.toDate().toLocaleTimeString() : ''}
+                  examEndTime={upcomingexam.endTime ? upcomingexam.endTime.toDate().toLocaleTimeString() : ''}
+                  examDuration={upcomingexam.duration}
                   />
                 ))}
               </OpenExams>
@@ -138,7 +253,7 @@ const StudentExampage = () => {
           </ExamTableContainer>
           <ExamTableContainer>
             <TableTitle>Past</TableTitle>
-            {examPastList.length > 0 ? (
+            {pastExams.length > 0 ? (
               <OpenExams>
                 <ExamlistContainer>
                   <ExamDetail style={{ width: "20%" }}>Name</ExamDetail>
@@ -149,20 +264,35 @@ const StudentExampage = () => {
                   <ExamDetail style={{ width: "18%" }}>Status</ExamDetail>
                   <ExamDetail style={{ width: "10%" }}>Result</ExamDetail>
                 </ExamlistContainer>
-                {examPastList.map((closedexam) => (
-                  <Pastexamlist
-                    examId={closedexam.examId}
-                    examName={closedexam.examName}
-                    examEndDate={closedexam.examEndDate}
-                    examSubmissionTime={closedexam.examSubmissionTime}
-                    examStatus={closedexam.examStatus}
-                    examResult={closedexam.examResult}
-                  />
-                ))}
+                {pastExams.length > 0 ? (
+                  pastExams.map((closedexam) => {
+                    const studentInfo = closedexam.students && Object.values(closedexam.students).find(student => student.id === studentId);
+
+                    // Check if the student with ID '1221' exists for the current exam
+                    if (!studentInfo) {
+                      console.warn(`Student with ID ${studentId} not found for exam with courseId ${closedexam.courseId}.`);
+                      return null; // Skip rendering this exam
+                    }
+                    return (
+                      <Pastexamlist
+                        examId={closedexam.courseId}
+                        examName={closedexam.name}
+                        examEndDate={closedexam.endTime ? formatDateString(closedexam.endTime.toDate()) : ''}
+                        examSubmissionTime={studentInfo && studentInfo.submissionTime ? studentInfo.submissionTime.toDate().toLocaleTimeString() : ''}
+                        examStatus={studentInfo ? studentInfo.status : 'Not available'}
+                        
+                      />
+                    );
+                  })
+                ) : (
+                  <TableDescription>
+                    Loading exams... {/* Add a loading indicator or message */}
+                  </TableDescription>
+                )}
               </OpenExams>
             ) : (
               <TableDescription>
-                You do not currently have any past exams.{" "}
+                You do not currently have any open exams.{" "}
               </TableDescription>
             )}
           </ExamTableContainer>

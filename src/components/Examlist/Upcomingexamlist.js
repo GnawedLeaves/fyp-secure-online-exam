@@ -11,7 +11,7 @@ const upcomingexamlist = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <ExamlistContainer>
-        <ExamDetail style={{ width: '20%'}}>{props.examName}</ExamDetail>
+        <ExamDetail style={{ width: '20%'}}>{props.examId} {props.examName}</ExamDetail>
         <ExamDetail style={{ width: '15%'}}>{props.examDate}</ExamDetail>
         <ExamDetail style={{ width: '20%'}}>{props.examStartTime}</ExamDetail>
         <ExamDetail style={{ width: '20%'}}>{props.examEndTime}</ExamDetail>

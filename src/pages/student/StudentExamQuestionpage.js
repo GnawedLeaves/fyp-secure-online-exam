@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   PageTitle,
   StudentHomePageContainer,
@@ -33,62 +33,236 @@ import {
 }from "react-icons/fa";
 import Numberbox from "../../components/Numberbox/Numberbox";
 import RadioButtonGroup from "../../components/student/RadioButtonGroup/RadioButtonGroup";
+import { useParams } from "react-router-dom";
+import { useRef } from "react"; 
+import {
+  doc,
+  Timestamp,
+  addDoc,
+  setDoc,
+  collection,
+  getDocs,
+  updateDoc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore"; 
+import { db } from "../../backend/firebase/firebase";
+import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 
 const StudentExamQuestionpage = () => {
-  const ExamTimeArray = [
-    { 
-      examid: "1", 
-      examName: "IE4717 Web Application & Designa", 
-      endTime: "2024-01-27 23:30:00 ", 
-    },
-  ];
-  const examTotalQuestions = [
-    {
-      title: "IE4171: Web Design",
-      TotalQuestion: 26,
-    },
-  ];
-  const examQuestions = [
-    {
-      index: 2,
-      question: "Which is the tallest animal on the earth?!",
-      options: ["elephant", "zebra", "giraffe", "ant","cat"],
-    },
-  ];
-  
-  const endTime = new Date(ExamTimeArray[0].endTime);
-  endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-  const navigate = useNavigate();
-  const nextQuestion = () => {
-    navigate("/student/exam/question");
+  const studentId = "1221";
+  const { examId, questionNo } = useParams();
+  const examsRef = collection(db, "exams");
+  const questionsRef = collection(db, "questions");
+  const [exams, setExams] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const getExamDetail = async (courseId) => {
+    try {
+      // Create a query to get all messages where recipientId matches
+      const examsQuery = query(examsRef, where("courseId", "==", courseId));
+
+      // Get the documents based on the query
+      const querySnapshot = await getDocs(examsQuery);
+
+      // Extract the data from the documents
+      const examsData = querySnapshot.docs.map((doc) => ({
+        courseId: doc.courseId,
+        ...doc.data(),
+      }));
+      console.log("examData",examsData);
+
+      return examsData;
+    } catch (error) {
+      console.error("Error getting exam detail:", error);
+      return [];
+    }
   };
+  const getQuestionDetail = async (courseId,questionNo) => {
+    try {
+      // Create a query to get all messages where recipientId matches
+      const questionsQuery = query(questionsRef, 
+        where("courseId", "==", courseId),
+        where("questionNo", "==", questionNo)
+      );
+
+      // Get the documents based on the query
+      const querySnapshot = await getDocs(questionsQuery);
+
+      // Extract the data from the documents
+      const questionsData = querySnapshot.docs.map((doc) => ({
+        courseId: doc.courseId,
+        ...doc.data(),
+      }));
+      console.log("questionsData",questionsData);
+
+      return questionsData;
+    } catch (error) {
+      console.error("Error getting question detail:", error);
+      return [];
+    }
+  };
+
+  //updates the data array whenever the database changes
+  const fetchExamData = async () => {
+    try {
+      const examsData = await getExamDetail(examId);
+      const questionsData = await getQuestionDetail(examId,questionNo);
+      setExams(examsData);
+      setQuestions(questionsData);
+      setSelectedOption(null); // Reset selectedOption
+    } catch (error) {
+      console.error("Error fetching questions data:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchExamData();
+  }, [examId, questionNo]);
+  
+  const endTime = exams.length > 0 && exams[0]?.endTime?.toDate();
+
+  if (endTime) {
+    endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
+    
+  } else {
+    console.error('No valid exam data found or endTime is not defined.');
+  }
+  const navigate = useNavigate();
+  /*const nextQuestion = () => {
+    const nextQuestionNo = parseInt(questionNo, 10) + 1;
+    navigate(`/student/exam/${examId}/${nextQuestionNo}`);
+  };*/
+  const nextQuestion = async (studentId, examId, totalMCQ, questionNo, optionSelected) => {
+    try {
+      const currentQuestionNo = parseInt(questionNo, 10);
+  
+      await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
+  
+      // Navigate to the next question
+      const nextQuestionNo = currentQuestionNo + 1;
+      navigate(`/student/exam/${examId}/${nextQuestionNo}`);
+    } catch (error) {
+      console.error("Error saving/updating answer to the database:", error);
+    }
+  };
+  const reviewExam = async (studentId, examId, totalMCQ, questionNo, optionSelected) => {
+    try {
+      const currentQuestionNo = parseInt(questionNo, 10);
+  
+      await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
+  
+      // Navigate to the exam
+      navigate(`/student/exam`);
+    } catch (error) {
+      console.error("Error saving/updating answer to the database:", error);
+    }
+  };
+  
+  const saveAnswerToDatabase = async (studentId, examId, totalMCQ, questionNo, selectedOption ) => {
+  
+    try {
+      if (!examId || !studentId) {
+        console.error("Invalid examId or studentId");
+        return;
+      }
+
+    // Create a reference to the answers collection
+    const answersCollection = collection(db, "answers");
+
+    // Check if there is an existing record for the provided studentId and examId
+    const existingRecordQuery = query(
+      answersCollection,
+      where("studentId", "==", studentId),
+      where("examId", "==", examId)
+    );
+
+    const [existingRecordSnapshot] = await Promise.all([getDocs(existingRecordQuery)]);
+
+    // If there is an existing record, update it
+    if (!existingRecordSnapshot.empty) {
+      const existingRecordDoc = existingRecordSnapshot.docs[0];
+      const existingRecordRef = doc(answersCollection, existingRecordDoc.id);
+
+      // Retrieve the existing answers array
+      const existingAnswers = existingRecordDoc.data().answers;
+
+      // Update the answers array with the new optionSelected for the specific questionNo
+      existingAnswers[questionNo - 1] = selectedOption;
+
+      // Update the document in the "answers" collection
+      await updateDoc(existingRecordRef, { answers: existingAnswers });
+    } else {
+      // If there is no existing record, create a new one with an array of null values
+      const newAnswers = new Array(totalMCQ).fill(null);
+      newAnswers[questionNo - 1] = selectedOption;
+
+      await addDoc(answersCollection, {
+        studentId,
+        examId,
+        answers: newAnswers,
+      });
+    }
+
+    console.log("Answer saved successfully!");
+    //console.log(studentId);
+    //console.log(examId);
+    //console.log(selectedOption);
+  } catch (error) {
+    console.error("Error saving answer:", error);
+  }
+};
+  
+  
 
   const grid = [];
 
-  for (let i = 0; i < Math.ceil(examTotalQuestions[0].TotalQuestion/5); i++) {
-    const row=[];
+  for (let i = 0; i < Math.ceil(exams[0]?.totalMCQ / 5); i++) {
+    const row = [];
     for (let j = 0; j < 5; j++) {
-      if(5*i+j+1 <=examTotalQuestions[0].TotalQuestion){
-        row.push(<Numberbox number={5 * i + j + 1} />);
+      const currentNumber = 5 * i + j + 1;
+      if (currentNumber <= exams[0]?.totalMCQ) {
+        // Check if the current number is equal to the question number
+        const isQuestionNumber = currentNumber === parseInt(questionNo, 10);
+  
+        // Push the appropriate component based on the condition
+        row.push(
+          isQuestionNumber ? (
+            <NumberFocusbox exam={examId} number={currentNumber} />
+          ) : (
+            <Numberbox exam={examId} number={currentNumber} />
+          )
+        );
       }
     }
     grid.push(<QuestionRow>{row}</QuestionRow>);
   }
+  
 
   return (
       <ThemeProvider theme={theme}>
         <StudentHomePageContainer>
           <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
-            <PageTitle>{ExamTimeArray[0].examName}</PageTitle>
+            <PageTitle>{examId} {exams[0]?.name}</PageTitle>
             <QuestionContainer>
+            {exams.length > 0 && questions.length > 0 ? (
+            <>
               <LeftContainer>
                 <QuestionSection>
-                  <PageDescription>Question {examQuestions[0].index} :</PageDescription>
-                  <PageDescription>{examQuestions[0].question} </PageDescription>
+                  <PageDescription>Question {questions[0]?.questionNo} :</PageDescription>
+                  <PageDescription>{questions[0]?.question} </PageDescription>
                   <PageEnterSpace/>
                   <PageChoice>
-                      <RadioButtonGroup index={examQuestions[0].index} options={examQuestions[0].options} />
+                      <RadioButtonGroup 
+                        index={questions[0]?.questionNo} 
+                        options={questions[0]?.options} 
+                        onChange={(option) => setSelectedOption(option)}
+                        selectedOption={selectedOption}
+                      />
                   </PageChoice>
                 </QuestionSection>
               </LeftContainer>
@@ -97,11 +271,26 @@ const StudentExamQuestionpage = () => {
                 <Timer endTime={endTime} />
                 <QuestionGrid>{grid}</QuestionGrid>
               </RightContainer>
+            </>
+            ) : (
+              <p>Loading...</p> // or any other message you want to show while data is being loaded
+            )}
             </QuestionContainer>
             <QuestionContainer>
               <LeftContainer>
-                <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => nextQuestion()}>
-                  Next
+                <Button 
+                  defaultColor={theme.primary} 
+                  filledColor={theme.primary} 
+                  filled={false} 
+                  onClick={() => {
+                    if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
+                      nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+                    } else {
+                      reviewExam(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+                    }
+                  }}
+                >
+                   {parseInt(questionNo, 10) < exams[0]?.totalMCQ ? 'Save & Next' : 'Review & Submit'}
                 </Button>
               </LeftContainer>
               <RightContainer>

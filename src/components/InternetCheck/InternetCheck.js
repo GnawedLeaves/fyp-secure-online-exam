@@ -63,7 +63,6 @@ const InternetCheck = () => {
 
   const handleCalculate = () => {
     setDownloadSpeed(null);
-    setIsChecked(false); // Reset isChecked state when recalculating
     checkSpeed();
   };
 

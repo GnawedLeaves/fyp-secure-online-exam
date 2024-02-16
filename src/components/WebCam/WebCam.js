@@ -2,10 +2,17 @@ import React, { useRef, useState } from 'react';
 import { WebCamSection, WebCamVideo, WebCamButtonContainer } from "./WebCamStyles";
 import Button from '../Button/Button';
 import { theme } from '../../theme';
+import { ref, uploadString } from 'firebase/storage';
+import { storage } from '../../backend/firebase/firebase';
+import UploadModal from '../Modal/UploadModal';
 
-const WebCam = () => {
+const WebCam = (props) => {
+  const studentId = props.studentId;
   const videoRef = useRef(null);
   const [webcamStarted, setWebcamStarted] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [dataUrl, setDataUrl] = useState('');
 
   const handleCaptureClick = async () => {
     try {
@@ -19,39 +26,101 @@ const WebCam = () => {
       console.error('Error accessing webcam:', error);
     }
   };
-
-  const handleCaptureImage = () => {
-    const confirmation = window.confirm('Are you sure you want to capture an image?');
-
-    if (confirmation) {
-      if (videoRef.current) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = videoRef.current.videoWidth;
-        canvas.height = videoRef.current.videoHeight;
-
-        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-        // Convert the canvas content to a data URL
-        const dataUrl = canvas.toDataURL('image/png');
-
-        // You can then save the dataUrl as needed, for example, by sending it to a server or using it to create an image file.
-        console.log('Captured Image Data URL:', dataUrl);
-
-        // Redirect to the homepage
-        window.location.href = '/student/dashboard'; // Replace '/' with your homepage route
-
+  const getImgDataUrl = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+  
+      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+  
+      // Convert the canvas content to a data URL
+      const newDataUrl = canvas.toDataURL('image/png');
+      
+      // Log and set the dataUrl in state
+      console.log('newDataUrl', newDataUrl);
+      setDataUrl(newDataUrl);
+    }
+  };
+  
+  const uploadImageData = async (dataUrl) => {
+    if (dataUrl) {
+      const storageRef = ref(storage, 'captured_images/' + studentId + '.png');
+  
+      try {
+        await uploadString(storageRef, dataUrl, 'data_url');
+        console.log('Image uploaded successfully!');
+      } catch (error) {
+        console.error('Error uploading image:', error.message);
       }
+    }
+  };
+
+  const handleCaptureAndShowModal = async () => {
+    await getImgDataUrl();
+    setShowDeleteModal(true);
+  };
+
+  const handleCaptureImage = async () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+  
+      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+  
+      // Convert the canvas content to a data URL
+      const newDataUrl  = canvas.toDataURL('image/png');
+      // Store the dataUrl in state
+      console.log("newDataUrl",newDataUrl );
+      setDataUrl(newDataUrl );
+  
+      // Upload the data URL to Firebase Storage
+      const storageRef = ref(storage, 'captured_images/' + studentId + '.png');
+      
+      try {
+        await uploadString(storageRef, newDataUrl , 'data_url');
+        console.log('Image uploaded successfully!');
+      } catch (error) {
+        console.error('Error uploading image:', error.message);
+      }
+
+      // Store the dataUrl in state
+      console.log("newDataUrl",newDataUrl );
+      setDataUrl(newDataUrl );
+      
+
+  
+      // Redirect to the homepage
+      //window.location.href = '/student/home'; // Replace '/' with your homepage route
+      
     }
   };
 
   return (
     <WebCamSection>
+      <UploadModal
+        handleModalClose={() => {
+          setShowDeleteModal(false);
+        }}
+        modalType="addPhoto"
+        actionButtonText="Yes"
+        actionButtonColor={theme.statusGood}
+        actionButtonClick={() => {
+          uploadImageData(dataUrl);
+        }}
+        show={showDeleteModal}
+        modalTitle="Face Registration"
+        modalContent="Are you sure you want to submit your image? This action cannot be undone."
+        imageCaptured={dataUrl}
+      />
       <WebCamVideo ref={videoRef} autoPlay playsInline muted style={{ width: '100%', maxWidth: '600px' }} />
       
       <WebCamButtonContainer>
         {!webcamStarted && <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={handleCaptureClick}>Start Webcam</Button>}
-        {webcamStarted && <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={handleCaptureImage}>Capture Image</Button>}
+        {webcamStarted && <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => handleCaptureAndShowModal()}>Capture Image</Button>}
       </WebCamButtonContainer>
     </WebCamSection>
   );

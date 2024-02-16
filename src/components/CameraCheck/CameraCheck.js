@@ -58,7 +58,6 @@ const CameraCheck = () => {
   const handleRetry = () => {
     setIsCameraDetected(true);
   setCameraQuality(null);
-    console.log(cameraQuality);
   };
 
   return (

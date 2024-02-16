@@ -100,7 +100,7 @@ export const studentRoutes = [
   },
   {
     title: "Student Exam Review",
-    link: "/student/exam/:examId/review",
+    link: "/student/exam/submission/:examId",
     element: <StudentExamReviewpage />,
   },
   {

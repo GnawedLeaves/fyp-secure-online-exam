@@ -17,7 +17,6 @@ export const ExamAction = styled.button`
     font-size:16px;
     transition: ${(props) => props.theme.transition};
     &:hover {
-        font-size:17px;
-        font-weight: 350;
+        color: ${(props) => props.theme.statusIntermediate};
     }
 `;
