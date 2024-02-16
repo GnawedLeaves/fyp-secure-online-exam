@@ -7,19 +7,23 @@ import {
 } from "./SoundCheckStyles";
 import Button from '../Button/Button';
 import { theme } from '../../theme';
-
-const audioPath = process.env.PUBLIC_URL + '/sample-test-sound.mp3';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../backend/firebase/firebase';
 
 const SoundCheck = () => {
-  const [audio] = useState(new Audio(audioPath));
+  const [audioUrl, setAudioUrl] = useState('');
+  const [audio] = useState(new Audio()); // Initialize the Audio object without a URL
   const [isPlaying, setIsPlaying] = useState(false);
   const [soundOutput, setSoundOutput] = useState(false);
   const [yesClicked, setYesClicked] = useState(false);
 
   const playAudio = () => {
-    setYesClicked(false); // Reset yesClicked when Play Sample Audio is clicked
-    audio.play();
-    setIsPlaying(true);
+    if (audioUrl) {
+      setYesClicked(false);
+      audio.src = audioUrl; // Set the audio source before playing
+      audio.play();
+      setIsPlaying(true);
+    }
   };
 
   const stopAudio = useCallback(() => {
@@ -30,9 +34,9 @@ const SoundCheck = () => {
   }, [audio]);
 
   const handleRetry = () => {
-    playAudio(); // Call playAudio to replay the music
-    setSoundOutput(false); // Reset the sound output status
-    setYesClicked(false); // Reset the Yes button click status
+    playAudio();
+    setSoundOutput(false);
+    setYesClicked(false);
   };
 
   const handleYesClick = () => {
@@ -40,8 +44,20 @@ const SoundCheck = () => {
     stopAudio();
   };
 
+  const getAudioUrl = async (audioName) => {
+    const audioRef = ref(storage, `testing_sample/${audioName}`);
+  
+    try {
+      const downloadUrl = await getDownloadURL(audioRef);
+      setAudioUrl(downloadUrl);
+      console.log('Audio Download URL:', downloadUrl);
+    } catch (error) {
+      console.error('Error getting audio download URL:', error.message);
+    }
+  };
+
   useEffect(() => {
-    // Cleanup function to stop audio when the component is unmounted
+    getAudioUrl(`sample-test-sound.mp3`);
     return () => {
       stopAudio();
     };

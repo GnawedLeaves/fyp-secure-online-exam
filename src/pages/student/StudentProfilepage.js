@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StudentHomePageContainer,
   StudentNavbarContentContainer,
@@ -17,10 +17,75 @@ import  Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import sampleFaceRegistrationImg from '../../img/student/sample-face-registration.jpg';
+import { useRef } from "react"; 
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore"; 
+import { db } from "../../backend/firebase/firebase";
+import { storage } from '../../backend/firebase/firebase';
+import { ref, getDownloadURL } from "firebase/storage";
+import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
+
 
 const StudentProfilepage = () => {
+  const studentId = "1221";
+  const profileDisplayRef = useRef(null);
+  const [profile, setProfiles] = useState([]);
+  const profilesRef = collection(db, "users");
 
-  const profile = [
+  const getProfile = async (studentId) => {
+    try {
+      // Create a query to get all messages where recipientId matches
+      const profilesQuery = query(profilesRef, where("id", "==", studentId));
+
+      // Get the documents based on the query
+      const querySnapshot = await getDocs(profilesQuery);
+
+      // Extract the data from the documents
+      const profilesData = querySnapshot.docs.map((doc) => ({
+        id: doc.Id,
+        ...doc.data(),
+      }));
+      console.log("profileData",profilesData);
+      setProfiles(profilesData);
+
+      return profilesData;
+    } catch (error) {
+      console.error("Error getting exam detail:", error);
+      return [];
+    }
+  };
+
+  
+
+  //get image from storage
+  const [imageUrl, setImageUrl] = useState('');
+  const getImageUrl  = async (imageName) => {
+    const imageRef = ref(storage, `student_profile/${imageName}`);
+    
+    try {
+      const downloadUrl = await getDownloadURL(imageRef);
+      setImageUrl(downloadUrl);
+      console.log('Download URL:', downloadUrl);
+    } catch (error) {
+      console.error('Error getting download URL:', error.message);
+    }
+  };
+
+  //updates the data array whenever the database changes
+
+  useEffect(() => {
+    getProfile(studentId);
+    getImageUrl (`student_${studentId}.jpg`);
+  }, []);
+
+  const dummy_profile = [
     {
       name: "Wei jie",
       matric: "U2020520F",
@@ -39,19 +104,20 @@ const StudentProfilepage = () => {
           <StudentNavbarContentContainer>
             <PageTitle>Profile</PageTitle>
             <ProfileContainer>
-              <StudentProfileSection>
+              <StudentProfileSection ref={profileDisplayRef}>
                 <LeftContainer>
-                  <DataSection>Name: {profile[0].name}</DataSection>
-                  <DataSection>Matric Card: {profile[0].matric}</DataSection>
-                  <DataSection>Programme: {profile[0].programme}</DataSection>
-                  <DataSection>Year: {profile[0].year}</DataSection>
-                  <DataSection>Student Type: {profile[0].studentType}</DataSection>
-                  <DataSection>Enrollment Status: {profile[0].enrollment}</DataSection>
-                  <DataSection>Enrollment Year: {profile[0].enrollmentYear}</DataSection>
-                  <DataSection>CGPA: {profile[0].cgpa}</DataSection>
+                  <DataSection><b>Name: </b>{profile[0]?.name}</DataSection>
+                  <DataSection><b>Matric Card: </b>{profile[0]?.matric}</DataSection>
+                  <DataSection><b>Email Address: </b>{profile[0]?.email}</DataSection>
+                  <DataSection><b>Programme: </b>{profile[0]?.programme}</DataSection>
+                  <DataSection><b>Year: </b>Year {profile[0]?.year}</DataSection>
+                  <DataSection><b>Student Type: </b>{profile[0]?.studentType}</DataSection>
+                  <DataSection><b>Enrollment Status: </b>{profile[0]?.enrollmentStatus}</DataSection>
+                  <DataSection><b>Enrollment Year: </b>{profile[0]?.enrollmentYear}</DataSection>
+                  <DataSection><b>CGPA: </b>{profile[0]?.cgpa.toFixed(1)}</DataSection>
                 </LeftContainer>
                 <RightContainer>
-                  <SampleImage src={sampleFaceRegistrationImg} alt="Sample Image of Face Registration"/>
+                  <SampleImage src={imageUrl} alt="Sample Image of Face Registration"/>
                 </RightContainer>
               </StudentProfileSection>
               <StudentResultSection>
