@@ -2,11 +2,11 @@ import React from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
-    QuestionBox
+    QuestionFocusBox
 } from "./NumberboxStyles";
 import { useNavigate } from "react-router-dom";
 
-const Numberbox = ({exam,number}) => {
+const NumberFocusbox = ({exam,number}) => {
   const navigate = useNavigate();
 
   const navigateToQuestion = () => {
@@ -15,8 +15,8 @@ const Numberbox = ({exam,number}) => {
   };
   return (
     <ThemeProvider theme={theme}>
-      <QuestionBox onClick={navigateToQuestion}>{number}</QuestionBox>
+      <QuestionFocusBox onClick={navigateToQuestion}>{number}</QuestionFocusBox>
     </ThemeProvider>
   );
 };
-export default Numberbox;
+export default NumberFocusbox;

@@ -165,6 +165,14 @@ export const SampleContainer = styled.div`
 export const CamContainer = styled.div`
   margin-left:50%;
 `;
+export const SampleText = styled.div`
+text-align: center;
+font-size: 1.5rem;
+`;
+export const SampleDesc = styled.div`
+text-align: center;
+font-size: 1rem;
+`;
 
 //Feedback/Bugreportpage
 export const FeedbackForm = styled.form``;

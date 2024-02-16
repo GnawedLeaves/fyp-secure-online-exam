@@ -42,8 +42,8 @@ const StudentExamDetailpage = () => {
   
 
   const startexam = () => {
-    navigate("/student/exam/",examId,"/1");
-  };
+  navigate(`/student/exam/${courseId}/1`);
+};
 
   const getExamDetail = async (courseId) => {
     try {
