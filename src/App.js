@@ -28,6 +28,8 @@ import InstructorSettings from "./pages/Instructor/InstructorSettings";
 import InstructorPage from "./pages/Instructor/InstructorPage";
 import InstructorLibrary from "./pages/Instructor/InstructorLibrary";
 import NewPersonnelPage from "./pages/admin/adminPersonnel/NewPersonnelPage";
+import Testcall from "./pages/student/testcall";
+import Testcall2 from "./pages/student/testcall2";
 
 export const adminRoutes = [
   {
@@ -112,6 +114,16 @@ export const studentRoutes = [
     title: "Student Profile",
     link: "/student/profile",
     element: <StudentProfilepage />,
+  },
+  {
+    title: "call test",
+    link: "/student/test",
+    element: <Testcall />,
+  },
+  {
+    title: "call test student",
+    link: "/student/test2",
+    element: <Testcall2 />,
   },
 ];
 

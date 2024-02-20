@@ -42,6 +42,7 @@ import {
   setDoc,
   collection,
   getDocs,
+  getDoc,
   updateDoc,
   onSnapshot,
   query,
@@ -155,6 +156,8 @@ const StudentExamQuestionpage = () => {
   
       await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
   
+      await updateStudentStatusInExam(examId, studentId, "Submitted");
+
       // Navigate to the exam
       navigate(`/student/exam`);
     } catch (error) {
@@ -216,7 +219,38 @@ const StudentExamQuestionpage = () => {
   }
 };
   
-  
+const updateStudentStatusInExam = async (examId, studentId, status) => {
+  try {
+    const examDocRef = doc(collection(db, "exams"), examId);
+
+    // Get the current exam document
+    const examDoc = await getDoc(examDocRef);
+    const exam = examDoc.data();
+
+    // Check if the student with ID exists for the current exam
+    const studentInfo = exam.students && Object.values(exam.students).find(student => student.id === studentId);
+
+    if (!studentInfo) {
+      console.warn(`Student with ID ${studentId} not found for exam with courseId ${exam.courseId}.`);
+      return null; // Skip updating this exam
+    }
+
+    // Update the status for the specific student
+    studentInfo.status = status;
+
+    // Create an object with the updated students map
+    const updatedStudents = { ...exam.students, [studentId]: studentInfo };
+
+    // Update the document in the "exams" collection
+    await updateDoc(examDocRef, { students: updatedStudents });
+
+    console.log("Student status updated successfully!");
+  } catch (error) {
+    console.error("Error updating student status in exam:", error);
+  }
+};
+
+
 
   const grid = [];
 
