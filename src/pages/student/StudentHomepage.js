@@ -44,14 +44,14 @@ export const studentNavbarItems = [
 const StudentHomepage = () => {
   const navigate = useNavigate();
   const navigateFaceRegistration = () => {
-    navigate("/student/dashboard/face_registration");
+    navigate("/student/home/face_registration");
   };
   const navigateSystemCheck = () => {
-    navigate("/student/dashboard/system_check");
+    navigate("/student/home/system_check");
   };
 
   const navigateExamDemo = () => {
-    navigate("/student/dashboard/exam_demo");
+    navigate("/student/home/exam_demo");
   };
 
   return (
