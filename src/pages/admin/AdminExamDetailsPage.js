@@ -3,6 +3,12 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
   AdminBackButtonContainer,
+  AdminExamAllStudentsBox,
+  AdminExamAllStudentsBoxContainer,
+  AdminExamAllStudentsContainer,
+  AdminExamAllStudentsName,
+  AdminExamAllStudentsTitle,
+  AdminExamAllStudentsVideo,
   AdminExamAttributes,
   AdminExamAttributesContainer,
   AdminExamAttributesControlsContainer,
@@ -49,8 +55,34 @@ import Button from "../../components/Button/Button";
 import OverviewCheatingBox from "../../components/admin/OverviewCheatingBox/OverviewCheatingBox";
 import { GoArrowRight } from "react-icons/go";
 import ShortcutBox from "../../components/admin/ShortcutBox/ShortcutBox";
+import { useState } from "react";
 
 const AdminExamDetailsPage = () => {
+  const students = [
+    { name: "John", courseCode: "EEE" },
+    { name: "Alice", courseCode: "IEM" },
+    { name: "Bob", courseCode: "EEE" },
+    { name: "Jane", courseCode: "IEM" },
+    { name: "Charlie", courseCode: "EEE" },
+    { name: "Emma", courseCode: "IEM" },
+    { name: "David", courseCode: "EEE" },
+    { name: "Grace", courseCode: "IEM" },
+    { name: "Frank", courseCode: "EEE" },
+    { name: "Henry", courseCode: "IEM" },
+    { name: "Lily", courseCode: "EEE" },
+    { name: "Oliver", courseCode: "IEM" },
+    { name: "Sophia", courseCode: "EEE" },
+    { name: "Matthew", courseCode: "IEM" },
+    { name: "Charlotte", courseCode: "EEE" },
+    { name: "James", courseCode: "IEM" },
+    { name: "Ava", courseCode: "EEE" },
+    { name: "William", courseCode: "IEM" },
+    { name: "Ella", courseCode: "EEE" },
+    { name: "Daniel", courseCode: "IEM" },
+  ];
+  const [seeAllStudents, setSeeAllStudents] = useState(false);
+  const [allStudentsArray, setAllStudentsArray] = useState(students);
+
   const examList = [
     {
       title: "IE4171: Web Design",
@@ -91,7 +123,7 @@ const AdminExamDetailsPage = () => {
 
   const { examid } = useParams();
   useEffect(() => {
-    console.log("params", examid);
+    console.log("paramsssss", examid);
   }, []);
 
   // Cheating
@@ -162,107 +194,141 @@ const AdminExamDetailsPage = () => {
               </AdminExamAttributesControlsContainer>
             </AdminExamAttributesContainer>
           </AdminNavbarContentContainer>
-          <AdminExamStudentsAndStatsContainer>
-            <AdminExamStudentsContainer>
-              <AdminExamStudentsTitle>Students</AdminExamStudentsTitle>
-              <AdminExamStudentsCheatingContainer>
-                <AdminExamStudentsCheatingTitleContainer>
-                  <AdminExamStudentsCheatingTitle>
-                    Potential Cheating
-                  </AdminExamStudentsCheatingTitle>
-                  <AdminExamStudentsCheatingBubble>
-                    {cheatingArray.length}
-                  </AdminExamStudentsCheatingBubble>
-                </AdminExamStudentsCheatingTitleContainer>
-                <AdminExamStudentsCheatingBoxContainer>
-                  {cheatingArray.map((item, index) => {
-                    return (
-                      <OverviewCheatingBox
-                        key={index}
-                        id={item.id}
-                        issue={item.issue}
-                      ></OverviewCheatingBox>
-                    );
-                  })}
-                </AdminExamStudentsCheatingBoxContainer>
-              </AdminExamStudentsCheatingContainer>
-              <AdminExamStudentsCheatingContainer>
-                <AdminExamStudentsCheatingTitleContainer>
-                  <AdminExamStudentsCheatingTitle>
-                    Medium Alert
-                  </AdminExamStudentsCheatingTitle>
-                  <AdminExamStudentsMediumBubble>
-                    {mediumCheatingArray.length}
-                  </AdminExamStudentsMediumBubble>
-                </AdminExamStudentsCheatingTitleContainer>
-                <AdminExamStudentsCheatingBoxContainer>
-                  {mediumCheatingArray.map((item, index) => {
-                    return (
-                      <OverviewCheatingBox
-                        key={index}
-                        id={item.id}
-                        issue={item.issue}
-                      ></OverviewCheatingBox>
-                    );
-                  })}
-                </AdminExamStudentsCheatingBoxContainer>
-              </AdminExamStudentsCheatingContainer>
-              <AdminExamStudentsContainerButtonBar>
-                <Button>
-                  View All <GoArrowRight />
-                </Button>
-              </AdminExamStudentsContainerButtonBar>
-            </AdminExamStudentsContainer>
-            <AdminExamStatsContainer>
-              <AdminExamStatsTitle>Statistics</AdminExamStatsTitle>
-              <AdminExamOneStatContainer>
-                <AdminExamStatsCompletedTitle>
-                  12% (21)
-                </AdminExamStatsCompletedTitle>
-                Completed the Exam
-                <br />
-                <AdminExamsOneStatViewAllContainer>
-                  View All <GoArrowRight />
-                </AdminExamsOneStatViewAllContainer>
-              </AdminExamOneStatContainer>
-              <AdminExamOneStatContainer>
-                <AdminExamStatsCompletedTitle>
-                  80% (112)
-                </AdminExamStatsCompletedTitle>
-                Doing the exam
-                <br />
-                <AdminExamsOneStatViewAllContainer>
-                  View All <GoArrowRight />
-                </AdminExamsOneStatViewAllContainer>
-              </AdminExamOneStatContainer>
-              <AdminExamOneStatContainer>
-                <AdminExamStatsCompletedTitle>
-                  8% (9)
-                </AdminExamStatsCompletedTitle>
-                Have not started the exam
-                <br />
-                <AdminExamsOneStatViewAllContainer>
-                  View All <GoArrowRight />
-                </AdminExamsOneStatViewAllContainer>
-              </AdminExamOneStatContainer>
-              <AdminExamStatsButtonBar>
-                <Button>
-                  Details <GoArrowRight />
-                </Button>
-              </AdminExamStatsButtonBar>
-            </AdminExamStatsContainer>
-          </AdminExamStudentsAndStatsContainer>
-          <AdminExamShortcutContainer>
-            <ShortcutBox ballBackground={theme.statusError}>
-              Cheated
-            </ShortcutBox>
-            <ShortcutBox ballBackground={theme.statusIntermediate}>
-              Issues
-            </ShortcutBox>
-            <ShortcutBox ballBackground={theme.statusGood}>
-              Questions
-            </ShortcutBox>
-          </AdminExamShortcutContainer>
+          {seeAllStudents ? (
+            <AdminExamAllStudentsContainer>
+              {" "}
+              <BackButton
+                onClick={() => {
+                  setSeeAllStudents(false);
+                }}
+                size="2rem"
+              />
+              <AdminExamAllStudentsTitle>
+                All Students
+              </AdminExamAllStudentsTitle>
+              <AdminExamAllStudentsBoxContainer>
+                {allStudentsArray &&
+                  allStudentsArray.map((student, index) => (
+                    <AdminExamAllStudentsBox key={index}>
+                      <AdminExamAllStudentsVideo />
+                      <AdminExamAllStudentsName>
+                        {student.name}
+                      </AdminExamAllStudentsName>
+                    </AdminExamAllStudentsBox>
+                  ))}
+              </AdminExamAllStudentsBoxContainer>
+            </AdminExamAllStudentsContainer>
+          ) : (
+            <>
+              <AdminExamStudentsAndStatsContainer>
+                <AdminExamStudentsContainer>
+                  <AdminExamStudentsTitle>Students</AdminExamStudentsTitle>
+                  <AdminExamStudentsCheatingContainer>
+                    <AdminExamStudentsCheatingTitleContainer>
+                      <AdminExamStudentsCheatingTitle>
+                        Potential Cheating
+                      </AdminExamStudentsCheatingTitle>
+                      <AdminExamStudentsCheatingBubble>
+                        {cheatingArray.length}
+                      </AdminExamStudentsCheatingBubble>
+                    </AdminExamStudentsCheatingTitleContainer>
+                    <AdminExamStudentsCheatingBoxContainer>
+                      {cheatingArray.map((item, index) => {
+                        return (
+                          <OverviewCheatingBox
+                            key={index}
+                            id={item.id}
+                            issue={item.issue}
+                          ></OverviewCheatingBox>
+                        );
+                      })}
+                    </AdminExamStudentsCheatingBoxContainer>
+                  </AdminExamStudentsCheatingContainer>
+                  <AdminExamStudentsCheatingContainer>
+                    <AdminExamStudentsCheatingTitleContainer>
+                      <AdminExamStudentsCheatingTitle>
+                        Medium Alert
+                      </AdminExamStudentsCheatingTitle>
+                      <AdminExamStudentsMediumBubble>
+                        {mediumCheatingArray.length}
+                      </AdminExamStudentsMediumBubble>
+                    </AdminExamStudentsCheatingTitleContainer>
+                    <AdminExamStudentsCheatingBoxContainer>
+                      {mediumCheatingArray.map((item, index) => {
+                        return (
+                          <OverviewCheatingBox
+                            key={index}
+                            id={item.id}
+                            issue={item.issue}
+                          ></OverviewCheatingBox>
+                        );
+                      })}
+                    </AdminExamStudentsCheatingBoxContainer>
+                  </AdminExamStudentsCheatingContainer>
+                  <AdminExamStudentsContainerButtonBar
+                    onClick={() => {
+                      console.log("clicked");
+                      setSeeAllStudents(true);
+                    }}
+                  >
+                    <Button>
+                      View All <GoArrowRight />
+                    </Button>
+                  </AdminExamStudentsContainerButtonBar>
+                </AdminExamStudentsContainer>
+                <AdminExamStatsContainer>
+                  <AdminExamStatsTitle>Statistics</AdminExamStatsTitle>
+                  <AdminExamOneStatContainer>
+                    <AdminExamStatsCompletedTitle>
+                      12% (21)
+                    </AdminExamStatsCompletedTitle>
+                    Completed the Exam
+                    <br />
+                    <AdminExamsOneStatViewAllContainer>
+                      View All <GoArrowRight />
+                    </AdminExamsOneStatViewAllContainer>
+                  </AdminExamOneStatContainer>
+                  <AdminExamOneStatContainer>
+                    <AdminExamStatsCompletedTitle>
+                      80% (112)
+                    </AdminExamStatsCompletedTitle>
+                    Doing the exam
+                    <br />
+                    <AdminExamsOneStatViewAllContainer>
+                      View All <GoArrowRight />
+                    </AdminExamsOneStatViewAllContainer>
+                  </AdminExamOneStatContainer>
+                  <AdminExamOneStatContainer>
+                    <AdminExamStatsCompletedTitle>
+                      8% (9)
+                    </AdminExamStatsCompletedTitle>
+                    Have not started the exam
+                    <br />
+                    <AdminExamsOneStatViewAllContainer>
+                      View All
+                      <GoArrowRight />
+                    </AdminExamsOneStatViewAllContainer>
+                  </AdminExamOneStatContainer>
+                  <AdminExamStatsButtonBar>
+                    <Button>
+                      Details <GoArrowRight />
+                    </Button>
+                  </AdminExamStatsButtonBar>
+                </AdminExamStatsContainer>
+              </AdminExamStudentsAndStatsContainer>
+              <AdminExamShortcutContainer>
+                <ShortcutBox ballBackground={theme.statusError}>
+                  Cheated
+                </ShortcutBox>
+                <ShortcutBox ballBackground={theme.statusIntermediate}>
+                  Issues
+                </ShortcutBox>
+                <ShortcutBox ballBackground={theme.statusGood}>
+                  Questions
+                </ShortcutBox>
+              </AdminExamShortcutContainer>
+            </>
+          )}
         </AdminHomePage>
       </AdminHomePageContainer>
     </ThemeProvider>

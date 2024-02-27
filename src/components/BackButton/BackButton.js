@@ -16,7 +16,11 @@ const BackButton = (props) => {
   return (
     <AdminBackButtonContainer
       onClick={() => {
-        navigateBack();
+        if (props.onClick) {
+          props.onClick();
+        } else {
+          navigateBack();
+        }
       }}
     >
       <HiArrowLongLeft size={props.size} />
