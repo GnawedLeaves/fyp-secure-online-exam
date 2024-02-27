@@ -13,7 +13,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAnM3OR0JNYbhpGRLd5fmxhAlEwhKNmf8o",
   authDomain: "online-exam-platform-97200.firebaseapp.com",
   projectId: "online-exam-platform-97200",
-  storageBucket: "online-exam-platform-97200.appspot.com",
+  storageBucket: "temporaryfyp-21230.appspot.com",
   messagingSenderId: "192481901185",
   appId: "1:192481901185:web:e32fff03d5c905832d2b80",
   measurementId: "G-Y6Q02KHVXS",
