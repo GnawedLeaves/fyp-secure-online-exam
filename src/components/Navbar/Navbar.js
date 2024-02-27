@@ -49,9 +49,8 @@ const Navbar = (props) => {
         console.log("user is signed in: ", uid);
       } else {
         setUserData(false);
-        navigate("/login");
-        // User is signed out
-        // ...
+        //TODO: uncomment this when project finished
+        // navigate("/login");
       }
     });
   }, []);
@@ -99,7 +98,9 @@ const Navbar = (props) => {
           )}
         </NavbarContentContainer>
         <NavbarProfileContainer>
-          <NavbarProfile>{loggedInUserId}</NavbarProfile>
+          <NavbarProfile>
+            {loggedInUserId ? loggedInUserId : "Not Logged In"}
+          </NavbarProfile>
           <NavbarLogoutButton
             onClick={() => {
               handleSignOut();
