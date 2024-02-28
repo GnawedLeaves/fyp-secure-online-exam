@@ -125,6 +125,9 @@ const Modal = (props) => {
             <ModalContent>{props.modalContent}</ModalContent>
             <ModalButtonContainer>
               <Button
+                filled={false}
+                filledColor={props.actionButtonColor}
+                defaultColor={props.actionButtonColor}
                 onClick={() => {
                   closeModal();
                 }}

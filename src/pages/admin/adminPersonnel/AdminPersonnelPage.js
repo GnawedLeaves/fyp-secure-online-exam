@@ -195,7 +195,6 @@ const AdminPersonnelPage = () => {
                       {user.course ? user.course : "-"}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
-                      {" "}
                       {user.year ? user.year : "-"}
                     </AdminPersonnelSummary>
 
