@@ -115,19 +115,19 @@ export const QuestionRow = styled.div`
   gap:10px;
 `;
 export const LegendBlueColor = styled.div`
-  background: green;
+  background: #ADD8E6;
   width:25px;
   height:25px;
   margin:5px
 `;
 export const LegendRedColor = styled.div`
-  background: Red;
+  background: ${(props) => props.theme.statusError};
   width:25px;
   height:25px;
   margin:5px
 `;
 export const LegendGreyColor = styled.div`
-  background: grey;
+  background: ${(props) => props.theme.grey};
   width:25px;
   height:25px;
   margin:5px

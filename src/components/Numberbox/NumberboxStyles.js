@@ -7,6 +7,7 @@ export const QuestionBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: ${(props) => (props.hasOption ? '#ADD8E6' : props.theme.grey)};
   cursor: pointer;
   &:hover {
     background: ${(props) => props.theme.statusIntermediate};

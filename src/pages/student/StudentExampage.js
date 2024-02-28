@@ -191,7 +191,7 @@ const StudentExampage = () => {
                 </ExamlistContainer>
                 {presentExams.length > 0 ? (
                   presentExams.map((exam) => {
-                    const studentInfo = exam.students && Object.values(exam.students).find(student => student.id === studentId);
+                    const studentInfo = exam.students && exam.students.find(student => student.id === studentId);
 
                     // Check if the student with ID '1221' exists for the current exam
                     if (!studentInfo) {
@@ -266,7 +266,7 @@ const StudentExampage = () => {
                 </ExamlistContainer>
                 {pastExams.length > 0 ? (
                   pastExams.map((closedexam) => {
-                    const studentInfo = closedexam.students && Object.values(closedexam.students).find(student => student.id === studentId);
+                    const studentInfo = closedexam.students && closedexam.students.find(student => student.id === studentId);
 
                     // Check if the student with ID '1221' exists for the current exam
                     if (!studentInfo) {
