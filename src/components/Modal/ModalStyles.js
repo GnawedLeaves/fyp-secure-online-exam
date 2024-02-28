@@ -33,8 +33,8 @@ export const EmptyModalContainer = styled.dialog`
   display: ${(props) => (props.display ? "" : "none")};
   border-radius: 1rem;
   border: none;
-  min-height: 10rem;
-  min-width: 10rem;
+  // min-height: 10rem;
+  // min-width: 10rem;
   padding: 1rem;
 `;
 export const EmptyModalCloseContainer = styled.div`

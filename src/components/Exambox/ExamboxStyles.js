@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
 export const ExamboxContainer = styled.div`
-  border: 2px solid
-    ${(props) => (props.ongoing ? props.theme.primary : props.theme.text)};
+  border: ${(props) =>
+    props.ongoing
+      ? "3px solid" + props.theme.primary
+      : "2px solid" + props.theme.text};
   background: ${(props) => props.theme.background};
   border-radius: 0.5rem;
   padding: 1.5rem 2rem;

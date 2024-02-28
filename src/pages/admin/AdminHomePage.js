@@ -2,25 +2,36 @@ import React, { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
+  AdminAddModuleContainer,
+  AdminAddModuleTitle,
+  AdminAddModuleTitleAndButton,
   AdminHomePageContainer,
-  AdminNavbarContainer,
+  AdminModuleBox,
+  AdminModuleBoxIcon,
+  AdminModuleBoxIconsContainer,
+  AdminModuleBoxTitle,
+  AdminModuleBoxesContainer,
+  AdminModuleField,
+  AdminModuleFieldContainer,
+  AdminModuleFieldTitle,
+  AdminModuleModalContainer,
+  AdminModuleModalTitle,
+  AdminModuleSelectionContainer,
   AdminNavbarContentContainer,
-  OngoingExams,
-  OngoingExamsContainer,
-  OngoingExamsTitle,
   PageTitle,
 } from "./AdminPagesStyles";
 import Navbar from "../../components/Navbar/Navbar";
-import Exambox from "../../components/Exambox/Exambox";
-import { LuBookMarked } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { RiHome4Line } from "react-icons/ri";
 import { IoBookOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
-import { IoLogOutOutline } from "react-icons/io5";
 import LoadingPage from "../common/loadingPage/LoadingPage";
+import { MdOutlineDelete } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
+import Button from "../../components/Button/Button";
+import Modal from "../../components/Modal/Modal";
 
 export const adminNavbarItems = [
   {
@@ -52,105 +63,119 @@ export const adminNavbarItems = [
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
-  const changePage = () => {
-    navigate("/adminexamdetails");
-  };
-  const examList = [
-    {
-      title: "IE4171: Web Design",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "ongoing",
-    },
-    {
-      title: "IE3000: Algorithms",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "ongoing",
-    },
-  ];
-
-  const examList2 = [
-    {
-      title: "IE4171: Web Design",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "",
-    },
-    {
-      title: "IE3000: Algorithms",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "",
-    },
-  ];
-
   //edit this when want to add loading screen
   const [finishedLoading, setFinishedLoading] = useState(true);
 
+  //MODULES METHODS
+
+  const dummyModuleData = [
+    {
+      code: "IE4717",
+      tutorials: ["EE01", "EE02", "EE03"],
+    },
+    {
+      code: "AB1234",
+      tutorials: ["AA01", "AA02", "AA03"],
+    },
+    {
+      code: "CD5678",
+      tutorials: ["BB01", "BB02", "BB03"],
+    },
+    {
+      code: "FG91011",
+      tutorials: ["CC01", "CC02", "CC03"],
+    },
+    {
+      code: "HI121314",
+      tutorials: ["DD01", "DD02", "DD03"],
+    },
+    {
+      code: "JK151617",
+      tutorials: ["FF01", "FF02", "FF03"],
+    },
+    {
+      code: "LM181920",
+      tutorials: ["GG01", "GG02", "GG03"],
+    },
+    {
+      code: "NO212223",
+      tutorials: ["HH01", "HH02", "HH03"],
+    },
+    {
+      code: "PQ242526",
+      tutorials: ["II01", "II02", "II03"],
+    },
+    {
+      code: "RS272829",
+      tutorials: ["JJ01", "JJ02", "JJ03"],
+    },
+  ];
+
+  //MODAL METHODS
+  const [openAddNewModule, setOpenAddNewModule] = useState(true);
   return (
     <ThemeProvider theme={theme}>
       {finishedLoading ? (
         <AdminHomePageContainer>
           <Navbar linksArray={adminNavbarItems} />
           <AdminNavbarContentContainer>
-            <PageTitle>Exams</PageTitle>
-            <OngoingExamsContainer>
-              <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
-            </OngoingExamsContainer>
-            <OngoingExamsContainer>
-              <OngoingExamsTitle>Upcoming Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList2.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
-            </OngoingExamsContainer>
-            <OngoingExamsContainer>
-              <OngoingExamsTitle>Completed Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList2.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
-            </OngoingExamsContainer>
+            <Modal
+              handleModalClose={() => {}}
+              modalType="empty"
+              show={openAddNewModule}
+            >
+              <AdminModuleModalContainer>
+                <AdminModuleModalTitle>Add New Module</AdminModuleModalTitle>
+                <AdminModuleFieldContainer>
+                  <AdminModuleFieldTitle>Name</AdminModuleFieldTitle>
+                  <AdminModuleField onChange={(e) => {}} />
+                </AdminModuleFieldContainer>
+                <AdminModuleSelectionContainer>
+                  hi
+                </AdminModuleSelectionContainer>
+                <Button
+                  filled={true}
+                  onClick={() => {
+                    setOpenAddNewModule(false);
+                  }}
+                >
+                  Add Module
+                </Button>
+              </AdminModuleModalContainer>
+            </Modal>
+
+            <PageTitle>Home</PageTitle>
+            <AdminAddModuleContainer>
+              <AdminAddModuleTitleAndButton>
+                <AdminAddModuleTitle>Modules</AdminAddModuleTitle>
+                <Button
+                  filled={true}
+                  onClick={() => {
+                    setOpenAddNewModule(true);
+                  }}
+                >
+                  Add Module +
+                </Button>
+              </AdminAddModuleTitleAndButton>
+
+              <AdminModuleBoxesContainer>
+                {dummyModuleData.map((module) => {
+                  return (
+                    <AdminModuleBox>
+                      <AdminModuleBoxTitle>{module.code}</AdminModuleBoxTitle>
+                      <AdminModuleBoxIconsContainer>
+                        <AdminModuleBoxIcon>
+                          <MdOutlineEdit size="1.5rem" />
+                        </AdminModuleBoxIcon>
+                        <AdminModuleBoxIcon>
+                          <MdOutlineDelete size="1.5rem" />
+                        </AdminModuleBoxIcon>
+                      </AdminModuleBoxIconsContainer>
+                    </AdminModuleBox>
+                  );
+                })}
+              </AdminModuleBoxesContainer>
+            </AdminAddModuleContainer>
           </AdminNavbarContentContainer>
         </AdminHomePageContainer>
       ) : (

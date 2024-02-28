@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import { useState } from "react";
 import {
   AdminBackButtonContainer,
@@ -45,17 +45,17 @@ import {
   OngoingExamsContainer,
   OngoingExamsTitle,
   PageTitle,
-} from "./AdminPagesStyles";
-import Navbar from "../../components/Navbar/Navbar";
-import Exambox from "../../components/Exambox/Exambox";
+} from "../AdminPagesStyles";
+import Navbar from "../../../components/Navbar/Navbar";
+import Exambox from "../../../components/Exambox/Exambox";
 import { useParams } from "react-router-dom";
-import { adminNavbarItems } from "./AdminHomePage";
+import { adminNavbarItems } from "../AdminHomePage";
 import { HiArrowLongLeft } from "react-icons/hi2";
-import BackButton from "../../components/BackButton/BackButton";
-import Button from "../../components/Button/Button";
-import OverviewCheatingBox from "../../components/admin/OverviewCheatingBox/OverviewCheatingBox";
+import BackButton from "../../../components/BackButton/BackButton";
+import Button from "../../../components/Button/Button";
+import OverviewCheatingBox from "../../../components/admin/OverviewCheatingBox/OverviewCheatingBox";
 import { GoArrowRight } from "react-icons/go";
-import ShortcutBox from "../../components/admin/ShortcutBox/ShortcutBox";
+import ShortcutBox from "../../../components/admin/ShortcutBox/ShortcutBox";
 
 const AdminExamDetailsPage = () => {
   const students = [

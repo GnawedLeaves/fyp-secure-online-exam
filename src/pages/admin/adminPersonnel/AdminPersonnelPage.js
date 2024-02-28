@@ -158,7 +158,6 @@ const AdminPersonnelPage = () => {
                           userData,
                           header.title.toLowerCase()
                         );
-
                         setUserData([...sortedArray]);
                       }}
                       upArrowFunction={() => {
@@ -189,7 +188,8 @@ const AdminPersonnelPage = () => {
                       {user.name}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
-                      {user.type.charAt(0).toUpperCase() + user.type.slice(1)}
+                      {user.type &&
+                        user.type.charAt(0).toUpperCase() + user.type.slice(1)}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
                       {user.course ? user.course : "-"}
