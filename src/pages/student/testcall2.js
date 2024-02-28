@@ -17,7 +17,7 @@ import { IoBookOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoBugOutline } from "react-icons/io5";
 import Button from "../../components/Button/Button";
-import  VideoRoom  from "../../components/videoCall/VideoRoom";
+import  VideoRoom2  from "../../components/videoCall/VideoRoom2";
 
 export const studentNavbarItems = [
   {
@@ -60,7 +60,7 @@ const Testcall2 = () => {
       <StudentHomePageContainer>
         <Navbar linksArray={studentNavbarItems} />
         <StudentNavbarContentContainer>
-        <VideoRoom/>
+        <VideoRoom2 examId="IM1003"/>
         </StudentNavbarContentContainer>
       </StudentHomePageContainer>
     </ThemeProvider>

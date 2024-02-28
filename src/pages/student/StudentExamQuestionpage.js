@@ -50,6 +50,7 @@ import {
 } from "firebase/firestore"; 
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
+import UploadModal from '../../components/Modal/UploadModal';
 
 const StudentExamQuestionpage = () => {
   const studentId = "1221";
@@ -58,19 +59,23 @@ const StudentExamQuestionpage = () => {
   const questionsRef = collection(db, "questions");
   const [exams, setExams] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [answerArray, setAnswerArray] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
-  const getExamDetail = async (courseId) => {
+  const getExamDetail = async (examId) => {
     try {
       // Create a query to get all messages where recipientId matches
-      const examsQuery = query(examsRef, where("courseId", "==", courseId));
+      const examsQuery = query(examsRef, where("courseId", "==", examId));
 
       // Get the documents based on the query
       const querySnapshot = await getDocs(examsQuery);
 
       // Extract the data from the documents
       const examsData = querySnapshot.docs.map((doc) => ({
-        courseId: doc.courseId,
+        examId: doc.examId,
         ...doc.data(),
       }));
       console.log("examData",examsData);
@@ -81,11 +86,11 @@ const StudentExamQuestionpage = () => {
       return [];
     }
   };
-  const getQuestionDetail = async (courseId,questionNo) => {
+  const getQuestionDetail = async (examId,questionNo) => {
     try {
       // Create a query to get all messages where recipientId matches
       const questionsQuery = query(questionsRef, 
-        where("courseId", "==", courseId),
+        where("examId", "==", examId),
         where("questionNo", "==", questionNo)
       );
 
@@ -94,7 +99,7 @@ const StudentExamQuestionpage = () => {
 
       // Extract the data from the documents
       const questionsData = querySnapshot.docs.map((doc) => ({
-        courseId: doc.courseId,
+        examId: doc.examId,
         ...doc.data(),
       }));
       console.log("questionsData",questionsData);
@@ -111,17 +116,101 @@ const StudentExamQuestionpage = () => {
     try {
       const examsData = await getExamDetail(examId);
       const questionsData = await getQuestionDetail(examId,questionNo);
+      const answerArray = await getAnswerArray(studentId, examId);
       setExams(examsData);
       setQuestions(questionsData);
+      setAnswerArray(answerArray);
       setSelectedOption(null); // Reset selectedOption
     } catch (error) {
       console.error("Error fetching questions data:", error);
     }
   };
+  const fetchData = async () => {
+    try {
+      const examsData = await getExamDetail(examId);
+      const questionsData = await getQuestionDetail(examId, questionNo);
+
+      // Check if there is an existing answer record for the current student and exam
+      const answersQuery = query(
+        collection(db, "answers"),
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
+
+      const answersSnapshot = await getDocs(answersQuery);
+
+      if (!answersSnapshot.empty) {
+        const answersData = answersSnapshot.docs[0].data().answers;
+
+        // Check if there is a saved answer for the current question
+        const savedAnswer = answersData[questionNo - 1];
+
+        if (savedAnswer !== null) {
+          // Set the selectedOption state with the saved answer
+          setSelectedOption(savedAnswer);
+        }
+      }
+
+      setExams(examsData);
+      setQuestions(questionsData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const addCheatRecord = async (studentId, examId, description, alertType) => {
+    try {
+      const cheatCollection = collection(db, "cheating");
+      const timestamp = Timestamp.fromDate(new Date());
+  
+      // Add a document to the 'cheat' collection
+      await addDoc(cheatCollection, {
+        studentId: studentId,
+        examId: examId,
+        description: description,
+        alertType: alertType,
+        dateCreatedAt: timestamp,
+      });
+  
+      console.log("Cheat record added successfully!");
+    } catch (error) {
+      console.error("Error adding cheat record:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Visibility effect mounted");
+  
+    // Cross-browser function to get the visibility state
+    const getVisibilityState = () => {
+      return document.visibilityState || document.webkitVisibilityState || document.mozVisibilityState || document.msVisibilityState;
+    };
+  
+    // Cross-browser event handler for visibility change
+    const handleVisibilityChange = () => {
+      console.log("Visibility changed:", document.visibilityState);
+      setIsPageVisible(!document.hidden);
+      setShowAlertModal(true);
+    };
+  
+    // Set up event listener for visibility change
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+    // Initialize visibility state
+    setIsPageVisible(!document.hidden);
+  
+    // Clean up event listener when component unmounts
+    return () => {
+      console.log("Visibility effect unmounted");
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
 
   useEffect(() => {
     fetchExamData();
+    fetchData();
+    
   }, [examId, questionNo]);
   
   const endTime = exams.length > 0 && exams[0]?.endTime?.toDate();
@@ -219,38 +308,74 @@ const StudentExamQuestionpage = () => {
   }
 };
   
+const getAnswerArray = async (studentId, examId) => {
+  try {
+    // Create a reference to the answers collection
+    const answersCollection = collection(db, "answers");
+
+    // Query to get the specific document for the provided studentId and examId
+    const answersQuery = query(
+      answersCollection,
+      where("studentId", "==", studentId),
+      where("examId", "==", examId)
+    );
+
+    // Get the documents based on the query
+    const querySnapshot = await getDocs(answersQuery);
+
+    // If there is a document, return the answers array
+    if (!querySnapshot.empty) {
+      const answerArray = querySnapshot.docs[0].data().answers;
+      return answerArray;
+    }
+
+    // If no document is found, return an empty array or handle it as needed
+    return [];
+  } catch (error) {
+    console.error("Error getting answerArray:", error);
+    return [];
+  }
+};
+
 const updateStudentStatusInExam = async (examId, studentId, status) => {
   try {
-    const examDocRef = doc(collection(db, "exams"), examId);
+    const examsRef = collection(db, "exams");
+    const examsQuery = query(examsRef, where("courseId", "==", examId));
+    // Get the current exam documents based on the query
+    const examSnapshot = await getDocs(examsQuery);
 
-    // Get the current exam document
-    const examDoc = await getDoc(examDocRef);
+    // Check if there are any documents
+    if (examSnapshot.empty) {
+      console.warn(`No exams found for exam with examId ${examId}.`);
+      return null;
+    }
+
+    // Access the first document in the snapshot
+    const examDoc = examSnapshot.docs[0];
+    // Access the data of the document
     const exam = examDoc.data();
 
     // Check if the student with ID exists for the current exam
-    const studentInfo = exam.students && Object.values(exam.students).find(student => student.id === studentId);
+    const studentInfo = exam.students && exam.students.findIndex(student => student.id === studentId);
 
-    if (!studentInfo) {
-      console.warn(`Student with ID ${studentId} not found for exam with courseId ${exam.courseId}.`);
+    if (studentInfo === -1) {
+      console.warn(`Student with ID ${studentId} not found for exam with examId ${examId}.`);
       return null; // Skip updating this exam
     }
 
     // Update the status for the specific student
-    studentInfo.status = status;
-
-    // Create an object with the updated students map
-    const updatedStudents = { ...exam.students, [studentId]: studentInfo };
+    exam.students[studentInfo].status = status;
+    exam.students[studentInfo].grade = "Not graded yet";
+    exam.students[studentInfo].submissionTime = new Date();
 
     // Update the document in the "exams" collection
-    await updateDoc(examDocRef, { students: updatedStudents });
+    await updateDoc(examDoc.ref, { students: exam.students });
 
     console.log("Student status updated successfully!");
   } catch (error) {
     console.error("Error updating student status in exam:", error);
   }
 };
-
-
 
   const grid = [];
 
@@ -260,14 +385,18 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
       const currentNumber = 5 * i + j + 1;
       if (currentNumber <= exams[0]?.totalMCQ) {
         // Check if the current number is equal to the question number
+        
         const isQuestionNumber = currentNumber === parseInt(questionNo, 10);
-  
+
+        const hasAnswer = answerArray[currentNumber - 1] !== null && answerArray[currentNumber - 1] !== undefined;
+        console.log(hasAnswer);
+        console.log(answerArray);
         // Push the appropriate component based on the condition
         row.push(
           isQuestionNumber ? (
             <NumberFocusbox exam={examId} number={currentNumber} />
           ) : (
-            <Numberbox exam={examId} number={currentNumber} />
+            <Numberbox exam={examId} number={currentNumber} hasOption={hasAnswer} />
           )
         );
       }
@@ -279,6 +408,34 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
   return (
       <ThemeProvider theme={theme}>
         <StudentHomePageContainer>
+        <UploadModal
+          handleModalClose={() => {
+            setShowAlertModal(false);
+          }}
+          modalType="alert"
+          actionButtonText="OK"
+          actionButtonColor={theme.statusError}
+          actionButtonClick={() => {
+            addCheatRecord(studentId, examId, "Navigate to other windows/tabs", "medium");
+          }}
+          show={showAlertModal}
+          modalTitle="Navigation Alert"
+          modalContent="You are not allowed to navigate to other windows or tabs. This action will be recorded."
+        />
+        <UploadModal
+        handleModalClose={() => {
+          setShowSubmitModal(false);
+        }}
+        modalType="action"
+        actionButtonText="Yes"
+        actionButtonColor={theme.statusGood}
+        actionButtonClick={() => {
+          reviewExam(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+        }}
+        show={showSubmitModal}
+        modalTitle="Submit Answer"
+        modalContent="Are you sure you want to submit your answer? This action cannot be undone."
+      />
           <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
             <PageTitle>{examId} {exams[0]?.name}</PageTitle>
@@ -320,7 +477,8 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
                     if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
                       nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
                     } else {
-                      reviewExam(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+
+                      setShowSubmitModal(true);
                     }
                   }}
                 >

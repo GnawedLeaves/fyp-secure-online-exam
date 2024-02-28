@@ -6,7 +6,7 @@ import {
 } from "./NumberboxStyles";
 import { useNavigate } from "react-router-dom";
 
-const Numberbox = ({exam,number}) => {
+const Numberbox = ({exam,number,hasOption}) => {
   const navigate = useNavigate();
 
   const navigateToQuestion = () => {
@@ -15,7 +15,7 @@ const Numberbox = ({exam,number}) => {
   };
   return (
     <ThemeProvider theme={theme}>
-      <QuestionBox onClick={navigateToQuestion}>{number}</QuestionBox>
+      <QuestionBox onClick={navigateToQuestion} hasOption={hasOption}>{number}</QuestionBox>
     </ThemeProvider>
   );
 };

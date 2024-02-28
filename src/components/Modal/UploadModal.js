@@ -8,6 +8,11 @@ import {
   ModalContent,
   ModalTitle,
 } from "./ModalStyles";
+import {
+  AlertModalContainer,
+  AlertModalContent,
+  AlertModalTitle,
+} from "./AlertModalStyles";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import Button from "../Button/Button";
@@ -120,7 +125,27 @@ const UploadModal = (props) => {
             </ModalButtonContainer>
           </ModalContainer>
         );
-      case "action":
+        case "alert":
+        return (
+          <AlertModalContainer display={props.show} ref={modalRef}>
+            <AlertModalTitle>{props.modalTitle}</AlertModalTitle>
+            <AlertModalContent>{props.modalContent}</AlertModalContent>
+            <ModalButtonContainer>
+              <Button
+                filled={false}
+                filledColor={props.actionButtonColor}
+                defaultColor={props.actionButtonColor}
+                onClick={() => {
+                  closeModal();
+                  props.actionButtonClick();
+                }}
+              >
+                {props.actionButtonText ? props.actionButtonText : "OK"}
+              </Button>
+            </ModalButtonContainer>
+          </AlertModalContainer>
+        );
+        case "action":
         return (
           <ModalContainer display={props.show} ref={modalRef}>
             <ModalTitle>{props.modalTitle}</ModalTitle>
