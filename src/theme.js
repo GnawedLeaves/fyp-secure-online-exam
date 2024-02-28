@@ -1,6 +1,6 @@
 export const theme = {
   primary: "#009ADF",
-  background: "#FFFFFF",
+  background: "#FBFBFB",
   text: "#333333",
   secondaryLight: "#EEFDFF",
   font: "Inter, sans-serif",
@@ -9,12 +9,13 @@ export const theme = {
   statusError: "#FF8080",
   statusIntermediate: "#FFCF96",
   grey: "#D3D3D3",
+  white: "#ffffff",
 };
 
 export const darktheme = {
   primary: "#009ADF",
   background: "#333333",
-  text: "#ffffff",
+  text: "#FBFBFB",
   secondaryLight: "#EEFDFF",
   font: "Inter, sans-serif",
   transition: "0.2s",
