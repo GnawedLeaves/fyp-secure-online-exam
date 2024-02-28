@@ -32,6 +32,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { MdOutlineEdit } from "react-icons/md";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
+import BubbleSelect from "../../components/BubbleSelect/BubbleSelect";
 
 export const adminNavbarItems = [
   {
@@ -113,6 +114,7 @@ const AdminHomePage = () => {
 
   //MODAL METHODS
   const [openAddNewModule, setOpenAddNewModule] = useState(true);
+  const [newModuleName, setNewModuleName] = useState("");
   return (
     <ThemeProvider theme={theme}>
       {finishedLoading ? (
@@ -128,10 +130,14 @@ const AdminHomePage = () => {
                 <AdminModuleModalTitle>Add New Module</AdminModuleModalTitle>
                 <AdminModuleFieldContainer>
                   <AdminModuleFieldTitle>Name</AdminModuleFieldTitle>
-                  <AdminModuleField onChange={(e) => {}} />
+                  <AdminModuleField
+                    onChange={(e) => {
+                      setNewModuleName(e.target.value);
+                    }}
+                  />
                 </AdminModuleFieldContainer>
                 <AdminModuleSelectionContainer>
-                  hi
+                  <BubbleSelect />
                 </AdminModuleSelectionContainer>
                 <Button
                   filled={true}
