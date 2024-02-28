@@ -75,7 +75,7 @@ const NewPersonnelPage = () => {
               course: newUserCourse,
               modules: newUserModules,
               type: newUserType,
-              dateAdded: timestamp,
+              dateCreated: timestamp,
               // Add user data here
             }
           : newUserType === "teacher"
@@ -84,13 +84,13 @@ const NewPersonnelPage = () => {
               name: newUserName,
               modules: newUserModules,
               type: newUserType,
-              dateAdded: timestamp,
+              dateCreated: timestamp,
             }
           : {
               authId: id,
-              userName: newUserName,
+              name: newUserName,
               type: newUserType,
-              dateAdded: timestamp,
+              dateCreated: timestamp,
             }
       );
       setShowSignUpSuccessModal(true);
