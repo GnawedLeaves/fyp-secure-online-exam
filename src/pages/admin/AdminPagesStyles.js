@@ -311,6 +311,8 @@ export const AdminModuleModalContainer = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 1rem 2rem;
+  position: relative;
+  width: 20rem;
 `;
 
 export const AdminModuleModalTitle = styled.div`
@@ -334,3 +336,13 @@ export const AdminModuleField = styled.input`
 `;
 
 export const AdminModuleSelectionContainer = styled.div``;
+export const AdminModuleModalIcon = styled.div`
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  cursor: pointer;
+`;
+
+export const AdminModuleBubbleContaier = styled.div`
+  width: 100%;
+`;

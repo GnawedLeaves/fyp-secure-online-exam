@@ -11,10 +11,12 @@ import {
   AdminModuleBoxIconsContainer,
   AdminModuleBoxTitle,
   AdminModuleBoxesContainer,
+  AdminModuleBubbleContaier,
   AdminModuleField,
   AdminModuleFieldContainer,
   AdminModuleFieldTitle,
   AdminModuleModalContainer,
+  AdminModuleModalIcon,
   AdminModuleModalTitle,
   AdminModuleSelectionContainer,
   AdminNavbarContentContainer,
@@ -33,6 +35,8 @@ import { MdOutlineEdit } from "react-icons/md";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import BubbleSelect from "../../components/BubbleSelect/BubbleSelect";
+import BubbleAdd from "../../components/BubbleAdd/BubbleAdd";
+import { RxCross2 } from "react-icons/rx";
 
 export const adminNavbarItems = [
   {
@@ -115,6 +119,12 @@ const AdminHomePage = () => {
   //MODAL METHODS
   const [openAddNewModule, setOpenAddNewModule] = useState(true);
   const [newModuleName, setNewModuleName] = useState("");
+  const [newModuleItems, setNewModuleItems] = useState([]);
+
+  const handleBubbleData = (data) => {
+    console.log("data at parent level", data);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       {finishedLoading ? (
@@ -128,6 +138,14 @@ const AdminHomePage = () => {
             >
               <AdminModuleModalContainer>
                 <AdminModuleModalTitle>Add New Module</AdminModuleModalTitle>
+                <AdminModuleModalIcon
+                  onClick={() => {
+                    setOpenAddNewModule(false);
+                  }}
+                >
+                  <RxCross2 size={"1.5rem"} />
+                </AdminModuleModalIcon>
+
                 <AdminModuleFieldContainer>
                   <AdminModuleFieldTitle>Name</AdminModuleFieldTitle>
                   <AdminModuleField
@@ -137,7 +155,12 @@ const AdminHomePage = () => {
                   />
                 </AdminModuleFieldContainer>
                 <AdminModuleSelectionContainer>
-                  <BubbleSelect />
+                  <AdminModuleBubbleContaier>
+                    <BubbleAdd
+                      handleBubbleData={handleBubbleData}
+                      title="Tutorials Name"
+                    />
+                  </AdminModuleBubbleContaier>
                 </AdminModuleSelectionContainer>
                 <Button
                   filled={true}
