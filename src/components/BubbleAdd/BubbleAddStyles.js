@@ -23,7 +23,6 @@ export const BubbleAddContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  // background: red;
 `;
 
 export const BubbleAddBubblesContainer = styled.div`
@@ -44,10 +43,8 @@ export const BubbleAddBubble = styled.div`
   justify-content: space-between;
   font-size: 1.1rem;
   gap: 1rem;
-  // ${(props) => (props.newItem ? "animation: 0.5s addBubble 0s;" : "")}
-  ${(props) => (props.newItem ? "background: red;" : "")}
-
-  animation: ${(props) => props.newItem && animation}
+  // animation: ${(props) => props.newItem && animation};
+  animation: ${animation};
 `;
 
 export const BubbleAddIconContainer = styled.div`
