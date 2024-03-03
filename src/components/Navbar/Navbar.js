@@ -34,7 +34,6 @@ const Navbar = (props) => {
     navigate(`/${path}`);
   };
   const currentURL = window.location.href;
-  const currentURL = window.location.href;
   //TODO: Change depending on who is logged in
 
   const [loggedInUserId, setLoggedInUserId] = useState("");
