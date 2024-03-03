@@ -17,13 +17,6 @@ const firebaseConfig = {
   messagingSenderId: "192481901185",
   appId: "1:192481901185:web:e32fff03d5c905832d2b80",
   measurementId: "G-Y6Q02KHVXS",
-
-  apiKey: "AIzaSyA8iEAT9lc9dhsZuVaAR01FXtwkk1v6XrE",
-  authDomain: "temporaryfyp-21230.firebaseapp.com",
-  projectId: "temporaryfyp-21230",
-  storageBucket: "temporaryfyp-21230.appspot.com",
-  messagingSenderId: "189128448631",
-  appId: "1:189128448631:web:2ae5974fa64bcd6262c472",
 };
 
 // Initialize Firebase
