@@ -214,3 +214,42 @@ export const AdminExamShortcutContainer = styled.div`
   display: flex;
   gap: 2rem;
 `;
+
+export const AdminExamAllStudentsContainer = styled.div`
+  width: 70rem;
+  min-height: 40rem;
+  border: 2px solid ${(props) => props.theme.text};
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const AdminExamAllStudentsTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const AdminExamAllStudentsBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const AdminExamAllStudentsName = styled.div``;
+export const AdminExamAllStudentsVideo = styled.div`
+  width: 9rem;
+  height: 5rem;
+  border: 2px solid ${(props) => props.theme.text};
+`;
+
+export const AdminExamAllStudentsBoxContainer = styled.div`
+  margin: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+`;
