@@ -11,7 +11,11 @@ import { useNavigate } from "react-router-dom";
 const BackButton = (props) => {
   const navigate = useNavigate();
   const navigateBack = () => {
-    navigate(-1);
+    if (props.onClick) {
+      props.onClick();
+    } else {
+      navigate(-1);
+    }
   };
   return (
     <AdminBackButtonContainer

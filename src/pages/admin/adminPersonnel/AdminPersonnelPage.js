@@ -25,7 +25,7 @@ import {
   descendingAlphabeticalSort,
 } from "../../../functions/sortArray";
 import ToggleArrow from "../../../components/ToggleArrow/ToggleArrow";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
 import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
@@ -43,8 +43,27 @@ const AdminPersonnelPage = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const deletePersonnel = (userId) => {
-    console.log("user: ", userId, "deleted");
+  //Delete user function
+  const usersRef = collection(db, "users");
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [userAuthIdToDelete, setAuthuserIdToDelete] = useState(null);
+
+  //init
+
+  const deletePersonnel = async () => {
+    if (userIdToDelete !== null) {
+      const documentRef = doc(usersRef, userIdToDelete);
+      deleteDoc(documentRef)
+        .then(() => {
+          console.log("Document successfully deleted!", userIdToDelete);
+          fetchData();
+        })
+        .catch((error) => {
+          console.error("Error deleting document: ", error);
+        });
+
+      setUserIdToDelete(null);
+    }
   };
 
   const headers = [
@@ -74,57 +93,6 @@ const AdminPersonnelPage = () => {
       width: "25%",
     },
   ];
-
-  const [dummyUserData, setDummyUserData] = useState([
-    {
-      id: "1221",
-      name: "gememee",
-      course: "EEE",
-      year: "4",
-      type: "student",
-      dateAdded: "24/05/2023",
-    },
-    {
-      id: "5221",
-      name: "cememee",
-      course: "EEE",
-      year: "1",
-      type: "student",
-      dateAdded: "24/05/2023",
-    },
-    {
-      id: "22131",
-      name: "zememee",
-      course: "DSAI",
-      year: "2",
-      type: "teacher",
-      dateAdded: "24/05/2023",
-    },
-    {
-      id: "1221",
-      name: "aaaaememee",
-      course: "IEM",
-      year: "3",
-      type: "student",
-      dateAdded: "24/05/2023",
-    },
-    {
-      id: "91221",
-      name: "ememeee  e qwq  h eoioi ijwejqwoijwq o whwe oiqwhohweoiweiq ooeiwhqqwiohq weoi",
-      course: "EEE",
-      year: "4",
-      type: "student",
-      dateAdded: "24/05/2023",
-    },
-    {
-      id: "19221",
-      name: "yememeee  e qwq  h eoioi ijwejqwoijwq o whwe oiqwhohweoiweiq ooeiwhqqwiohq weoi",
-      course: "MAE",
-      year: "4",
-      type: "admin",
-      dateAdded: "24/05/2023",
-    },
-  ]);
 
   const [userData, setUserData] = useState([]);
 
@@ -190,7 +158,6 @@ const AdminPersonnelPage = () => {
                           userData,
                           header.title.toLowerCase()
                         );
-
                         setUserData([...sortedArray]);
                       }}
                       upArrowFunction={() => {
@@ -221,13 +188,13 @@ const AdminPersonnelPage = () => {
                       {user.name}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
-                      {user.type.charAt(0).toUpperCase() + user.type.slice(1)}
+                      {user.type &&
+                        user.type.charAt(0).toUpperCase() + user.type.slice(1)}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
                       {user.course ? user.course : "-"}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummary>
-                      {" "}
                       {user.year ? user.year : "-"}
                     </AdminPersonnelSummary>
 
@@ -241,6 +208,8 @@ const AdminPersonnelPage = () => {
                         defaultColor={theme.statusError}
                         filledColor={theme.statusError}
                         onClick={() => {
+                          setUserIdToDelete(user.id);
+                          console.log("deleting", user.id);
                           setShowDeleteModal(true);
                         }}
                       >

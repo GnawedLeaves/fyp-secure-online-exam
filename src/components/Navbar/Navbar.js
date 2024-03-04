@@ -24,6 +24,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 const Navbar = (props) => {
   const navigate = useNavigate();
@@ -32,9 +33,38 @@ const Navbar = (props) => {
     console.log(`/${path}`);
     navigate(`/${path}`);
   };
+  const currentURL = window.location.href;
   //TODO: Change depending on who is logged in
 
-  const currentURL = window.location.href;
+  const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [userData, setUserData] = useState();
+
+  const auth = getAuth();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setLoggedInUserId(uid);
+        setUserData(true);
+        console.log("user is signed in: ", uid);
+      } else {
+        setUserData(false);
+        //TODO: uncomment this when project finished
+        // navigate("/login");
+      }
+    });
+  }, []);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Sign out successful");
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log("Error when signing out: ", error);
+      });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -68,10 +98,13 @@ const Navbar = (props) => {
           )}
         </NavbarContentContainer>
         <NavbarProfileContainer>
-          <NavbarProfile>Admin_01</NavbarProfile>
+          <NavbarProfile>
+            {loggedInUserId ? loggedInUserId : "Not Logged In"}
+          </NavbarProfile>
           <NavbarLogoutButton
             onClick={() => {
-              navigate("/login");
+              handleSignOut();
+              // navigate("/login");
             }}
           >
             <NavbarLinkLogo>

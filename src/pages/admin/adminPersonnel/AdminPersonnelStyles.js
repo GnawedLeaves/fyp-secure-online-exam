@@ -51,6 +51,7 @@ export const AdminPersonnelSummaryContainer = styled(
   align-items: center;
   padding: 0.8rem 1rem;
   display: ${(props) => (props.display ? "flex" : "none")};
+  border-bottom: 1px solid ${(props) => props.theme.grey};
 `;
 
 export const AdminPersonnelSummary = styled(AdminPersonnelHeader)`

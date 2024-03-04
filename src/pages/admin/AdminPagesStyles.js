@@ -1,9 +1,11 @@
 //import e from "cors";
+import e from "cors";
 import styled from "styled-components";
 
 export const AdminHomePageContainer = styled.div`
   width: 100%;
   display: flex;
+  background: ${(props) => props.theme.background};
 `;
 
 export const AdminHomePage = styled.div`
@@ -213,4 +215,134 @@ export const AdminExamStatsButtonBar = styled(
 export const AdminExamShortcutContainer = styled.div`
   display: flex;
   gap: 2rem;
+`;
+
+export const AdminExamAllStudentsContainer = styled.div`
+  width: 70rem;
+  min-height: 40rem;
+  border: 2px solid ${(props) => props.theme.text};
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const AdminExamAllStudentsTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const AdminExamAllStudentsBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const AdminExamAllStudentsName = styled.div``;
+export const AdminExamAllStudentsVideo = styled.div`
+  width: 9rem;
+  height: 5rem;
+  border: 2px solid ${(props) => props.theme.text};
+`;
+
+export const AdminExamAllStudentsBoxContainer = styled.div`
+  margin: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+`;
+
+export const AdminAddModuleContainer = styled.div`
+  width: 100%;
+  padding: 0 5rem;
+  box-sizing: border-box;
+`;
+
+export const AdminAddModuleTitle = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+`;
+
+export const AdminAddModuleTitleAndButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const AdminModuleBoxesContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+export const AdminModuleBox = styled.div`
+  display: flex;
+  width: 15rem;
+  padding: 1rem 2rem;
+  box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;
+  border-radius: 0.3rem;
+  align-items: center;
+  justify-content: space-between;
+  // border: 1px solid ${(props) => props.theme.text};
+
+  background: ${(props) => props.theme.white};
+`;
+export const AdminModuleBoxTitle = styled.div`
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+export const AdminModuleBoxIconsContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const AdminModuleBoxIcon = styled.div`
+  cursor: pointer;
+`;
+
+export const AdminModuleModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  position: relative;
+  width: 20rem;
+`;
+
+export const AdminModuleModalTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const AdminModuleFieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 15rem;
+`;
+export const AdminModuleFieldTitle = styled.div``;
+export const AdminModuleField = styled.input`
+  font-family: "Inter", sans-serif;
+  border: 2px solid ${(props) => props.theme.text};
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 2rem;
+`;
+
+export const AdminModuleSelectionContainer = styled.div``;
+export const AdminModuleModalIcon = styled.div`
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  cursor: pointer;
+`;
+
+export const AdminModuleBubbleContaier = styled.div`
+  width: 100%;
 `;
