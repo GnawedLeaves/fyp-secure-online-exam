@@ -30,8 +30,8 @@ import NewPersonnelPage from "./pages/admin/adminPersonnel/NewPersonnelPage";
 import Testcall from "./pages/student/testcall";
 import Testcall2 from "./pages/student/testcall2";
 import TestRecordingpage from "./pages/student/TestRecordingpage";
-import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
 import AdminExamDetailsPage from "./pages/admin/adminExams/AdminExamDetailsPage";
+import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
 
 export const adminRoutes = [
   {
