@@ -19,7 +19,7 @@ import { RxCross2 } from "react-icons/rx";
 //3. Width: This will set the width of the compoenent
 const BubbleAdd = (props) => {
   const [newData, setNewData] = useState("");
-  const [allData, setAllData] = useState([]);
+  const [allData, setAllData] = useState(props.initData || []);
 
   const handleFieldKeyDown = (e) => {
     if (e.key === "Enter" && newData !== "") {
@@ -37,13 +37,22 @@ const BubbleAdd = (props) => {
   };
 
   const handleAddNewData = () => {
-    setAllData([newData, ...allData]);
+    setAllData([...allData, newData]);
     setNewData("");
   };
 
   useEffect(() => {
     props.handleBubbleData(allData);
   }, [allData]);
+
+  useEffect(() => {
+    if (props.initData === null) {
+      setAllData([]);
+    } else {
+      setAllData(props.initData);
+    }
+  }, [props.initData]);
+
   return (
     <ThemeProvider theme={theme}>
       <BubbleAddContainer>
@@ -63,7 +72,6 @@ const BubbleAdd = (props) => {
           {allData?.map((data, index) => {
             return (
               <BubbleAddBubble key={index} newItem={index === 0}>
-                {index}
                 {data}
                 <BubbleAddIconContainer
                   onClick={() => {
