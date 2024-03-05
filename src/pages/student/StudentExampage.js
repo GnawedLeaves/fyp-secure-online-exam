@@ -99,11 +99,11 @@ const StudentExampage = () => {
         return { pastExams, presentExams, futureExams };
       }
   
-      const courseIdArray = examsData[0].exams;
+      const examIdArray = examsData[0].exams;
   
-      for (const courseId of courseIdArray) {
+      for (const examId of examIdArray) {
         // Perform a query to get the document with matching courseId
-        const examsQuery = query(examsRef, where("courseId", "==", courseId));
+        const examsQuery = query(examsRef, where("examId", "==", examId));
   
         const querySnapshot = await getDocs(examsQuery);
   
@@ -120,25 +120,25 @@ const StudentExampage = () => {
 
           if (currentTime < startTime) {
             futureExams.push({
-              courseId: examDoc.courseId,
+              examId: examDoc.examId,
               id: examDoc.id,
               ...examDoc.data(),
             });
           } else if (currentTime >= startTime && currentTime <= endTime) {
             presentExams.push({
-              courseId: examDoc.courseId,
+              examId: examDoc.examId,
               id: examDoc.id,
               ...examDoc.data(),
             });
           } else {
             pastExams.push({
-              courseId: examDoc.courseId,
+              examId: examDoc.examId,
               id: examDoc.id,
               ...examDoc.data(),
             });
           }
         } else {
-          console.warn(`Exam with courseId ${courseId} not found.`);
+          console.warn(`Exam with courseId ${examId} not found.`);
         }
       }
   
@@ -201,7 +201,7 @@ const StudentExampage = () => {
                     return (
                       <Examlist
                         key={exam.id}
-                        examId={exam.courseId}
+                        examId={exam.examId}
                         examName={exam.name}
                         examDate={exam.startTime ? formatDateString(exam.startTime.toDate()) : ''}
                         examStartTime={exam.startTime ? exam.startTime.toDate().toLocaleTimeString() : ''}
@@ -236,7 +236,7 @@ const StudentExampage = () => {
                 </ExamlistContainer>
                 {futureExams.map((upcomingexam) => (
                   <Upcomingexamlist
-                  examId={upcomingexam.courseId}
+                  examId={upcomingexam.examId}
                   examName={upcomingexam.name}
                   examDate={upcomingexam.startTime ? formatDateString(upcomingexam.startTime.toDate()) : ''}
                   examStartTime={upcomingexam.startTime ? upcomingexam.startTime.toDate().toLocaleTimeString() : ''}
@@ -275,7 +275,7 @@ const StudentExampage = () => {
                     }
                     return (
                       <Pastexamlist
-                        examId={closedexam.courseId}
+                        examId={closedexam.examId}
                         examName={closedexam.name}
                         examEndDate={closedexam.endTime ? formatDateString(closedexam.endTime.toDate()) : ''}
                         examSubmissionTime={studentInfo && studentInfo.submissionTime ? studentInfo.submissionTime.toDate().toLocaleTimeString() : ''}
