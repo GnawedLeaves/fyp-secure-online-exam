@@ -48,7 +48,7 @@ const StudentExamDetailpage = () => {
   const getExamDetail = async (courseId) => {
     try {
       // Create a query to get all messages where recipientId matches
-      const examsQuery = query(examsRef, where("courseId", "==", courseId));
+      const examsQuery = query(examsRef, where("examId", "==", courseId));
 
       // Get the documents based on the query
       const querySnapshot = await getDocs(examsQuery);

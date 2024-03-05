@@ -68,7 +68,7 @@ const StudentExamQuestionpage = () => {
   const getExamDetail = async (examId) => {
     try {
       // Create a query to get all messages where recipientId matches
-      const examsQuery = query(examsRef, where("courseId", "==", examId));
+      const examsQuery = query(examsRef, where("examId", "==", examId));
 
       // Get the documents based on the query
       const querySnapshot = await getDocs(examsQuery);
@@ -340,7 +340,7 @@ const getAnswerArray = async (studentId, examId) => {
 const updateStudentStatusInExam = async (examId, studentId, status) => {
   try {
     const examsRef = collection(db, "exams");
-    const examsQuery = query(examsRef, where("courseId", "==", examId));
+    const examsQuery = query(examsRef, where("examId", "==", examId));
     // Get the current exam documents based on the query
     const examSnapshot = await getDocs(examsQuery);
 
@@ -438,7 +438,7 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
       />
           <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
-            <PageTitle>{examId} {exams[0]?.name}</PageTitle>
+            <PageTitle>{exams[0]?.courseId} {exams[0]?.name}</PageTitle>
             <QuestionContainer>
             {exams.length > 0 && questions.length > 0 ? (
             <>
