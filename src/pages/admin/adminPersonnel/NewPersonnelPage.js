@@ -21,8 +21,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import { db } from "../../../backend/firebase/firebase";
-import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { Timestamp, addDoc, collection, getDocs } from "firebase/firestore";
 import Modal from "../../../components/Modal/Modal";
+import BubbleSelect from "../../../components/BubbleSelect/BubbleSelect";
 
 const NewPersonnelPage = () => {
   const navigate = useNavigate();
@@ -100,6 +101,40 @@ const NewPersonnelPage = () => {
     } catch (error) {
       console.log("Error for user sign up", error);
     }
+  };
+
+  //fetch modules data
+  const modulesRef = collection(db, "modules");
+  const [allModulesData, setAllModulesData] = useState([]);
+  const [allModulesName, setAllModuleNames] = useState([]);
+
+  useEffect(() => {
+    getModuleData();
+  }, []);
+
+  const getModuleData = async () => {
+    try {
+      const querySnapshot = await getDocs(modulesRef);
+      const modulesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const sortedItems = [...modulesData].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setAllModulesData(sortedItems);
+    } catch (e) {
+      console.log("Error getting module data: ", e);
+    }
+  };
+
+  useEffect(() => {
+    const namesArray = allModulesData.map((obj) => obj.name);
+    setAllModuleNames(namesArray);
+  }, [allModulesData]);
+
+  const handleModulesSelected = (data) => {
+    setNewUserModules(data);
   };
 
   return (
@@ -185,7 +220,11 @@ const NewPersonnelPage = () => {
               </AdminNewFieldContainer>
               <AdminNewFieldContainer>
                 <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                <AdminNewField onChange={(e) => {}} />
+                {/* <AdminNewField onChange={(e) => {}} /> */}
+                <BubbleSelect
+                  allOptions={allModulesName}
+                  handleOptionsSelected={handleModulesSelected}
+                />
               </AdminNewFieldContainer>
 
               <AdminNewFieldContainer>

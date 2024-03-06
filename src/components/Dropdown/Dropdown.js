@@ -7,6 +7,8 @@ const SelectDropdown = styled.select`
   padding: 0.5rem 1rem;
   border-color: ${(props) => props.theme.text};
   font-size: 1.1rem;
+  border-radius: 2rem;
+  border: 2px solid ${(props) => props.theme.text};
 `;
 
 const SelectOption = styled.option`
@@ -27,7 +29,7 @@ const Dropdown = ({ options, onChange }) => {
     <ThemeProvider theme={theme}>
       <SelectDropdown onChange={handleSelectChange}>
         <SelectOption value="" disabled selected>
-          Select an option
+          -- Select an option --
         </SelectOption>
         {options.map((option, index) => (
           <SelectOption key={index} value={option}>
