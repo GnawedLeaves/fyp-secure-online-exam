@@ -58,7 +58,7 @@ const StudentExamReviewpage = () => {
       }
   
       // Perform a query to get the document with matching examId
-      const examQuery = query(submissionRef, where("courseId", "==", examId));
+      const examQuery = query(submissionRef, where("examId", "==", examId));
       const examSnapshot = await getDocs(examQuery);
   
       // Check if there's a matching document

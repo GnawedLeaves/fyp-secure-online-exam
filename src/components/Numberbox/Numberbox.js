@@ -2,11 +2,12 @@ import React from "react";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
-    QuestionBox
+    QuestionBox,
+    NumberboxContainer
 } from "./NumberboxStyles";
 import { useNavigate } from "react-router-dom";
 
-const Numberbox = ({exam,number,hasOption}) => {
+const Numberbox = ({exam,number,hasOption,isFlagged }) => {
   const navigate = useNavigate();
 
   const navigateToQuestion = () => {
@@ -15,7 +16,7 @@ const Numberbox = ({exam,number,hasOption}) => {
   };
   return (
     <ThemeProvider theme={theme}>
-      <QuestionBox onClick={navigateToQuestion} hasOption={hasOption}>{number}</QuestionBox>
+        <QuestionBox isFlagged={isFlagged} onClick={navigateToQuestion} hasOption={hasOption}>{number}</QuestionBox>   
     </ThemeProvider>
   );
 };

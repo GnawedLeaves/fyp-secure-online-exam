@@ -121,7 +121,7 @@ export const LegendBlueColor = styled.div`
   margin:5px
 `;
 export const LegendRedColor = styled.div`
-  background: ${(props) => props.theme.statusError};
+border: 2px solid red;
   width:25px;
   height:25px;
   margin:5px
@@ -265,4 +265,10 @@ export const LegendColor = styled.div`
 `;
 export const LegendText = styled.p`
 margin:0
+`;
+export const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 1em;
+  align-items: flex-start;
 `;

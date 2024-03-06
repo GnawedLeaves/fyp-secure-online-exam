@@ -18,7 +18,8 @@ import {
   LegendBlueColor,
   LegendRedColor,
   LegendGreyColor,
-  LegendText
+  LegendText,
+  ButtonContainer
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
@@ -60,7 +61,9 @@ const StudentExamQuestionpage = () => {
   const [exams, setExams] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [answerArray, setAnswerArray] = useState([]);
+  const [flagArray, setFlagArray] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [flag, setFlag] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(true);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
@@ -114,15 +117,20 @@ const StudentExamQuestionpage = () => {
   //updates the data array whenever the database changes
   const fetchExamData = async () => {
     try {
-      const examsData = await getExamDetail(examId);
-      const questionsData = await getQuestionDetail(examId,questionNo);
-      const answerArray = await getAnswerArray(studentId, examId);
+      const [examsData, questionsData, answerArray, flagArray] = await Promise.all([
+        getExamDetail(examId),
+        getQuestionDetail(examId, questionNo),
+        getAnswerArray(studentId, examId),
+        getFlagArray(studentId, examId),
+      ]);
+  
       setExams(examsData);
       setQuestions(questionsData);
       setAnswerArray(answerArray);
-      setSelectedOption(null); // Reset selectedOption
+      setFlagArray(flagArray); 
+      setSelectedOption(null);
     } catch (error) {
-      console.error("Error fetching questions data:", error);
+      console.error("Error fetching data:", error);
     }
   };
   const fetchData = async () => {
@@ -377,6 +385,94 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
   }
 };
 
+
+
+const saveFlagToDatabase = async (studentId, examId, totalMCQ, questionNo, flagStatus) => {
+  console.log(flagStatus);
+  try {
+    if (!Array.isArray(flagArray)) {
+      console.error("Invalid flagArray:", flagArray);
+      return;
+    }
+
+    if (!examId || !studentId) {
+      console.error("Invalid examId or studentId");
+      return;
+    }
+
+    // Create a copy of the current flagArray to avoid mutating the state directly
+    const newFlagArray = [...flagArray];
+
+    // Update the flag status for the specific questionNo
+    newFlagArray[questionNo - 1] = flagStatus;
+
+    // Update the state with the new flagArray
+    setFlagArray(newFlagArray);
+    console.log(newFlagArray);
+
+    // Now, update the database with the new flag status
+    const flagsCollection = collection(db, "flags");
+    const existingFlagQuery = query(
+      flagsCollection,
+      where("studentId", "==", studentId),
+      where("examId", "==", examId)
+    );
+
+    const [existingFlagSnapshot] = await Promise.all([getDocs(existingFlagQuery)]);
+
+    // If there is an existing record, update it
+    if (!existingFlagSnapshot.empty) {
+      const existingFlagDoc = existingFlagSnapshot.docs[0];
+      const existingFlagRef = doc(flagsCollection, existingFlagDoc.id);
+
+      await updateDoc(existingFlagRef, { flags: newFlagArray });
+    } else {
+      const newFlags = new Array(totalMCQ).fill(null);
+      newFlags[questionNo - 1] = flagStatus;
+
+      await addDoc(flagsCollection, {
+        studentId,
+        examId,
+        flags: newFlags,
+      });
+    }
+
+    console.log("Flag status saved successfully!");
+  } catch (error) {
+    console.error("Error saving flags:", error);
+  }
+};
+
+
+const getFlagArray = async (studentId, examId) => {
+  try {
+    // Create a reference to the flags collection
+    const flagsCollection = collection(db, "flags");
+
+    // Query to get the specific document for the provided studentId and examId
+    const flagsQuery = query(
+      flagsCollection,
+      where("studentId", "==", studentId),
+      where("examId", "==", examId)
+    );
+
+    // Get the documents based on the query
+    const querySnapshot = await getDocs(flagsQuery);
+
+    // If there is a document, return the flags array
+    if (!querySnapshot.empty) {
+      const flagArray = querySnapshot.docs[0].data().flags;
+      return flagArray || []; // Return an empty array if flagArray is falsy
+    }
+
+    // If no document is found, return an empty array or handle it as needed
+    return [];
+  } catch (error) {
+    console.error("Error getting flagArray:", error);
+    return [];
+  }
+};
+
   const grid = [];
 
   for (let i = 0; i < Math.ceil(exams[0]?.totalMCQ / 5); i++) {
@@ -389,14 +485,13 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
         const isQuestionNumber = currentNumber === parseInt(questionNo, 10);
 
         const hasAnswer = answerArray[currentNumber - 1] !== null && answerArray[currentNumber - 1] !== undefined;
-        console.log(hasAnswer);
-        console.log(answerArray);
+        const hasFlag = flagArray[currentNumber - 1] !== null && flagArray[currentNumber - 1] !== undefined && flagArray[currentNumber - 1] !== "false";
         // Push the appropriate component based on the condition
         row.push(
           isQuestionNumber ? (
-            <NumberFocusbox exam={examId} number={currentNumber} />
+            <NumberFocusbox exam={examId} number={currentNumber}  isFlagged={hasFlag}/>
           ) : (
-            <Numberbox exam={examId} number={currentNumber} hasOption={hasAnswer} />
+            <Numberbox exam={examId} number={currentNumber} hasOption={hasAnswer} isFlagged={hasFlag}/>
           )
         );
       }
@@ -469,21 +564,37 @@ const updateStudentStatusInExam = async (examId, studentId, status) => {
             </QuestionContainer>
             <QuestionContainer>
               <LeftContainer>
-                <Button 
-                  defaultColor={theme.primary} 
-                  filledColor={theme.primary} 
-                  filled={false} 
-                  onClick={() => {
-                    if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
-                      nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
-                    } else {
+                <ButtonContainer>
+                  <Button 
+                    defaultColor={theme.primary} 
+                    filledColor={theme.primary} 
+                    filled={false} 
+                    onClick={() => {
+                      if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
+                        nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+                      } else {
 
-                      setShowSubmitModal(true);
-                    }
-                  }}
-                >
-                   {parseInt(questionNo, 10) < exams[0]?.totalMCQ ? 'Save & Next' : 'Review & Submit'}
-                </Button>
+                        setShowSubmitModal(true);
+                      }
+                    }}
+                  >
+                    {parseInt(questionNo, 10) < exams[0]?.totalMCQ ? 'Save & Next' : 'Review & Submit'}
+                  </Button>
+                  <Button 
+                    defaultColor={theme.primary} 
+                    filledColor={theme.primary} 
+                    filled={false} 
+                    onClick={() => {
+                      if (flagArray[questionNo-1] =="true" ) {
+                        saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "false");
+                      } else {
+                        saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "true");
+                      }
+                    }}
+                  >
+                    {flagArray[questionNo - 1] =="true" ? 'Unflag' : 'Flag'}
+                  </Button>
+                </ButtonContainer>
               </LeftContainer>
               <RightContainer>
                 <QuestionLegend>
