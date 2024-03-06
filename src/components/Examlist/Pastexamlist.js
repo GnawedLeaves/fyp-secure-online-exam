@@ -13,7 +13,7 @@ const Pastexamlist = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <ExamlistContainer>
-        <ExamDetail style={{ width: '20%'}}>{props.examId} {props.examName}</ExamDetail>
+        <ExamDetail style={{ width: '20%'}}>{props.courseId} {props.examName}</ExamDetail>
         <ExamDetail style={{ width: '15%'}}>{props.examEndDate}</ExamDetail>
         <ExamDetail style={{ width: '32%'}}>{props.examSubmissionTime}</ExamDetail>
         <ExamDetail style={{ width: '18%'}}>{props.examStatus}</ExamDetail>
