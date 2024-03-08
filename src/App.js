@@ -9,7 +9,6 @@ import StudentExamDetailPage from "./pages/student/StudentExamDetailpage";
 import StudentExamQuestionPage from "./pages/student/StudentExamQuestionpage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
-
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
@@ -32,6 +31,8 @@ import Testcall2 from "./pages/student/testcall2";
 import TestRecordingpage from "./pages/student/TestRecordingpage";
 import AdminExamDetailsPage from "./pages/admin/adminExams/AdminExamDetailsPage";
 import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
+import TestCallPage from "./pages/admin/adminSettings/CallTest.tsx";
+import TestCallPage2 from "./pages/admin/adminSettings/CallTest2.js";
 
 export const adminRoutes = [
   {
@@ -68,6 +69,16 @@ export const adminRoutes = [
     title: "Admin New Personnel",
     link: "/admin/personnel/newuser",
     element: <NewPersonnelPage />,
+  },
+  {
+    title: "Admin Call Test",
+    link: "/admin/personnel/calltest",
+    element: <TestCallPage />,
+  },
+  {
+    title: "Admin Call Test 2",
+    link: "/admin/personnel/calltest2",
+    element: <TestCallPage2 />,
   },
 ];
 
