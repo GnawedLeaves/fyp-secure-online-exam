@@ -159,11 +159,11 @@ const InstructorExamPage =() => {
     return minDate;
   };
 
-  const formatDate = (date) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return date.toLocaleDateString('en-GB', options);
+  const formatDateInViewExams = (date) => {
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    return new Date(date.toDate()).toLocaleDateString('en-GB', options);
   };
-  
+
   const formatExamDuration = (value) => {
     // Remove any non-numeric characters
     const formattedValue = value.replace(/\D/g, '');
@@ -478,7 +478,7 @@ return (
               <ExamDescription>
                Course ID: <span style={{ fontWeight: 'bold' }}>{exam.courseId}</span><br />
                Exam Name: {exam.name}<br />
-               Date: <span style={{ textDecoration: 'underline', fontWeight: 'bold' }}>{formatDate(exam.startTime.toDate())}</span><br /> 
+               Date: <span style={{ textDecoration: 'underline', fontWeight: 'bold' }}>{formatDateInViewExams(exam.startTime)}</span><br /> 
                Time: {exam.startTime.toDate().toLocaleTimeString()}<br />
                Number of Questions:{" "}
                 <span
