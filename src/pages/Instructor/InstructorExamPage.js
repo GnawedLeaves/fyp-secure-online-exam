@@ -286,6 +286,7 @@ const InstructorExamPage =() => {
         courseId: courseId,
         name: name,
         examId: examId,
+        status: 'Not Started',
         sections: [
           {
             description: `MCQ (${examData.length}) questions`,
