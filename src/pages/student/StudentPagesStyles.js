@@ -96,6 +96,14 @@ export const PageButton = styled.div`
 `;
 
 //StudentExamQuestionpage
+
+export const QuestionPageTitle = styled.div`
+  font-size 2rem;
+  font-weight: 600;
+`;
+export const QuestionPageDescription = styled.div`
+  font-size 2rem;
+`;
 export const QuestionContainer = styled.div``;
 export const QuestionSection = styled.div``;
 export const LeftContainer = styled.div`
@@ -116,18 +124,21 @@ export const QuestionRow = styled.div`
 `;
 export const LegendBlueColor = styled.div`
   background: #ADD8E6;
+  border-radius: 10px;
   width:25px;
   height:25px;
   margin:5px
 `;
 export const LegendRedColor = styled.div`
 border: 2px solid red;
-  width:25px;
-  height:25px;
+border-radius: 10px;
+  width:20px;
+  height:20px;
   margin:5px
 `;
 export const LegendGreyColor = styled.div`
   background: ${(props) => props.theme.grey};
+  border-radius: 10px;
   width:25px;
   height:25px;
   margin:5px

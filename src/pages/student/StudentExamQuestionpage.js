@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  PageTitle,
+  QuestionPageTitle,
   StudentHomePageContainer,
   StudentExamDetailContainer,
   QuestionContainer,
@@ -10,6 +10,7 @@ import {
   QuestionGrid,
   QuestionRow,
   PageDescription,
+  QuestionPageDescription,
   PageChoice,
   PageEnterSpace,
   QuestionLegend,
@@ -533,14 +534,14 @@ const getFlagArray = async (studentId, examId) => {
       />
           <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
-            <PageTitle>{exams[0]?.courseId} {exams[0]?.name}</PageTitle>
+            <QuestionPageTitle>{exams[0]?.courseId} {exams[0]?.name}</QuestionPageTitle>
             <QuestionContainer>
             {exams.length > 0 && questions.length > 0 ? (
             <>
               <LeftContainer>
                 <QuestionSection>
-                  <PageDescription>Question {questions[0]?.questionNo} :</PageDescription>
-                  <PageDescription>{questions[0]?.question} </PageDescription>
+                  <QuestionPageDescription>Question {questions[0]?.questionNo} :</QuestionPageDescription>
+                  <QuestionPageDescription>{questions[0]?.question} </QuestionPageDescription>
                   <PageEnterSpace/>
                   <PageChoice>
                       <RadioButtonGroup 

@@ -30,11 +30,6 @@ export const studentNavbarItems = [
     logo: <IoBookOutline />,
   },
   {
-    title: "Bug Report",
-    path: "/student/bug_report",
-    logo: <IoBugOutline />,
-  },
-  {
     title: "Profile",
     path: "/student/profile",
     logo: <IoPersonOutline />,
