@@ -1,167 +1,149 @@
 import React, { useEffect } from "react";
+import { useState } from 'react';
+import { db } from "../../backend/firebase/firebase";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 
 
-
-
+const buttonStyle = {
+  background: "#009ADF",
+  color: "#FFFFFF",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  margin: "0 5px",
+  outline: "none",
+  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+  transition: "background 0.3s ease",
+  fontFamily: "Inter, sans-serif"
+};
 
 const ExamCalendar = () => {
-  useEffect(() => {
-    generateCalendar();
-  }, []); // Run the function once when the component mounts
+  const [date, setDate] = useState(new Date());
 
-  function generateCalendar() {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-    const currentDate = today.getDate();
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
 
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+  const getMonthData = () => {
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const firstDay = new Date(year, month, 1).getDay();
+    const days = daysInMonth(month, year);
+    const monthData = [];
 
-    const calendarContainer = document.getElementById('calendar-container');
-
-    let calendarHTML = '<table style="width: 100%; font-size: 1.3em; border-collapse: collapse;" className="calendar1">';
-    calendarHTML += `<caption style="font-size: 1.5em; font-weight: bold; text-align: center; margin-bottom: 10px;">${getMonthName(currentMonth)} ${currentYear}</caption>`;
-    calendarHTML += '<tr><th style="padding: 10px; border: 1px solid #000;">Sun</th><th style="padding: 10px; border: 1px solid #000;">Mon</th><th style="padding: 10px; border: 1px solid #000;">Tue</th><th style="padding: 10px; border: 1px solid #000;">Wed</th><th style="padding: 10px; border: 1px solid #000;">Thu</th><th style="padding: 10px; border: 1px solid #000;">Fri</th><th style="padding: 10px; border: 1px solid #000;">Sat</th></tr>';
-
-    let dayCounter = 1;
-    let rowCount = Math.ceil((daysInMonth + firstDayOfMonth) / 7);
-
-    for (let i = 0; i < rowCount; i++) {
-      calendarHTML += '<tr>';
-
+    let day = 1;
+    for (let i = 0; i < 6; i++) {
+      const week = [];
       for (let j = 0; j < 7; j++) {
-        const dayInMonth = dayCounter - firstDayOfMonth + 1;
-
-        if (dayInMonth > 0 && dayInMonth <= daysInMonth) {
-          const isToday = (currentDate === dayInMonth && currentMonth === today.getMonth() && currentYear === today.getFullYear());
-          const classList = isToday ? 'todayCalendar' : '';
-
-          calendarHTML += `<td style="text-align: center; padding: 10px; background-color: 
-  ${isToday ? '#4CAF50' : 'transparent'}; ${isToday ? 'border-radius: 1%; color: white;' : 'color: black;'} 
-  border: 1px solid #000;" className="${classList}">${dayInMonth}</td>`;
-
+        if ((i === 0 && j < firstDay) || day > days) {
+          week.push(null);
         } else {
-          calendarHTML += '<td style="padding: 10px; border: 1px solid #000;"></td>';
+          week.push(day);
+          day++;
         }
-
-        dayCounter++;
       }
-
-      calendarHTML += '</tr>';
+      monthData.push(week);
+      if (day > days) break;
     }
+    return monthData;
+  };
 
-    calendarHTML += '</table>';
-    if (calendarContainer) {
-      calendarContainer.innerHTML = calendarHTML;
-    }
-  }
+  const prevMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() - 1));
+  };
 
-  function getMonthName(month) {
-    const monthNames = [
-      "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
-    ];
+  const nextMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() + 1));
+  };
 
-    return monthNames[month];
-  }
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  const monthData = getMonthData();
+  const today = new Date();
 
   return (
-    <div>
-      <div
-        id="calendar-container"
-        style={{
-          width: "100%",
-          textAlign: "center",
-          paddingTop: "2%",
-          padding: "10px",
-          background: "#f2f2f2",
-        }}
-      ></div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "right",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ marginRight: "20px" }}>
-          {/* LegendTable content */}
-          <table
-            style={{
-              fontSize: "16px",
-              borderCollapse: "collapse",
-              border: "2px solid black",
-            }}
-          >
-            <tbody>
-              <tr>
-                <td
-                  style={{
-                    backgroundColor: "#4CAF50",
-                    padding: "0px 40px 0px 40px",
-                    marginRight: "20px",
-                    border: "1px solid black",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    padding: "15px",
-                    marginRight: "10px",
-                    border: "1px solid black",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Today
-                </td>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ width: "100%", textAlign: "center", paddingTop: "2%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", margin: "20px 0", boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <button onClick={prevMonth} style={buttonStyle}>Prev</button>
+          <span style={{ fontSize: "35px", fontWeight: "bold", margin: "0 10px" }}>
+            {monthNames[date.getMonth()]} {date.getFullYear()}
+          </span>
+          <button onClick={nextMonth} style={buttonStyle}>Next</button>
+        </div>
+        <table style={{ width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Sun</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Mon</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Tue</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Wed</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Thu</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Fri</th>
+              <th style={{ border: "1px solid #ccc", fontSize: "27px", padding: "10px" }}>Sat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {monthData.map((week, index) => (
+              <tr key={index} style={{ border: "1px solid #ccc" }}>
+                {week.map((day, index) => (
+                  <td
+                    key={index}
+                    style={{
+                      border: "1px solid #ccc",
+                      fontSize: "25px",
+                      padding: "10px",
+                      backgroundColor: (day === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) ? "lightgreen" : (index === 0 || index === 6) ? "#e0e0e0" : "inherit", // Light green for today's date, grey for weekends
+                      color: (index === 0 || index === 6) ? "#666" : "inherit", // Change text color for weekends
+                      fontWeight: (day === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) ? "bold" : "normal" // Bold font for today's date
+                    }}
+                  >
+                    {day}
+                  </td>
+                ))}
               </tr>
-              <tr>
-                <td
-                  style={{
-                    backgroundColor: "#FFA500",
-                    padding: "0px 40px 0px 40px",
-                    marginRight: "0px",
-                    border: "1px solid black",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    padding: "15px",
-                    marginRight: "10px",
-                    border: "1px solid black",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Exam Today
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    backgroundColor: "red",
-                    padding: "0px 40px 0px 40px",
-                    marginRight: "10px",
-                    border: "1px solid black",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    padding: "10px",
-                    marginRight: "10px",
-                    border: "1px solid black",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Scheduled Exam
-
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ width: "100%", textAlign: "center", paddingBottom: "20px" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <div style={{ display: "inline-block", marginRight: "20px" }}>
+            <span style={{ display: "inline-block", width: "20px", height: "20px", backgroundColor: "lightgreen", marginRight: "5px" }}></span>
+            <span style={{ color: "black" }}>Today</span>
+          </div>
+          <div style={{ display: "inline-block", marginRight: "20px" }}>
+            <span style={{ display: "inline-block", width: "20px", height: "20px", backgroundColor: "orange", marginRight: "5px" }}></span>
+            <span style={{ color: "black" }}>Exam Days</span>
+          </div>
+          <div style={{ display: "inline-block" }}>
+            <span style={{ display: "inline-block", width: "20px", height: "20px", backgroundColor: "red", marginRight: "5px" }}></span>
+            <span style={{ color: "black" }}>Exam Today</span>
+          </div>
         </div>
       </div>
     </div>
