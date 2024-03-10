@@ -192,9 +192,11 @@ const InstructorExamPage =() => {
   
         querySnapshot.forEach((doc) => {
           const examData = doc.data();
-          const startTime = examData.startTime.toDate(); // Convert Firestore Timestamp to Date object
-          if (startTime >= currentDate) { // Only include exams from the current date onwards
-            examsData.push({ id: doc.id, ...examData });
+          if (examData.startTime) { // Check if startTime exists
+            const startTime = examData.startTime.toDate(); // Convert Firestore Timestamp to Date object
+            if (startTime >= currentDate) { // Only include exams from the current date onwards
+              examsData.push({ id: doc.id, ...examData });
+            }
           }
         });
   
