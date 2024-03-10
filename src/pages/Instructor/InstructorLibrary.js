@@ -1,14 +1,26 @@
 import React from "react";
+import { useState } from 'react';
+import { useEffect } from 'react';
 import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
-import { useState } from "react";
+import { InstructorDashboardContainer, InstructorHomeContainer, NavItem, PageTitleInstructor, SetExamTableContainer, SetExamTableData, SetExamTableRow } from "./InstructorStyle";
 import { instructorNavBarItems } from "./ContactAdmin";
 import Navbar from "../../components/Navbar/Navbar";
-import { InstructorDashboardContainer, InstructorHomeContainer, PageTitleInstructor } from "./InstructorStyle";
+import { db } from "../../backend/firebase/firebase";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 
-
-//modal without npm install react-modal
+// Modal without npm install react-modal
 const CustomModalContainer = styled.div`
   position: fixed;
   top: 50%;
@@ -18,6 +30,47 @@ const CustomModalContainer = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   width: 35%;
+  max-height: 80%;
+  border-radius: 20px;
+  overflow-y: auto;
+`;
+
+const XButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  text-decoration: underline
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px; 
+  transition: color 0.3s; 
+  &:hover {
+    color: red;
+`;
+
+const CloseButton = styled.button`
+  padding: 0.5rem 1rem;
+  border-radius: 10rem;
+  text-align: center;
+  border: 2px solid rgb(0, 154, 223);
+  color: rgb(255, 255, 255);
+  background: rgb(0, 154, 223);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  height: fit-content;
+  width: fit-content;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  margin-left: 35%;
+  &:hover {
+    background: rgb(0, 134, 203); 
+    border-color: rgb(0, 134, 203); 
+  }
 `;
 
 const ModalOverlay = styled.div`
@@ -28,6 +81,67 @@ const ModalOverlay = styled.div`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 `;
+const TableStyle = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const ThStyle = styled.th`
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+`;
+
+const TdStyle = styled.td`
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+`;
+
+const formatDate = (date) => {
+  const options = { 
+    day: 'numeric', 
+    month: 'short', 
+    year: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric',
+    hour12: true // Display time in 12-hour format
+  };
+  return new Date(date.toDate()).toLocaleDateString('en-GB', options);
+};
+
+//Modal to display the questions
+const ExamDetailModal = ({ isOpen, onClose, questions }) => (
+  <CustomModal isOpen={isOpen} onClose={onClose}>
+    <XButton onClick={onClose} title="Close">X</XButton>
+    <h2>Exam Questions</h2>
+    <ul>
+      {questions.map((questionItem, index) => (
+        <li key={index}>
+          <h4>Question {index + 1}: {questionItem.question} </h4>
+          
+          <ul>
+            {questionItem.options.map((option, optionIndex) => (
+              <li key={optionIndex}>
+                {option === questionItem.correct_answer ? (
+                  <strong><u>{option}</u></strong>
+                ) : (
+                  option
+                )}
+                {option === questionItem.correct_answer && " (Correct)"}
+                </li>
+            ))}
+          </ul>
+          <p>
+              {/* correct answer:<space> */}
+            Correct Answer: {" "} 
+            <strong><u>{questionItem.correct_answer}</u></strong>
+            </p>
+        </li>
+      ))}
+    </ul>
+  </CustomModal>
+);
 
 const CustomModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) {
@@ -39,173 +153,235 @@ const CustomModal = ({ isOpen, onClose, children }) => {
       <ModalOverlay onClick={onClose} />
       <CustomModalContainer>
         {children}
-        <button onClick={onClose}>Close Modal</button>
+        <CloseButton onClick={onClose}>Close</CloseButton>
       </CustomModalContainer>
     </>
   );
 };
 
-
-//main
-const InstructorLibrary =() => {
-
-  const modulesData = [
-    { _id: 'module1', name: 'Web App Design' },
-    { _id: 'module2', name: 'Database System' },
-    { _id: 'module3', name: 'Software Engineering' },
-  ];
-
+const InstructorLibrary = () => {
   const [selectedModule, setSelectedModule] = useState(null);
+  const [moduleExams, setModuleExams] = useState({});
+  const [courseId, setCourseId] = useState([]);
+  const [activeContent, setActiveContent] = useState("moduleList");
 
-  const [selectedExam, setSelectedExam] = useState(null);
+  const [selectedExamQuestions, setSelectedExamQuestions] = useState([]);
+  const [examDetailModalOpen, setExamDetailModalOpen] = useState(false);
+  const [selectedExamId, setSelectedExamId] = useState(null);
 
-  //for the modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const examsData = [
-    { _id: 'exam1', moduleId: 'module1', examTitle: 'Web App 1', examDate: '2022-03-15', numQuestions: 5, examDuration: 60 },
-    { _id: 'exam2', moduleId: 'module1', examTitle: 'Web App 2', examDate: '2022-04-20', numQuestions: 8, examDuration: 45 },
-    { _id: 'exam3', moduleId: 'module1', examTitle: 'Web App 3', examDate: '2022-05-10', numQuestions: 10, examDuration: 75 },
-    { _id: 'exam4', moduleId: 'module1', examTitle: 'Web App 4', examDate: '2022-06-01', numQuestions: 7, examDuration: 55 },
-    { _id: 'exam5', moduleId: 'module1', examTitle: 'Web App 5', examDate: '2022-07-15', numQuestions: 6, examDuration: 70 },
-    { _id: 'exam6', moduleId: 'module2', examTitle: 'Database Quiz 1', examDate: '2022-08-10', numQuestions: 8, examDuration: 50 },
-    { _id: 'exam7', moduleId: 'module2', examTitle: 'Database Quiz 2', examDate: '2022-09-05', numQuestions: 12, examDuration: 65 },
-    { _id: 'exam8', moduleId: 'module2', examTitle: 'Database Quiz 3', examDate: '2022-10-20', numQuestions: 10, examDuration: 55 },
-    { _id: 'exam9', moduleId: 'module3', examTitle: 'Software Mid Term 1', examDate: '2022-11-15', numQuestions: 6, examDuration: 40 },
-    { _id: 'exam10', moduleId: 'module3', examTitle: 'Software Mid Term 2', examDate: '2022-12-10', numQuestions: 8, examDuration: 60 },
+  useEffect(() => {
+    const fetchcourseIds = async () => {
+      try {
+        const examsRef = collection(db, "exams");
+        const querySnapshot = await getDocs(examsRef);
+        const uniquecourseIds = new Set();
+        
+        querySnapshot.forEach((doc) => {
+          
+          const data = doc.data();
+          console.log("Document data:", data);
+
+          const courseId = data.courseId;
+          console.log("Extracted Course ID:", courseId);
+          uniquecourseIds.add(courseId);
+
+        });
+
+        setCourseId(Array.from(uniquecourseIds));
+
+        console.log("Fetched Module IDs:", Array.from(uniquecourseIds));
+      } catch (error) {
+        console.error("Error fetching module IDs:", error);
+      }
+    };
+
+    fetchcourseIds();
+  }, []);
+
+//firebase get all the exams info
+  useEffect(() => {
+    const fetchExamsForModule = async (courseId) => {
+      try {
+        const examsRef = collection(db, "exams");
+        const q = query(examsRef, where("courseId", "==", courseId));
+        const querySnapshot = await getDocs(q);
+        const exams = [];
+        querySnapshot.forEach((doc) => {
+          exams.push(doc.data());
+        });
+
+        console.log("Fetched exams:", exams);
+        setModuleExams((prevExams) => ({ ...prevExams, [courseId]: exams }));
+        console.log("Fetched Exams for Module:", courseId, exams);
+      } catch (error) {
+        console.error("Error fetching exams for module:", error);
+      }
+    };
+
+    if (selectedModule) {
+      fetchExamsForModule(selectedModule);
+    }
+  }, [selectedModule]);
+
+  const handleModuleClick = async (courseId) => {
+    setSelectedModule(courseId);
+    setActiveContent("examsFor")
+    console.log("Selected Module:", courseId);
     
-  ];
-
-  const [selectedQuestions, setSelectedQuestions] = useState([]);
-
-  //load to nodal. will be tied to database 
-  const sampleQuestions = {
-    exam0:[
-    { questionId: 'q1', text: 'What is React?', options: ['A framework', 'A library', 'A programming language', 'An operating system'], correctAnswer: 1 },
-    { questionId: 'q2', text: 'What is NTU?', options: ['Nanyang Tech Uni', 'Not Taken Up', 'Network Termination Unit', 'National Taiwan Uni'], correctAnswer: 0 },
-    { questionId: 'q3', text: 'How are you?', options: ['Good', 'Very Good', 'Extremely Good', 'Gan Good'], correctAnswer: 0 },
-  ], 
-
-  exam1:[
-    { questionId: 'q4', text: 'Testing?', options: ['1', '2', '3', '4'], correctAnswer: 1 },
-    { questionId: 'q5', text: 'What is Node.js?', options: ['Frontend framework', 'Database system', 'Runtime environment', 'Programming language'], correctAnswer: 2 },
-  ], 
-
-  exam6:[
-    { questionId: 'q6', text: 'Testing?', options: ['1', '2', '3', '4'], correctAnswer: 1 },
-    { questionId: 'q7', text: 'What is Node.js?', options: ['Frontend framework', 'Database system', 'Runtime environment', 'Programming language'], correctAnswer: 2 },
-    { questionId: 'q3', text: 'How are you?', options: ['Good', 'Very Good', 'Extremely Good', 'Gan Good'], correctAnswer: 0 },
-  ], 
+    try {
+      const examsRef = collection(db, "exams");
+      const q = query(examsRef, where("courseId", "==", courseId));
+      const querySnapshot = await getDocs(q);
+      const exams = [];
+      querySnapshot.forEach((doc) => {
+        exams.push(doc.data());
+      });
+      setModuleExams((prevExams) => ({ ...prevExams, [courseId]: exams }));
+    } catch (error) {
+      console.error("Error fetching exams for module:", error);
+    }
   };
 
-  const handleModuleClick = (moduleId) => {
-    setSelectedModule(moduleId);
-    setSelectedExam(null);
+  const handleBackButtonClick = () => {
+    setSelectedModule(null); // Reset selected module
+    setActiveContent("moduleList"); // Show module list
   };
 
-  const handleExamClick = (examId) => {
-    setSelectedExam(examId);
+  //force number to be pushed
+  const fetchNumberExamsForModule = async (courseId) => { // Define fetchExamsForModule function
+    try {
+      const examsRef = collection(db, "exams");
+      const q = query(examsRef, where("courseId", "==", courseId));
+      const querySnapshot = await getDocs(q);
+      const exams = [];
+      querySnapshot.forEach((doc) => {
+        exams.push(doc.data());
+      });
+
+      console.log("Fetched exams:", exams);
+      setModuleExams((prevExams) => ({ ...prevExams, [courseId]: exams }));
+      console.log("Fetched Exams for Module:", courseId, exams);
+    } catch (error) {
+      console.error("Error fetching exams for module:", error);
+    }
   };
 
-  const handleNumQuestionsClick = (numQuestions) => {
-    // navigation or when numQuestions is clicked, show the question. will link to database later on
-    console.log("selectedExam:", selectedExam);
-   //demo fetch questions from database but here we fetch from sampleQuestions
-   const questions = sampleQuestions[selectedExam] || [];
-   setSelectedQuestions(questions);
 
-   //open modal
-   const selectedQuestionsSubset = questions.slice(0, numQuestions);
-    setIsModalOpen(true);
-   setSelectedQuestions(selectedQuestionsSubset);
+  //opening of modal for questions
+  const handleExamFieldClick = async (examId) => {
+    try {
+      // Fetch questions for the selected exam from Firestore
+      const questionsRef = collection(db, "questions");
+      const q = query(questionsRef, where("examId", "==", examId));
+      const querySnapshot = await getDocs(q);
+      const questions = [];
+      querySnapshot.forEach((doc) => {
+
+        const { questionNumber, question, options, correct_answer } = doc.data();
+        questions.push({ questionNumber,question, options, correct_answer });
+      });
+
+      console.log('questions:', questions)
+      setSelectedExamQuestions(questions);
+      setSelectedExamId(examId);
+      setExamDetailModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching questions for exam:", error);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const handleCloseExamDetailModal = () => {
+    setExamDetailModalOpen(false);
+    setSelectedExamId(null);
   };
+
 
 
   return (
-
     <ThemeProvider theme={theme}>
       <InstructorHomeContainer>
         <Navbar linksArray={instructorNavBarItems}/>
+        
         <InstructorDashboardContainer>
+
           <PageTitleInstructor>View All Exams</PageTitleInstructor>
-          <br></br>
-    
-        {modulesData.map((module) => (
-          <button key={module._id} onClick={() => handleModuleClick(module._id)} className={selectedModule === module._id ? 'active' : ''}
-          style={{
-            background: "#4caf50",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "18px",
-            margin: "6px",
-          }}>
-            {module.name}
-          </button>
-        ))}
-      
-      {selectedModule && (
-        <div>
-          <h3>Module: {modulesData.find((module) => module._id === selectedModule)?.name}</h3>
+          <br />
+
+          {activeContent === "moduleList" && (
+          <>
+          <h2>Module List</h2>
           <ul>
-                {examsData
-                  .filter((exam) => exam.moduleId === selectedModule)
-                  .map((exam) => (
-                    <li key={exam._id} onClick={() => handleExamClick(exam._id)} className={selectedExam === exam._id ? 'active' : ''}
-                    style={{padding: '10px', }}
-                    >
-                      <p style={{ fontWeight: 'bold' }}>Exam Title: {exam.examTitle}</p>
-                      
-                      <p style={{ textDecoration: 'underline' }}>Date: {exam.examDate}</p>
+          {courseId.length > 0 && courseId.map((courseId) => {
+        
+        const numExams = moduleExams[courseId] ? moduleExams[courseId].length : 0;
+        if (numExams === 0) {
+          //fetech exam data for this courseID
+          fetchNumberExamsForModule(courseId);
+        }
+        
+        return (
+              <li 
+                key={courseId} 
+                onClick={() => handleModuleClick(courseId)}
+                style={{
+                  marginBottom: '30px',
+                  height: 'auto',
+                  width:'250px',
+                }}
+              >
+                <a href="#">{`${courseId} (${numExams})`}</a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
 
-                      <p>Number of Questions:{" "}
-                      <span style={{textDecoration: 'underline',cursor: 'pointer',}}
-                            onClick={() => handleNumQuestionsClick(exam.numQuestions)}
-                          >
-                            {exam.numQuestions}
-                          </span>
-                        </p>
+          {activeContent === "examsFor" && selectedModule && moduleExams[selectedModule] && (
+            <>
 
-                      <p>Exam Duration: {exam.examDuration} minutes</p>
-                    </li>
-                  ))}
-              </ul>
-
-              {selectedExam && selectedQuestions.length > 0 && (
-                <div>
-                  <CustomModal isOpen={isModalOpen} onClose={closeModal}>
-                  <h4>Selected Exam Questions</h4>
-                  <ul>
-                    {selectedQuestions.map((question) => (
-                      <li key={question.questionId}>
-                        <p>{question.text}</p>
-                        <ul>
-                          {question.options.map((option, index) => (
-                            <li key={index} style={{ listStyleType: 'circle' }}>
-                              {option}
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
+          <button onClick={handleBackButtonClick}>Back</button>
+          {selectedModule && moduleExams[selectedModule] ? (
+              <div>
+                <h2>Exams for {selectedModule}</h2>
+                <TableStyle>
+                  <thead>
+                    <tr>
+                      <ThStyle>Course ID</ThStyle>
+                      <ThStyle>Name</ThStyle>
+                      <ThStyle>Start Time</ThStyle>
+                      <ThStyle>Duration</ThStyle>
+                      <ThStyle>End Time</ThStyle>
+                      <ThStyle>Number of Questions</ThStyle>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {moduleExams[selectedModule].map((exam) => (
+                      <tr key={exam.examId}>
+                        <TdStyle>{exam.courseId}</TdStyle>
+                        <TdStyle>{exam.name}</TdStyle>
+                        <TdStyle onClick={() => handleExamFieldClick(exam.examId)} style={{ cursor: 'pointer' }}>{formatDate(exam.startTime)}</TdStyle>
+                        <TdStyle>{exam.duration}</TdStyle>
+                        <TdStyle onClick={() => handleExamFieldClick(exam.examId)} style={{ cursor: 'pointer' }}>{formatDate(exam.endTime)}</TdStyle>
+                        <TdStyle onClick={() => handleExamFieldClick(exam.examId)} style={{ cursor: 'pointer' }}>{exam.sections[0].description.match(/\d+/)}</TdStyle>
+                      </tr>
                     ))}
-                  </ul>
-                  </CustomModal>
-                </div>
-              )}
-
-        </div>
-      )}
-
-        </InstructorDashboardContainer>
+                  </tbody>
+                </TableStyle>
+              </div>
+            ) : (
+              <p>No exams found for {selectedModule}</p>
+            )}
+          </>
+          )}
+          </InstructorDashboardContainer>
+          {examDetailModalOpen && (
+            <ExamDetailModal isOpen={examDetailModalOpen} onClose={handleCloseExamDetailModal} questions={selectedExamQuestions} />
+          )}
       </InstructorHomeContainer>
     </ThemeProvider>
   );
 };
 
-export default InstructorLibrary
+export default InstructorLibrary;
