@@ -49,6 +49,7 @@ import {
   onSnapshot,
   query,
   where,
+  deleteDoc
 } from "firebase/firestore"; 
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
@@ -239,7 +240,7 @@ const StudentExamQuestionpage = () => {
   
       // Navigate to the next question
       const nextQuestionNo = currentQuestionNo + 1;
-      navigate(`/student/exam/${examId}/${nextQuestionNo}`);
+      navigate(`/student/home/${examId}/${nextQuestionNo}`);
     } catch (error) {
       console.error("Error saving/updating answer to the database:", error);
     }
@@ -253,20 +254,46 @@ const StudentExamQuestionpage = () => {
       console.error("Error saving/updating answer to the database:", error);
     }
   };
-  const reviewExam = async (studentId, examId, totalMCQ, questionNo, optionSelected) => {
+  const deleteExamDemo = async (studentId, examId) => {
     try {
-      const currentQuestionNo = parseInt(questionNo, 10);
-  
-      await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
-  
-      await updateStudentStatusInExam(examId, studentId, "Submitted");
-
       // Navigate to the exam
-      navigate(`/student/exam`);
+      navigate(`/student/home`);
+  
+      const flagsCollection = collection(db, "flags");
+      const answersCollection = collection(db, "answers");
+  
+      // Check if there is an existing record in 'flags' collection
+      const existingFlagQuery = query(
+        flagsCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
+  
+      const [existingFlagSnapshot] = await Promise.all([getDocs(existingFlagQuery)]);
+  
+      // Delete each document found in the 'flags' query
+      existingFlagSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+  
+      // Check if there is an existing record in 'answers' collection
+      const existingAnswersQuery = query(
+        answersCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
+  
+      const [existingAnswersSnapshot] = await Promise.all([getDocs(existingAnswersQuery)]);
+  
+      // Delete each document found in the 'answers' query
+      existingAnswersSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+  
     } catch (error) {
-      console.error("Error saving/updating answer to the database:", error);
+      console.error("Error deleting exam_demo:", error);
     }
-  };
+  };  
   
   const saveAnswerToDatabase = async (studentId, examId, totalMCQ, questionNo, selectedOption ) => {
   
@@ -478,11 +505,10 @@ const getFlagArray = async (studentId, examId) => {
     return [];
   }
 };
-
 const navigateToQuestion = (exam,number) => {
   //  "/student/exam/:examId/:questionNo"
   
-  navigate(`/student/exam/${exam}/${number}`);
+  navigate(`/student/home/${exam}/${number}`);
 };
 
   const grid = [];
@@ -537,7 +563,7 @@ const navigateToQuestion = (exam,number) => {
         actionButtonText="Yes"
         actionButtonColor={theme.statusGood}
         actionButtonClick={() => {
-          reviewExam(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+          deleteExamDemo(studentId, examId);
         }}
         show={showSubmitModal}
         modalTitle="Submit Answer"

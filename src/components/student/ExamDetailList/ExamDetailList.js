@@ -6,7 +6,7 @@ const ExamDetailList = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <PageOrderList>
-      Section {props.section}: {props.sectionDesc} --- {props.weight}
+      Section {props.section}: {props.sectionDesc} --- {props.weight}%
       </PageOrderList>
     </ThemeProvider>
   );
