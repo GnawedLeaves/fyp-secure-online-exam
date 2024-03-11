@@ -103,39 +103,39 @@ const StudentExampage = () => {
   
       for (const examId of examIdArray) {
         // Perform a query to get the document with matching courseId
-        const examsQuery = query(examsRef, where("examId", "==", examId));
+        const examsQuery = query(examsRef, where("courseId", "==", examId));
   
         const querySnapshot = await getDocs(examsQuery);
   
         // Check if there's a matching document
         if (!querySnapshot.empty) {
-          const examDoc = querySnapshot.docs[0];
-  
-          // Retrieve the start and end times of the exam
-          const startTime = examDoc.data().startTime?.toDate();
-          const endTime = examDoc.data().endTime?.toDate();
-  
-          // Classify the exam based on the date
-          const currentTime = getCurrentTime();
+          for (const examDoc of querySnapshot.docs) {
+            // Retrieve the start and end times of the exam
+            const startTime = examDoc.data().startTime?.toDate();
+            const endTime = examDoc.data().endTime?.toDate();
+    
+            // Classify the exam based on the date
+            const currentTime = getCurrentTime();
 
-          if (currentTime < startTime) {
-            futureExams.push({
-              courseId: examDoc.courseId,
-              id: examDoc.id,
-              ...examDoc.data(),
-            });
-          } else if (currentTime >= startTime && currentTime <= endTime) {
-            presentExams.push({
-              courseId: examDoc.courseId,
-              id: examDoc.id,
-              ...examDoc.data(),
-            });
-          } else {
-            pastExams.push({
-              courseId: examDoc.courseId,
-              id: examDoc.id,
-              ...examDoc.data(),
-            });
+            if (currentTime < startTime) {
+              futureExams.push({
+                courseId: examDoc.courseId,
+                id: examDoc.id,
+                ...examDoc.data(),
+              });
+            } else if (currentTime >= startTime && currentTime <= endTime) {
+              presentExams.push({
+                courseId: examDoc.courseId,
+                id: examDoc.id,
+                ...examDoc.data(),
+              });
+            } else {
+              pastExams.push({
+                courseId: examDoc.courseId,
+                id: examDoc.id,
+                ...examDoc.data(),
+              });
+            }
           }
         } else {
           console.warn(`Exam with courseId ${examId} not found.`);

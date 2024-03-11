@@ -32,7 +32,7 @@ import {
 import { db } from "../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
 
-const StudentExamDetailpage = () => {
+const StudentExamDemoDetailpage = () => {
   const { examId } = useParams();
   const courseId = examId;
   const examDisplayRef = useRef(null);
@@ -42,7 +42,7 @@ const StudentExamDetailpage = () => {
   
 
   const startexam = () => {
-  navigate(`/student/exam/${courseId}/1`);
+  navigate(`/student/home/${courseId}/1`);
 };
 
   const getExamDetail = async (courseId) => {
@@ -124,4 +124,4 @@ const StudentExamDetailpage = () => {
   );
 };
 
-export default StudentExamDetailpage;
+export default StudentExamDemoDetailpage;

@@ -6,16 +6,11 @@ import {
 } from "./NumberboxStyles";
 import { useNavigate } from "react-router-dom";
 
-const NumberFocusbox = ({exam,number,isFlagged}) => {
-  const navigate = useNavigate();
+const NumberFocusbox = ({number,isFlagged,onClickFunction}) => {
 
-  const navigateToQuestion = () => {
-    //  "/student/exam/:examId/:questionNo"
-    navigate(`/student/exam/${exam}/${number}`);
-  };
   return (
     <ThemeProvider theme={theme}>
-      <QuestionFocusBox isFlagged={isFlagged} onClick={navigateToQuestion}>{number}</QuestionFocusBox>
+      <QuestionFocusBox isFlagged={isFlagged} onClick={onClickFunction}>{number}</QuestionFocusBox>
     </ThemeProvider>
   );
 };

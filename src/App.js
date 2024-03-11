@@ -32,6 +32,8 @@ import Testcall2 from "./pages/student/testcall2";
 import TestRecordingpage from "./pages/student/TestRecordingpage";
 import AdminExamDetailsPage from "./pages/admin/adminExams/AdminExamDetailsPage";
 import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
+import StudentExamDemoQuestionpage from "./pages/student/StudentExamDemoQuestion";
+import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage";
 
 export const adminRoutes = [
   {
@@ -116,6 +118,16 @@ export const studentRoutes = [
     title: "Student Profile",
     link: "/student/profile",
     element: <StudentProfilepage />,
+  },
+  {
+    title: "Student Exam demo",
+    link: "/student/home/:examId/:questionNo",
+    element: <StudentExamDemoQuestionpage/>,
+  },
+  {
+    title: "Student Exam Demo Detail",
+    link: "/student/home/:examId",
+    element:<StudentExamDemoDetailpage />,
   },
   {
     title: "call test",
