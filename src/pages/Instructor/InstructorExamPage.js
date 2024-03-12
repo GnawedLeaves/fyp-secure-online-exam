@@ -21,6 +21,7 @@ import {
 } from "firebase/firestore";
 import InstructorModal from "../../components/Modal/InstructorModal";
 import { v4 as uuidv4, } from 'uuid';
+import {updateDoc } from "../../backend/firebase/firebase";
 
 
 const ExamContainer = styled.div`
@@ -93,6 +94,7 @@ const InstructorExamPage =() => {
   const [name, setName] = useState('');
   const [questions, setQuestions] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const handleSetActiveContent = (content) => {
     setActiveContent(content);
@@ -237,10 +239,8 @@ const InstructorExamPage =() => {
       </div>
     ));
   };
- 
-  //   setModalContent(questions);
   
-
+//view question
   const fetchQuestions = async (examId) => {
     try {
       const questionQuerySnapshot = await getDocs(query(collection(db, 'questions'), 
@@ -333,6 +333,122 @@ const InstructorExamPage =() => {
       console.error('Error adding exam data: ', error);
     }
   };
+//Editing view for the tutor
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
+  const resetQuestions = () => {
+    setQuestions([...examData]);
+    setEditMode(false);
+  };
+
+  // Function to save changes made by the tutor
+const saveChanges = async () => {
+  try {
+    // Update questions in Firebase
+    await Promise.all(questions.map(async (question, index) => {
+      const questionRef = doc(db, 'questions', question.id); // Assuming you have an 'id' field in your question object
+      await updateDoc(questionRef, {
+        question: question.question,
+        options: question.options,
+        correct_answer: question.correct_answer
+      });
+    }));
+    
+    console.log('Questions updated successfully');
+    setEditMode(false); // Exit edit mode after saving changes
+  } catch (error) {
+    console.error('Error updating questions:', error);
+  }
+
+};
+
+// Function to delete a specific question in edit view
+const deleteQuestion = (index) => {
+  const updatedQuestions = [...questions];
+  updatedQuestions.splice(index, 1);
+  setQuestions(updatedQuestions);
+};
+
+// Function to handle changes in question text edit view
+const handleQuestionTextChange = (index, e) => {
+  const updatedQuestions = [...questions];
+  updatedQuestions[index].question = e.target.value;
+  setQuestions(updatedQuestions);
+};
+
+// Function to handle changes in option text
+const handleOptionTextChange = (questionIndex, optionIndex, e) => {
+  const updatedQuestions = [...questions];
+  updatedQuestions[questionIndex].options[optionIndex] = e.target.value;
+  setQuestions(updatedQuestions);
+};
+
+// Function to handle changes in correct answer
+const handleNewAnswer = (questionIndex, e) => {
+  const updatedQuestions = [...questions];
+  updatedQuestions[questionIndex].correct_answer = e.target.value;
+  setQuestions(updatedQuestions);
+};
+
+// Render editable fields based on edit mode
+const renderEditableFields = () => {
+  return questions.map((question, index) => (
+    <div key={index}>
+       <br></br>
+       <label><strong>Question {index + 1}: </strong></label>
+      <input
+        type="text"
+        value={question.question}
+        onChange={(e) => handleQuestionTextChange(index, e)}
+      />
+      <br></br>
+      <br></br>
+
+      <div style={{ display: 'flex', }}>
+        <label style={{ marginRight: '10px' }}><strong>Options:</strong></label>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {question.options.map((option, optionIndex) => (
+            <input
+              key={optionIndex}
+              type="text"
+              value={option}
+              onChange={(e) => handleOptionTextChange(index, optionIndex, e)}
+             
+            />
+          ))}
+        </div>
+      </div>
+      <br></br>
+      <label><strong>Correct Answer: </strong></label>
+      <select value={question.correct_answer} onChange={(e) => handleNewAnswer(index, e)}>
+        {question.options.map((option, optionIndex) => (
+          <option key={optionIndex} value={option}>{option}</option>
+        ))}
+      </select>
+      <button onClick={() => deleteQuestion(index)}
+      style={{ marginLeft: '10px' }}>Delete</button>
+      <br></br>
+    </div>
+  ));
+};
+
+
+const renderActionButtons = () => {
+  if (editMode) {
+    return (
+      <>
+        <button onClick={saveChanges}>Save</button>
+        <button onClick={toggleEditMode}>Cancel</button>
+      </>
+    );
+  } else {
+    return <button onClick={toggleEditMode}>Edit</button>;
+  }
+};
+
+
 
 return (
   <ThemeProvider theme={theme}>
@@ -507,12 +623,23 @@ return (
 
           <InstructorModal
             show={showModal}
-            handleModalClose={() => setShowModal(false)}
+            handleModalClose={() => 
+              {resetQuestions();
+              setShowModal(false);
+            }}
+
             actionButtonText="OK"
             actionButtonColor={theme.primary}
             actionButtonClick={() => {}}
             modalTitle="Exam Questions"
-            modalContent={formatQuestionsForModal(questions)} // Pass the questions array here
+            
+            modalContent={
+              <>
+                {editMode ? renderEditableFields() : formatQuestionsForModal(questions)}
+                {renderActionButtons()}
+              </>
+            }// Pass the questions array here
+            
             closingButtonText="Cancel"
             />
      </div>
