@@ -21,8 +21,7 @@ import {
 } from "firebase/firestore";
 import InstructorModal from "../../components/Modal/InstructorModal";
 import { v4 as uuidv4, } from 'uuid';
-import {updateDoc } from "../../backend/firebase/firebase";
-
+import {updateDoc, deleteDoc } from "../../backend/firebase/firebase";
 
 const ExamContainer = styled.div`
   // width: 90%;
@@ -201,7 +200,16 @@ const InstructorExamPage =() => {
             }
           }
         });
-  
+
+         // Sort exams by date in ascending order
+        examsData.sort((a, b) => {
+          // Extract the date part from the startTime
+          const dateA = new Date(a.startTime.toDate().setHours(0, 0, 0, 0));
+          const dateB = new Date(b.startTime.toDate().setHours(0, 0, 0, 0));
+          // Compare dates
+          return dateA - dateB;
+        });
+        
         setUpcomingExams(examsData);
         setLoading(false);
       } catch (error) {
@@ -225,6 +233,7 @@ const InstructorExamPage =() => {
       console.error('Error fetching questions:', error);
     }
   };
+  
   const formatQuestionsForModal = (questions) => {
     return questions.map((question, index) => (
       <div key={index}>
@@ -333,6 +342,7 @@ const InstructorExamPage =() => {
       console.error('Error adding exam data: ', error);
     }
   };
+
 //Editing view for the tutor
   const toggleEditMode = () => {
     setEditMode(!editMode);
@@ -364,11 +374,67 @@ const saveChanges = async () => {
 
 };
 
+seEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, 'exams'), (snapshot) => {
+    const examsData = [];
+    snapshot.forEach((doc) => {
+      const examData = doc.data();
+      const startTime = examData.startTime.toDate(); // Convert Firestore Timestamp to Date object
+      if (startTime >= new Date()) { // Only include exams from the current date onwards
+        examsData.push({ id: doc.id, ...examData });
+      }
+    });
+    setUpcomingExams(examsData);
+    setLoading(false);
+  });
+
+  // Clean up the listener on component unmount
+  return () => unsubscribe();
+}, []); 
+
+
+
 // Function to delete a specific question in edit view
-const deleteQuestion = (index) => {
+const deleteQuestion = async (index) => {
+  const confirmation = window.confirm("Are you sure you want to delete this question? This action cannot be undone.");
+  
+if(confirmation){
+  try {
+  const deletedQuestion = questions[index]; 
   const updatedQuestions = [...questions];
-  updatedQuestions.splice(index, 1);
-  setQuestions(updatedQuestions);
+  updatedQuestions.splice(index, 1); 
+  setQuestions(updatedQuestions); 
+
+  await deleteDoc(doc(db, 'questions', deletedQuestion.id));
+  console.log('Question deleted successfully from Firestore');
+
+  const examId = deletedQuestion.examId;
+  console.log('deletedId',examId);
+
+  const examsSnapshot = await getDocs(query(collection(db, 'exams'), 
+  where('examId', '==', examId)));
+
+  examsSnapshot.forEach(async (doc) => {
+    const examRef = doc.ref;
+    const examData = doc.data();
+    const updatedTotalMCQ = examData.totalMCQ - 1;
+    const updatedSections = [...examData.sections]; // Create a copy of the sections array
+    const sectionIndex = updatedSections.findIndex(section => section.section === 'A');
+    
+    // If the section with section === 'A' is found, update its description
+    if (sectionIndex !== -1) {
+      updatedSections[sectionIndex] = {
+        ...updatedSections[sectionIndex],
+        description: `MCQ (${updatedTotalMCQ}) questions`
+      };
+    }
+    await updateDoc(examRef, { totalMCQ: updatedTotalMCQ, sections: updatedSections });
+    console.log(`TotalMCQ updated for exam with ID ${doc.id}`);
+  });
+  } catch (error) {
+    console.error('Error deleting question from Firestore:', error);
+  }
+}
 };
 
 // Function to handle changes in question text edit view
@@ -434,7 +500,6 @@ const renderEditableFields = () => {
   ));
 };
 
-
 const renderActionButtons = () => {
   if (editMode) {
     return (
@@ -447,7 +512,6 @@ const renderActionButtons = () => {
     return <button onClick={toggleEditMode}>Edit</button>;
   }
 };
-
 
 
 return (
