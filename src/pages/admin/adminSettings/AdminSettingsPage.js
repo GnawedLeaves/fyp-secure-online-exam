@@ -12,7 +12,10 @@ const AdminSettingsPage = () => {
     <ThemeProvider theme={theme}>
       <AdminSettingsBigContainer>
         <Navbar linksArray={adminNavbarItems} />
-        <AdminSettingsContainer>Admin Settings Page</AdminSettingsContainer>
+        <AdminSettingsContainer>
+
+          <h1>Video SDK Testing</h1>
+        </AdminSettingsContainer>
       </AdminSettingsBigContainer>
     </ThemeProvider>
   );
