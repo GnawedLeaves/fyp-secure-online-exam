@@ -52,6 +52,7 @@ export const ModalSucess = styled.div`
 export const ModalContent = styled.div`
   width: 90%;
   // text-align: center;
+  overflow-y: auto;
 `;
 
 export const ModalButtonContainer = styled.div`
