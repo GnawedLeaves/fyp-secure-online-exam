@@ -374,7 +374,7 @@ const saveChanges = async () => {
 
 };
 
-seEffect(() => {
+setEffect(() => {
   const unsubscribe = onSnapshot(collection(db, 'exams'), (snapshot) => {
     const examsData = [];
     snapshot.forEach((doc) => {
