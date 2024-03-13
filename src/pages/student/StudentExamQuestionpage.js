@@ -53,6 +53,7 @@ import {
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
+import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt'
 
 const StudentExamQuestionpage = () => {
   const studentId = "1221";
@@ -510,7 +511,46 @@ const navigateToQuestion = (exam,number) => {
     }
     grid.push(<QuestionRow>{row}</QuestionRow>);
   }
-  
+
+  const myMeeting = async (element) => {
+    const appID=552252558;
+    const serverSecret="2679f71641820de66f51b17a7960ad32";
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+        appID, 
+        serverSecret, 
+        examId+studentId, 
+        Date.now().toString(),
+        studentId
+    );
+    
+    const zc = ZegoUIKitPrebuilt.create(kitToken);
+    zc.joinRoom({
+        showPreJoinView: false,
+        container: element,
+        scenario:{
+            mode: ZegoUIKitPrebuilt.OneONoneCall,
+        },
+        turnOnMicrophoneWhenJoining: false,
+        turnOnCameraWhenJoining: true,
+        showTextChat: false,
+        showUserList: false,
+        lowerLeftNotification: {
+            showUserJoinAndLeave: false,
+            showTextChat: false
+        },
+        showPinButton: false,
+        showLeavingView: false,
+        showLeaveRoomConfirmDialog: false,
+        showRoomDetailsButton: false,
+        showMyCameraToggleButton: false,
+        showMyMicrophoneToggleButton: false,
+        showAudioVideoSettingsButton: false,
+        showLayoutButton: false,
+        showNonVideoUser: false,
+        showScreenSharingButton: false,
+        layout: "Sidebar",
+    })
+};
 
   return (
       <ThemeProvider theme={theme}>
@@ -543,7 +583,7 @@ const navigateToQuestion = (exam,number) => {
         modalTitle="Submit Answer"
         modalContent="Are you sure you want to submit your answer? This action cannot be undone."
       />
-          <Navbar linksArray={studentNavbarItems} />
+          
           <StudentExamDetailContainer>
             <QuestionPageTitle>{exams[0]?.name}</QuestionPageTitle>
             <QuestionContainer>
@@ -647,6 +687,12 @@ const navigateToQuestion = (exam,number) => {
                   </LegendRow>
                 </QuestionLegend>
               </RightContainer>
+              <div style={{ width: '100%'}}>
+                <div 
+                  ref={myMeeting}
+                  style={{ width: '20vw',bottom:'0', display:'none'}}
+                />
+              </div>
             </QuestionContainer>
             <Footer/>
           </StudentExamDetailContainer>
