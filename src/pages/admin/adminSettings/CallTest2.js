@@ -62,7 +62,7 @@ function ParticipantView(props) {
   );
 }
 
-function MeetingView() {
+function () {
   const [joined, setJoined] = useState(null);
   //Get the method which will be used to join the meeting.
   //We will also get the participants list to display all participants
@@ -110,7 +110,7 @@ const TestCallPage2 = () => {
         }}
         token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiJmYmY4MWNhZi0yM2M5LTQ4ZDctOGUxMi1kYTMzNDk0NGRiZTIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTcwOTg4NjI4MCwiZXhwIjoxNzA5OTcyNjgwfQ.QXlyTMxGG-S3TPgSEXCy3gUhAQuqkFrFWAHRkTXoHiY"
       >
-        <MeetingView />
+        < />
       </MeetingProvider>
     </ThemeProvider>
   );
