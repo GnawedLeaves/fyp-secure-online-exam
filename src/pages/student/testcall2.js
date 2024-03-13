@@ -1,71 +1,55 @@
-import React from "react";
-import {
-  StudentHomePageContainer,
-  StudentNavbarContentContainer,
-  PageTitle,
-  FeatureCheckContainer,
-  FeatureCheckTitle,
-  FeatureCheckDescription,
-} from "./StudentPagesStyles";
-import { ThemeProvider } from "styled-components";
-import Footer from "../../components/Footer/Footer";
-import { theme } from "../../theme";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar";
-import { RiHome4Line } from "react-icons/ri";
-import { IoBookOutline } from "react-icons/io5";
-import { IoPersonOutline } from "react-icons/io5";
-import { IoBugOutline } from "react-icons/io5";
-import Button from "../../components/Button/Button";
-import  VideoRoom2  from "../../components/videoCall/VideoRoom2";
+import React from 'react';
+import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt'
 
-export const studentNavbarItems = [
-  {
-    title: "Home",
-    path: "/student/home",
-    logo: <RiHome4Line />,
-  },
-  {
-    title: "Exams",
-    path: "/student/exam",
-    logo: <IoBookOutline />,
-  },
-  {
-    title: "Bug Report",
-    path: "/student/bug_report",
-    logo: <IoBugOutline />,
-  },
-  {
-    title: "Profile",
-    path: "/student/profile",
-    logo: <IoPersonOutline />,
-  },
-];
+const Roompage =() => {
+    const roomId = "e3695c3f-ef0c-4ab3-a971-ac58bb9142751221";
+    const teacherId = "1234";
 
-const Testcall2 = () => {
-  const navigate = useNavigate();
-  const navigateFaceRegistration = () => {
-    navigate("/student/home/face_registration");
-  };
-  const navigateSystemCheck = () => {
-    navigate("/student/home/system_check");
+    const myMeeting = async (element) => {
+      const appID=552252558;
+      const serverSecret="2679f71641820de66f51b17a7960ad32";
+      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+          appID, 
+          serverSecret, 
+          roomId, 
+          Date.now().toString(),
+          teacherId
+      );
+      const zc = ZegoUIKitPrebuilt.create(kitToken);
+      zc.joinRoom({
+          showPreJoinView: false,
+          container: element,
+          scenario:{
+              mode: ZegoUIKitPrebuilt.OneONoneCall,
+          },
+          turnOnMicrophoneWhenJoining: false,
+          turnOnCameraWhenJoining: false,
+          showTextChat: false,
+          showUserList: false,
+          lowerLeftNotification: {
+              showUserJoinAndLeave: false,
+              showTextChat: false
+          },
+          showPinButton: false,
+          showLeavingView: false,
+          showLeaveRoomConfirmDialog: false,
+          showRoomDetailsButton: false,
+          showMyCameraToggleButton: true,
+          showMyMicrophoneToggleButton: false,
+          showAudioVideoSettingsButton: false,
+          showLayoutButton: false,
+          showNonVideoUser: false,
+          showScreenSharingButton: false,
+          layout: "Grid",
+      })
   };
 
-  const navigateExamDemo = () => {
-    navigate("/student/home/exam_demo");
-  };
-
-  return (
-    <ThemeProvider theme={theme}>
-      <StudentHomePageContainer>
-        <Navbar linksArray={studentNavbarItems} />
-        <StudentNavbarContentContainer>
-        <VideoRoom2 examId="IM1003"/>
-        </StudentNavbarContentContainer>
-      </StudentHomePageContainer>
-    </ThemeProvider>
-      
-  );
+    return (
+        <div>
+            <h1>teacher view {roomId} </h1>
+            <div ref={myMeeting}/>
+        </div>
+    );
 };
 
-export default Testcall2;
+export default Roompage;
