@@ -70,30 +70,37 @@ const NewPersonnelPage = () => {
         usersRef,
         newUserType === "student"
           ? {
-              authId: id,
-              name: newUserName,
-              year: newUserYear,
-              course: newUserCourse,
-              modules: newUserModules,
-              type: newUserType,
-              dateCreated: timestamp,
-              // Add user data here
-            }
+            authId: id,
+            name: newUserName,
+            year: newUserYear,
+            course: newUserCourse,
+            modules: newUserModules,
+            type: newUserType,
+            dateCreated: timestamp,
+            // Add user data here
+          }
           : newUserType === "teacher"
-          ? {
+            ? {
               authId: id,
               name: newUserName,
               modules: newUserModules,
               type: newUserType,
               dateCreated: timestamp,
             }
-          : {
+            : {
               authId: id,
               name: newUserName,
               type: newUserType,
               dateCreated: timestamp,
             }
       );
+
+
+
+
+
+
+
       setShowSignUpSuccessModal(true);
       resetInputFields();
 
@@ -111,6 +118,7 @@ const NewPersonnelPage = () => {
   useEffect(() => {
     getModuleData();
   }, []);
+
 
   const getModuleData = async () => {
     try {
@@ -177,7 +185,7 @@ const NewPersonnelPage = () => {
             actionButtonText="OK"
             actionButtonColor={theme.primary}
             filled={true}
-            actionButtonClick={() => {}}
+            actionButtonClick={() => { }}
             show={showSignUpSuccessModal}
             modalTitle="Success!"
             modalContent="Add user successful."
@@ -220,7 +228,6 @@ const NewPersonnelPage = () => {
               </AdminNewFieldContainer>
               <AdminNewFieldContainer>
                 <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                {/* <AdminNewField onChange={(e) => {}} /> */}
                 <BubbleSelect
                   allOptions={allModulesName}
                   handleOptionsSelected={handleModulesSelected}
@@ -239,7 +246,7 @@ const NewPersonnelPage = () => {
 
               <AdminNewFieldContainer>
                 <AdminNewFieldTitle>Confirm Password</AdminNewFieldTitle>
-                <AdminNewField type="password" onChange={(e) => {}} />
+                <AdminNewField type="password" onChange={(e) => { }} />
               </AdminNewFieldContainer>
             </>
           )}
@@ -266,7 +273,10 @@ const NewPersonnelPage = () => {
 
               <AdminNewFieldContainer>
                 <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                <AdminNewField onChange={(e) => {}} />
+                <BubbleSelect
+                  allOptions={allModulesName}
+                  handleOptionsSelected={handleModulesSelected}
+                />
               </AdminNewFieldContainer>
 
               <AdminNewFieldContainer>

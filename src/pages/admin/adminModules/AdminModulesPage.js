@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import {
   AdminAddModuleContainer,
   AdminAddModuleTitle,
@@ -21,23 +21,23 @@ import {
   AdminModuleSelectionContainer,
   AdminNavbarContentContainer,
   PageTitle,
-} from "./AdminPagesStyles";
-import Navbar from "../../components/Navbar/Navbar";
+} from "../AdminPagesStyles";
+import Navbar from "../../../components/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import { RiHome4Line } from "react-icons/ri";
 import { IoBookOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
-import LoadingPage from "../common/loadingPage/LoadingPage";
+import LoadingPage from "../../common/loadingPage/LoadingPage";
 import { MdOutlineDelete } from "react-icons/md";
 import { MdOutlineEdit } from "react-icons/md";
-import Button from "../../components/Button/Button";
-import Modal from "../../components/Modal/Modal";
-import BubbleSelect from "../../components/BubbleSelect/BubbleSelect";
-import BubbleAdd from "../../components/BubbleAdd/BubbleAdd";
+import Button from "../../../components/Button/Button";
+import Modal from "../../../components/Modal/Modal";
+import BubbleSelect from "../../../components/BubbleSelect/BubbleSelect";
+import BubbleAdd from "../../../components/BubbleAdd/BubbleAdd";
 import { RxCross2 } from "react-icons/rx";
-import { db } from "../../backend/firebase/firebase";
+import { db } from "../../../backend/firebase/firebase";
 import {
   Timestamp,
   addDoc,
@@ -49,38 +49,10 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import { adminNavbarItems } from "../AdminHomePage";
 
-export const adminNavbarItems = [
-  {
-    title: "Home",
-    path: "/admin/home",
-    logo: <RiHome4Line />,
-  },
-  {
-    title: "Exams",
-    path: "/admin/exams",
-    logo: <IoBookOutline />,
-  },
-  {
-    title: "Modules",
-    path: "/admin/modules",
-    logo: <IoSettingsOutline />,
-  },
-  {
-    title: "Personnel",
-    path: "/admin/personnel",
-    logo: <IoPeopleOutline />,
-  },
 
-  {
-    title: "Messages",
-    path: "/admin/messages",
-    logo: <IoMailOutline />,
-  },
-
-];
-
-const AdminHomePage = () => {
+const AdminModulesPage = () => {
   const navigate = useNavigate();
   const modulesRef = collection(db, "modules");
   //edit this when want to add loading screen
@@ -380,4 +352,4 @@ const AdminHomePage = () => {
   );
 };
 
-export default AdminHomePage;
+export default AdminModulesPage;
