@@ -25,19 +25,24 @@ import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { db } from "../../backend/firebase/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Navbar = (props) => {
   const navigate = useNavigate();
 
   const changePage = (path) => {
-    console.log(`/${path}`);
+
     navigate(`/${path}`);
   };
   const currentURL = window.location.href;
   //TODO: Change depending on who is logged in
 
   const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [userLoggedIn, setUserLoggedIn] = useState();
   const [userData, setUserData] = useState();
+
+
 
   const auth = getAuth();
   useEffect(() => {
@@ -45,15 +50,33 @@ const Navbar = (props) => {
       if (user) {
         const uid = user.uid;
         setLoggedInUserId(uid);
-        setUserData(true);
-        console.log("user is signed in: ", uid);
+        setUserLoggedIn(true);
+
       } else {
-        setUserData(false);
+        setUserLoggedIn(false);
         //TODO: uncomment this when project finished
         // navigate("/login");
       }
     });
+
+
   }, []);
+
+  useEffect(() => {
+    if (loggedInUserId !== "") {
+      getUserData(loggedInUserId)
+    }
+  }, [loggedInUserId])
+
+  const getUserData = async (loggedInUserId) => {
+    const userRef = collection(db, "users");
+    const querySnapshot = await getDocs(query(userRef, where("authId", "==", loggedInUserId)))
+    const doc = querySnapshot.docs[0];
+    const userData = doc?.data();
+    setUserData(userData)
+
+
+  }
 
   const handleSignOut = () => {
     signOut(auth)
@@ -99,7 +122,7 @@ const Navbar = (props) => {
         </NavbarContentContainer>
         <NavbarProfileContainer>
           <NavbarProfile>
-            {loggedInUserId ? loggedInUserId : "Not Logged In"}
+            {userLoggedIn ? userData?.name : "Not Logged In"} <br />{userData?.course ? "(" + userData.course + ")" : ""}
           </NavbarProfile>
           <NavbarLogoutButton
             onClick={() => {

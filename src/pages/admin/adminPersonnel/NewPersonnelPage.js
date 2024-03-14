@@ -21,7 +21,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import { db } from "../../../backend/firebase/firebase";
-import { Timestamp, addDoc, collection, getDocs } from "firebase/firestore";
+import { Timestamp, addDoc, collection, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import Modal from "../../../components/Modal/Modal";
 import BubbleSelect from "../../../components/BubbleSelect/BubbleSelect";
 
@@ -34,8 +34,14 @@ const NewPersonnelPage = () => {
   const [newUserYear, setNewUserYear] = useState("");
   const [newUserCourse, setNewUserCourse] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserPasswordConfirm, setNewUserPasswordConfirm] = useState("");
   const [newUserModules, setNewUserModules] = useState([]);
   const [showSignUpSuccessModal, setShowSignUpSuccessModal] = useState(false);
+  const [showSignUpFailureModal, setShowSignUpFailureModal] = useState(false);
+  const [signUpFailureModalContent, setSignUpFailureModalContent] = useState("");
+  const [signUpFailureModalTitle, setSignUpFailureModalTitle] = useState("");
+
+
 
   const dropdownOptions = ["1", "2", "3", "4", "5", "6"];
 
@@ -95,11 +101,11 @@ const NewPersonnelPage = () => {
             }
       );
 
+      const newUserFirebaseId = userDocRef.id;
 
-
-
-
-
+      if (newUserType === "student") {
+        addStudentsToExam(newUserModules, newUserFirebaseId)
+      }
 
       setShowSignUpSuccessModal(true);
       resetInputFields();
@@ -110,6 +116,62 @@ const NewPersonnelPage = () => {
     }
   };
 
+  const addStudentsToExam = async (newUserModules, newUserId) => {
+    const examsRef = collection(db, "exams");
+    // 1. Look through the array of exams and find the examId which matches the usermodules
+    newUserModules.forEach(async (module) => {
+      try {
+        const querySnapshot = await getDocs(query(examsRef, where("courseId", "==", module)))
+        const doc = querySnapshot.docs[0];
+        const examData = doc?.data();
+
+        // 2. Check if it is in the past
+        const startTime = examData.startTime;
+        if (!dateInPast(startTime)) {
+          // 3. Extract out the students array and add on to it 
+          const newExamStudentObj = {
+            id: newUserId,
+            status: "Not submitted yet",
+          }
+
+          const updatedStudents = examData.students ? [...examData.students, newExamStudentObj] : [newExamStudentObj];
+          // 4. Send back the updated student array 
+          updateDoc(doc.ref, { students: updatedStudents })
+          console.log("update complete")
+        }
+        else {
+          console.log("exam is in the past!")
+
+        }
+        // 5. Repeat the loop 
+      }
+      catch (e) {
+        console.log("Error updating students in ", module)
+      }
+
+    })
+  }
+
+  const dateInPast = (date) => {
+
+
+    // Convert the timestamp to milliseconds
+    const startTimeMilliseconds = date.seconds * 1000 + Math.floor(date.nanoseconds / 1000000);
+
+    // Create a Date object representing the start time
+    const startTimeDate = new Date(startTimeMilliseconds);
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Compare the start time with the current date
+    if (startTimeDate < currentDate) {
+      return true
+    } else {
+      return false
+    }
+
+  }
   //fetch modules data
   const modulesRef = collection(db, "modules");
   const [allModulesData, setAllModulesData] = useState([]);
@@ -190,6 +252,18 @@ const NewPersonnelPage = () => {
             modalTitle="Success!"
             modalContent="Add user successful."
           />
+          <Modal
+            handleModalClose={() => {
+              setShowSignUpFailureModal(false);
+            }}
+            actionButtonText="OK"
+            actionButtonColor={theme.primary}
+            filled={true}
+            actionButtonClick={() => { }}
+            show={showSignUpFailureModal}
+            modalTitle="Success!"
+            modalContent="Add user successful."
+          />
 
           {newUserType === "student" && (
             <>
@@ -246,7 +320,9 @@ const NewPersonnelPage = () => {
 
               <AdminNewFieldContainer>
                 <AdminNewFieldTitle>Confirm Password</AdminNewFieldTitle>
-                <AdminNewField type="password" onChange={(e) => { }} />
+                <AdminNewField type="password" onChange={(e) => {
+                  setNewUserPasswordConfirm(e)
+                }} />
               </AdminNewFieldContainer>
             </>
           )}

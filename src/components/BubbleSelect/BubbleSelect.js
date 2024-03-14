@@ -56,14 +56,16 @@ const BubbleSelect = (props) => {
         onChange={(event) => {
           handleOptionClick(event.target.value);
         }}
+        defaultValue="" // or use value={selectedValue} if you are controlling the select value
       >
-        <option disabled selected value>
+        <option disabled value="">
           -- Select a Module --
         </option>
         {allOptions.map((option, index) => {
-          return <BubbleAddOption key={index}>{option}</BubbleAddOption>;
+          return <BubbleAddOption key={index} value={option}>{option}</BubbleAddOption>;
         })}
       </BubbleAddSelect>
+
 
       <BubbleAddBubblesContainer>
         {selectedOptions?.map((data, index) => {
