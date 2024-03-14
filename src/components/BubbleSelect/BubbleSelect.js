@@ -15,7 +15,7 @@ import { RxCross2 } from "react-icons/rx";
 
 const BubbleSelect = (props) => {
   const [allOptions, setAllOptions] = useState(props.allOptions);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState(props.preSelectedOptions ? props.preSelectedOptions : []);
   useEffect(() => {
     setAllOptions(props.allOptions);
   }, [props.allOptions]);

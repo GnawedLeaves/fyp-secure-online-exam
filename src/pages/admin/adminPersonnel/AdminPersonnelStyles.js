@@ -4,7 +4,7 @@ export const AdminPersonnelBigContainer = styled.div`
   display: flex;
 `;
 export const AdminPersonnelContainer = styled.div`
-  padding: 2rem;
+  padding: 3rem 2rem;
   width: 100%;
 `;
 
@@ -67,7 +67,7 @@ export const AdminPersonnelSummaryButtonsContainer = styled.div`
 export const AdminNewPersonnelContainer = styled(AdminPersonnelContainer)``;
 
 export const AdminNewPersonnelTitle = styled.div`
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: bold;
 `;
 
@@ -81,7 +81,7 @@ export const AdminNewFieldContainer = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   width: 20rem;
-  margin: 2rem 0;
+  margin: 0rem 0;
 `;
 export const AdminNewFieldTitle = styled.div``;
 export const AdminNewField = styled.input`
@@ -97,3 +97,20 @@ export const ToggleButtonContainer = styled.div`
   gap: 1rem;
   margin: 1rem 0;
 `;
+
+export const AdminPersonnelDetailsContainer = styled.div`
+padding: 2rem;
+  width: 100%;`
+
+export const AdminNewPersonnelAlignContainer = styled.div`
+display: flex;
+flex-direction: column;
+gap: 2rem;
+align-items: center;
+`
+
+
+export const AdminPersonnelDetailsHeader = styled.div`
+  font-size: 3rem;
+  font-weight: bold;
+  `

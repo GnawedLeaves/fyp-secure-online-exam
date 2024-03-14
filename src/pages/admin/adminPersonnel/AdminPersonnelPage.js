@@ -25,7 +25,7 @@ import {
   descendingAlphabeticalSort,
 } from "../../../functions/sortArray";
 import ToggleArrow from "../../../components/ToggleArrow/ToggleArrow";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
 import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
@@ -46,13 +46,40 @@ const AdminPersonnelPage = () => {
   //Delete user function
   const usersRef = collection(db, "users");
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [userDataToDelete, setUserDataToDelete] = useState(null);
   const [userAuthIdToDelete, setAuthuserIdToDelete] = useState(null);
 
   //init
 
   const deletePersonnel = async () => {
-    if (userIdToDelete !== null) {
-      const documentRef = doc(usersRef, userIdToDelete);
+    if (userDataToDelete !== null) {
+
+      //Delete user from the exams if student
+      if (userDataToDelete.type === "student") {
+        const examsRef = collection(db, "exams")
+        userDataToDelete.modules.forEach(async (module) => {
+          try {
+            const querySnapshot = await getDocs(query(examsRef, where("courseId", "==", module)))
+            if (!querySnapshot.empty) {
+              const doc = querySnapshot.docs[0]
+              const examData = doc?.data();
+              const updatedStudentArray = examData.students.filter((student) => {
+                return student.id !== userDataToDelete.id
+              })
+              updateDoc(doc.ref, { students: updatedStudentArray })
+              console.log("Remove user from exams complete")
+            }
+          }
+          catch (e) {
+            console.log("Error deleting user from exams", module)
+          }
+        })
+      }
+
+
+
+      const documentRef = doc(usersRef, userDataToDelete.id);
+
       deleteDoc(documentRef)
         .then(() => {
           console.log("Document successfully deleted!", userIdToDelete);
@@ -108,6 +135,10 @@ const AdminPersonnelPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const onPersonnelDetailsClick = (userId) => {
+    navigate(`/admin/personnel/${userId}`);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -202,14 +233,18 @@ const AdminPersonnelPage = () => {
                       {user.dateCreated}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummaryButtonsContainer>
-                      <Button filledColor={theme.primary}>Details</Button>
+                      <Button filledColor={theme.text} onClick={() => {
+
+                        onPersonnelDetailsClick(user.id)
+                      }}>Details</Button>
                       <Button
                         filled={false}
                         defaultColor={theme.statusError}
                         filledColor={theme.statusError}
                         onClick={() => {
-                          setUserIdToDelete(user.id);
-                          console.log("deleting", user.id);
+
+                          setUserDataToDelete(user)
+
                           setShowDeleteModal(true);
                         }}
                       >

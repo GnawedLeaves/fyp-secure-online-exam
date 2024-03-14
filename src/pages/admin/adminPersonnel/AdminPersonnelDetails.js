@@ -1,6 +1,11 @@
+import { useNavigate, useParams } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { theme } from "../../../theme";
+import { AdminPersonnelDetailsContainer, AdminPersonnelDetailsHeader } from "./AdminPersonnelStyles";
+import { adminNavbarItems } from "../AdminHomePage";
+import Navbar from "../../../components/Navbar/Navbar";
+import BackButton from "../../../components/BackButton/BackButton";
+import Button from "../../../components/Button/Button";
 import {
   AdminNewButtonsContainer,
   AdminNewField,
@@ -13,24 +18,22 @@ import {
   AdminPersonnelContainer,
   ToggleButtonContainer,
 } from "./AdminPersonnelStyles";
-import Navbar from "../../../components/Navbar/Navbar";
-import { adminNavbarItems } from "../AdminHomePage";
-import BackButton from "../../../components/BackButton/BackButton";
-import Button from "../../../components/Button/Button";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
 import Dropdown from "../../../components/Dropdown/Dropdown";
-import { db } from "../../../backend/firebase/firebase";
-import { Timestamp, addDoc, collection, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
-import Modal from "../../../components/Modal/Modal";
 import BubbleSelect from "../../../components/BubbleSelect/BubbleSelect";
+import { useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../backend/firebase/firebase";
+import { useEffect } from "react";
 
-const NewPersonnelPage = () => {
+
+
+const AdminPersonnelDetailsPage = () => {
+  const { userId } = useParams();
+  // const userId = "vbPKgsYVIoRcNc7KOktN"
   const navigate = useNavigate();
 
   const [newUserName, setNewUserName] = useState("");
-  const [newUserType, setNewUserType] = useState("student");
+  const [currentUserType, setCurrentUserType] = useState("student");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserYear, setNewUserYear] = useState("");
   const [newUserCourse, setNewUserCourse] = useState("");
@@ -41,149 +44,48 @@ const NewPersonnelPage = () => {
   const [showSignUpFailureModal, setShowSignUpFailureModal] = useState(false);
   const [signUpFailureModalContent, setSignUpFailureModalContent] = useState("");
   const [signUpFailureModalTitle, setSignUpFailureModalTitle] = useState("");
-
-
-
+  const [allModulesData, setAllModulesData] = useState([])
+  const [allModulesName, setAllModuleNames] = useState([]);
+  const [currentUserData, setCurrentUserData] = useState()
   const dropdownOptions = ["1", "2", "3", "4", "5", "6"];
 
-  const resetInputFields = () => {
-    setNewUserName("");
-    setNewUserType("student");
-    setNewUserEmail("");
-    setNewUserYear("");
-    setNewUserCourse("");
-    setNewUserPassword("");
-    setNewUserModules([]);
-  };
 
-  //SIGN UP METHODS
-  const auth = getAuth();
-  const addUser = async () => {
+
+  const updateUser = () => {
+
+  }
+  const getUserData = async () => {
+    const userRef = collection(db, "users");
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        newUserEmail,
-        newUserPassword
-      );
-      const user = userCredential.user;
-      const id = user.uid;
 
-      // Add user to user table
-      const usersRef = collection(db, "users");
-      const currentDate = new Date();
-      const timestamp = Timestamp.fromDate(currentDate);
-
-      const userDocRef = await addDoc(
-        usersRef,
-        newUserType === "student"
-          ? {
-            authId: id,
-            name: newUserName,
-            year: newUserYear,
-            course: newUserCourse,
-            modules: newUserModules,
-            type: newUserType,
-            dateCreated: timestamp,
-            // Add user data here
-          }
-          : newUserType === "teacher"
-            ? {
-              authId: id,
-              name: newUserName,
-              modules: newUserModules,
-              type: newUserType,
-              dateCreated: timestamp,
-            }
-            : {
-              authId: id,
-              name: newUserName,
-              type: newUserType,
-              dateCreated: timestamp,
-            }
-      );
-
-      const newUserFirebaseId = userDocRef.id;
-
-      if (newUserType === "student") {
-        addStudentsToExam(newUserModules, newUserFirebaseId)
-      }
-
-      setShowSignUpSuccessModal(true);
-      resetInputFields();
-
-      // Other actions if needed
-    } catch (error) {
-      console.log("Error for user sign up", error);
-    }
-  };
-
-  const addStudentsToExam = async (newUserModules, newUserId) => {
-    const examsRef = collection(db, "exams");
-    // 1. Look through the array of exams and find the examId which matches the usermodules
-    newUserModules.forEach(async (module) => {
-      try {
-        const querySnapshot = await getDocs(query(examsRef, where("courseId", "==", module)))
+      const querySnapshot = await getDocs(query(userRef, where("id", "==", userId)))
+      if (!querySnapshot.empty) {
+        console.log("snapshot not empty")
         const doc = querySnapshot.docs[0];
-        const examData = doc?.data();
-
-        // 2. Check if it is in the past
-        const startTime = examData.startTime;
-        if (!dateInPast(startTime)) {
-          // 3. Extract out the students array and add on to it 
-          const newExamStudentObj = {
-            id: newUserId,
-            status: "Not submitted yet",
-          }
-
-          const updatedStudents = examData.students ? [...examData.students, newExamStudentObj] : [newExamStudentObj];
-          // 4. Send back the updated student array 
-          updateDoc(doc.ref, { students: updatedStudents })
-          console.log("update complete")
-        }
-        else {
-          console.log("exam is in the past!")
-
-        }
-        // 5. Repeat the loop 
+        const userData = doc?.data();
+        setCurrentUserData(userData)
       }
-      catch (e) {
-        console.log("Error updating students in ", module)
+      else {
+        console.log("snapshot empty")
+
       }
-
-    })
-  }
-
-  const dateInPast = (date) => {
-
-
-    // Convert the timestamp to milliseconds
-    const startTimeMilliseconds = date.seconds * 1000 + Math.floor(date.nanoseconds / 1000000);
-
-    // Create a Date object representing the start time
-    const startTimeDate = new Date(startTimeMilliseconds);
-
-    // Get the current date
-    const currentDate = new Date();
-
-    // Compare the start time with the current date
-    if (startTimeDate < currentDate) {
-      return true
-    } else {
-      return false
+    }
+    catch (e) {
+      console.log("Error getting user data", e)
     }
 
   }
-  //fetch modules data
-  const modulesRef = collection(db, "modules");
-  const [allModulesData, setAllModulesData] = useState([]);
-  const [allModulesName, setAllModuleNames] = useState([]);
 
-  useEffect(() => {
-    getModuleData();
-  }, []);
 
+
+  const handleModulesSelected = (modulesSelected) => {
+    setNewUserModules(modulesSelected);
+
+  }
 
   const getModuleData = async () => {
+    const modulesRef = collection(db, "modules");
+
     try {
       const querySnapshot = await getDocs(modulesRef);
       const modulesData = querySnapshot.docs.map((doc) => ({
@@ -200,79 +102,38 @@ const NewPersonnelPage = () => {
   };
 
   useEffect(() => {
+    getUserData();
+    // getUserData2(userId)
+    getModuleData();
+
+  }, [])
+
+  useEffect(() => {
+    console.log("currentUserData", currentUserData)
+    setCurrentUserType(currentUserData?.type || "student")
+  }, [currentUserData])
+
+
+  useEffect(() => {
     const namesArray = allModulesData.map((obj) => obj.name);
     setAllModuleNames(namesArray);
   }, [allModulesData]);
-
-  const handleModulesSelected = (data) => {
-    setNewUserModules(data);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <AdminPersonnelBigContainer>
         <Navbar linksArray={adminNavbarItems} />
-        <AdminNewPersonnelContainer>
+        <AdminPersonnelDetailsContainer>
           <BackButton size="2rem" />
-          <Modal
-            handleModalClose={() => {
-              setShowSignUpSuccessModal(false);
-            }}
-            actionButtonText="OK"
-            actionButtonColor={theme.primary}
-            filled={true}
-            actionButtonClick={() => { }}
-            show={showSignUpSuccessModal}
-            modalTitle="Success!"
-            modalContent="Add user successful."
-          />
-          <Modal
-            handleModalClose={() => {
-              setShowSignUpFailureModal(false);
-            }}
-            actionButtonText="OK"
-            actionButtonColor={theme.primary}
-            filled={true}
-            actionButtonClick={() => { }}
-            show={showSignUpFailureModal}
-            modalTitle="Success!"
-            modalContent="Add user successful."
-          />
-
-
           <AdminNewPersonnelAlignContainer>
-            <AdminNewPersonnelTitle>Add New User</AdminNewPersonnelTitle>
-            <ToggleButtonContainer>
-              <Button
-                filled={newUserType === "student"}
-                onClick={() => {
-                  setNewUserType("student");
-                }}
-              >
-                Student
-              </Button>
-              <Button
-                filled={newUserType === "teacher"}
-                onClick={() => {
-                  setNewUserType("teacher");
-                }}
-              >
-                Teacher
-              </Button>
-              <Button
-                filled={newUserType === "admin"}
-                onClick={() => {
-                  setNewUserType("admin");
-                }}
-              >
-                Admin
-              </Button>
-            </ToggleButtonContainer>
-            {newUserType === "student" && (
+            <AdminPersonnelDetailsHeader>
+              Edit User: {userId}
+            </AdminPersonnelDetailsHeader>
+            {currentUserType === "student" && (
               <>
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Name</AdminNewFieldTitle>
                   <AdminNewField
+                    value={currentUserData?.name}
                     onChange={(e) => {
                       setNewUserName(e.target.value);
                     }}
@@ -281,6 +142,7 @@ const NewPersonnelPage = () => {
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
+                    value={currentUserData?.email}
                     onChange={(e) => {
                       setNewUserEmail(e.target.value);
                     }}
@@ -289,6 +151,8 @@ const NewPersonnelPage = () => {
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Course</AdminNewFieldTitle>
                   <AdminNewField
+                    value={currentUserData?.course}
+
                     onChange={(e) => {
                       setNewUserCourse(e.target.value);
                     }}
@@ -306,6 +170,7 @@ const NewPersonnelPage = () => {
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
                   <BubbleSelect
+                    preSelectedOptions={currentUserData?.modules}
                     allOptions={allModulesName}
                     handleOptionsSelected={handleModulesSelected}
                   />
@@ -330,7 +195,7 @@ const NewPersonnelPage = () => {
               </>
             )}
 
-            {newUserType === "teacher" && (
+            {currentUserType === "teacher" && (
               <>
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Name</AdminNewFieldTitle>
@@ -369,7 +234,7 @@ const NewPersonnelPage = () => {
               </>
             )}
 
-            {newUserType === "admin" && (
+            {currentUserType === "admin" && (
               <>
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
@@ -405,10 +270,10 @@ const NewPersonnelPage = () => {
                 filledColor={theme.primary}
                 defaultColor={theme.primary}
                 onClick={() => {
-                  addUser();
+                  updateUser();
                 }}
               >
-                Add User
+                Update User
               </Button>
               <Button
                 onClick={() => {
@@ -420,10 +285,16 @@ const NewPersonnelPage = () => {
             </AdminNewButtonsContainer>
           </AdminNewPersonnelAlignContainer>
 
-        </AdminNewPersonnelContainer>
-      </AdminPersonnelBigContainer>
-    </ThemeProvider>
-  );
-};
 
-export default NewPersonnelPage;
+        </AdminPersonnelDetailsContainer>
+
+      </AdminPersonnelBigContainer>
+
+    </ThemeProvider>
+  )
+}
+
+
+export default AdminPersonnelDetailsPage
+
+
