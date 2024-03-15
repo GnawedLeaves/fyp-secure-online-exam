@@ -1,18 +1,59 @@
 import React, { useState } from "react";
-
-
+import { db,storage } from "../../backend/firebase/firebase";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  serverTimestamp
+} from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 const FeedbackForm = () => {
   const [formData, setFormData] = useState({
-    questionCategory: "userGroup",
+    questionCategory: "General",
     description: "",
-    attachment: "",
   });
 
-  const handleSubmit = (event) => {
+  const [categories, setCategories] = useState([
+    { value: "general", label: "General" },
+    { value: "user", label: "User" },
+    { value: "bugs", label: "Bugs" },
+    { value: "report", label: "Report" },
+    { value: "accountHelp", label: "Account Help" },
+  ]);
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your form submission logic here
-    console.log("Form submitted:", formData);
+  
+    try {
+      // Add message data to Firestore
+      await addDoc(collection(db, "messages"), {
+        dateAdded: serverTimestamp(),
+        messageBody: formData.description,
+        questionCategory: formData.questionCategory,
+        recipientId: "2", 
+        senderId:'Instructor',
+      });
+
+      // Reset form data
+      setFormData({
+        questionCategory: "General",
+        description: "",
+      });
+
+      console.log("Form submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value === "general" ? "" : value,
+    });
   };
 
   return (
@@ -36,22 +77,16 @@ const FeedbackForm = () => {
               id="questionCategory"
               name="questionCategory"
               value={formData.questionCategory}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  questionCategory: e.target.value,
-                })
-              }
+             onChange={handleChange}
               style={{
-                fontSize: "16px", // Adjust the font size as needed
-                // Add any other styling properties as needed
+                fontSize: "16px",
               }}
             >
-              <option value="general">General</option>
-              <option value="user">User</option>
-              <option value="bugs">Bugs</option>
-              <option value="report">Report</option>
-              <option value="accountHelp">Account Help</option>
+               {categories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
             </select>
             <br />
             <br />
