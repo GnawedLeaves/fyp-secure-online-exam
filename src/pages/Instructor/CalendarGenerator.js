@@ -12,6 +12,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { useNavigate } from 'react-router-dom';
 
 
 const buttonStyle = {
@@ -31,7 +32,7 @@ const buttonStyle = {
 const ExamCalendar = () => {
   const [date, setDate] = useState(new Date());
   const [examDates, setExamDates] = useState([]);
-
+  
   const fetchExams = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'exams'));
@@ -148,7 +149,20 @@ const ExamCalendar = () => {
   const monthData = getMonthData();
   const today = new Date();
 
-  
+  const navigate = useNavigate(); 
+
+  const handleDateClick = (day) => {
+    const currentDay = new Date(date.getFullYear(), date.getMonth(), day);
+    const isToday = isSameDate(currentDay, new Date());
+
+    if (isToday) {
+      // Navigate to View Exams
+      navigate("/Instructor/InstructorExamPage");
+    } else {
+      navigate("/Instructor/InstructorLibrary");
+    }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
     <div style={{ width: "100%", textAlign: "center", paddingTop: "2%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", margin: "20px 0", boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}>
@@ -183,8 +197,10 @@ const ExamCalendar = () => {
                    padding: "10px",
                    backgroundColor: day && (day.isToday || day.isExamDay) ? day.backgroundColor : (day && day.isWeekend) ? "#B4B4B8" : null,
                    color: (index === 0 || index === 6) ? "#666" : "inherit",
-                   fontWeight: day && day.isToday ? "bold" : "normal"
+                   fontWeight: day && day.isToday ? "bold" : "normal",
+                   cursor: day && (day.isToday || day.isExamDay) ? "pointer" : "default"
                  }}
+                 onClick={() => day.backgroundColor && handleDateClick(day.day)}
                >
                   {day ? day.day : null}
                 </td>
@@ -197,7 +213,7 @@ const ExamCalendar = () => {
     <div style={{ width: "100%", textAlign: "center", paddingBottom: "20px" }}>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={{ display: "inline-block", marginRight: "20px" }}>
-          <span style={{ display: "inline-block", width: "20px", height: "20px", backgroundColor: "##E3E1D9", marginRight: "5px" }}></span>
+          <span style={{ display: "inline-block", width: "20px", height: "20px", backgroundColor: "#E3E1D9", marginRight: "5px" }}></span>
           <span style={{ color: "black" }}>Past Exams</span>
         </div>
         <div style={{ display: "inline-block", marginRight: "20px" }}>
