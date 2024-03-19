@@ -25,6 +25,7 @@ import ContactAdmin from "./pages/Instructor/ContactAdmin";
 import InstructorSettings from "./pages/Instructor/InstructorSettings";
 import InstructorPage from "./pages/Instructor/InstructorPage";
 import InstructorLibrary from "./pages/Instructor/InstructorLibrary";
+import Proctoring from "./pages/Instructor/Proctoring";
 import NewPersonnelPage from "./pages/admin/adminPersonnel/NewPersonnelPage";
 import Testcall from "./pages/student/testcall";
 import Testcall2 from "./pages/student/testcall2";
@@ -179,9 +180,9 @@ export const teacherRoutes = [
     element: <ContactAdmin />,
   },
   {
-    title: "Teacher Setting",
-    link: "/Instructor/InstructorSettings",
-    element: <InstructorSettings />,
+    title: "Proctoring",
+    link: "/Instructor/Proctoring",
+    element: <Proctoring />,
   },
 ];
 
@@ -210,6 +211,7 @@ function App() {
               <Route key={index} path={route.link} element={route.element} />
             );
           })}
+      <Route path="/Instructor/InstructorProctor/:courseId" element={<Proctoring />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
