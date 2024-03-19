@@ -34,6 +34,7 @@ import AdminExamDetailsPage from "./pages/admin/adminExams/AdminExamDetailsPage"
 import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
 import StudentExamDemoQuestionpage from "./pages/student/StudentExamDemoQuestion";
 import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage";
+import Proctoring from "./pages/Instructor/Proctoring";
 
 export const adminRoutes = [
   {
@@ -177,6 +178,11 @@ export const teacherRoutes = [
     link: "/Instructor/InstructorSettings",
     element: <InstructorSettings />,
   },
+  {
+    title: "Debug Mode",
+    link: "/Instructor/Proctoring",
+    element: <Proctoring />,
+  },
 ];
 
 function App() {
@@ -202,8 +208,12 @@ function App() {
           {teacherRoutes.map((route, index) => {
             return (
               <Route key={index} path={route.link} element={route.element} />
+              
             );
+            
           })}
+            <Route path="/Instructor/InstructorProctor/:courseId" element={<Proctoring />} />
+
         </Routes>
       </Suspense>
     </BrowserRouter>

@@ -40,12 +40,6 @@ export const instructorNavBarItems = [
     path: "/Instructor/ContactAdmin",
     logo: <IoMailOpenOutline />,
   },
-
-  {
-    title: "Settings",
-    path: "/Instructor/InstructorSettings",
-    logo: <IoSettingsOutline />,
-  },
 ];
 
 
