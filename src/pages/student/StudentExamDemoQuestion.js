@@ -54,9 +54,39 @@ import {
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
+import { getAuth } from "firebase/auth";
 
 const StudentExamQuestionpage = () => {
-  const studentId = "1221";
+  //const studentId = "1221";
+  const [studentId, setStudent] = useState();
+  const getUser = async (authId) => {
+    try {
+      const usersRef = collection(db, "users");
+      const usersQuery = query(usersRef, where("authId", "==", authId));
+
+      const querySnapshot = await getDocs(usersQuery);
+
+      const userInfo = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("userInfo", userInfo);
+      setStudent(userInfo[0]?.id);
+      
+
+      return userInfo;
+    } catch (error) {
+      console.error("Error getting profiles:", error);
+      return [];
+    }
+  };
+
+  const auth = getAuth();
+  const authId = auth.currentUser ? auth.currentUser.uid : null;
+  console.log('authId',authId);
+  if (authId) {
+    getUser(authId);
+  }
   const { examId, questionNo } = useParams();
   const examsRef = collection(db, "exams");
   const questionsRef = collection(db, "questions");
@@ -569,7 +599,6 @@ const navigateToQuestion = (exam,number) => {
         modalTitle="Submit Answer"
         modalContent="Are you sure you want to submit your answer? This action cannot be undone."
       />
-          <Navbar linksArray={studentNavbarItems} />
           <StudentExamDetailContainer>
             <QuestionPageTitle>{exams[0]?.name}</QuestionPageTitle>
             <QuestionContainer>

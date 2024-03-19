@@ -36,9 +36,39 @@ import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
 import {formatDateString} from "../student/StudentExampage";
+import { getAuth } from "firebase/auth";
 
 const StudentExamReviewpage = () => {
-  const studentId = "1221";
+  //const studentId = "1221";
+  const [studentId, setStudent] = useState();
+  const getUser = async (authId) => {
+    try {
+      const usersRef = collection(db, "users");
+      const usersQuery = query(usersRef, where("authId", "==", authId));
+
+      const querySnapshot = await getDocs(usersQuery);
+
+      const userInfo = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("userInfo", userInfo);
+      setStudent(userInfo[0]?.id);
+      
+
+      return userInfo;
+    } catch (error) {
+      console.error("Error getting profiles:", error);
+      return [];
+    }
+  };
+
+  const auth = getAuth();
+  const authId = auth.currentUser ? auth.currentUser.uid : null;
+  console.log('authId',authId);
+  if (authId) {
+    getUser(authId);
+  }
   const { examId } = useParams();
   const submissionDisplayRef = useRef(null);
   const [examReview, setExamReview] = useState([]);
