@@ -53,10 +53,42 @@ import {
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
-import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt'
+import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt';
+import { getAuth } from "firebase/auth";
+import { appID, serverSecret } from "../../backend/zegocloud/zegocloud";
 
 const StudentExamQuestionpage = () => {
-  const studentId = "1221";
+  //const studentId = "1221";
+  const [studentId, setStudent] = useState();
+  const getUser = async (authId) => {
+    try {
+      const usersRef = collection(db, "users");
+      const usersQuery = query(usersRef, where("authId", "==", authId));
+
+      const querySnapshot = await getDocs(usersQuery);
+
+      const userInfo = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("userInfo", userInfo);
+      setStudent(userInfo[0]?.id);
+      
+
+      return userInfo;
+    } catch (error) {
+      console.error("Error getting profiles:", error);
+      return [];
+    }
+  };
+
+  const auth = getAuth();
+  const authId = auth.currentUser ? auth.currentUser.uid : null;
+  console.log('authId',authId);
+  if (authId) {
+    getUser(authId);
+  }
+
   const { examId, questionNo } = useParams();
   const examsRef = collection(db, "exams");
   const questionsRef = collection(db, "questions");
@@ -264,6 +296,8 @@ const StudentExamQuestionpage = () => {
 
       // Navigate to the exam
       navigate(`/student/exam`);
+
+      window.location.reload();
     } catch (error) {
       console.error("Error saving/updating answer to the database:", error);
     }
@@ -513,12 +547,10 @@ const navigateToQuestion = (exam,number) => {
   }
 
   const myMeeting = async (element) => {
-    const appID=552252558;
-    const serverSecret="2679f71641820de66f51b17a7960ad32";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID, 
         serverSecret, 
-        examId+studentId, 
+        examId, 
         Date.now().toString(),
         studentId
     );

@@ -13,7 +13,6 @@ const WebCam = (props) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataUrl, setDataUrl] = useState('');
-
   const handleCaptureClick = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -45,12 +44,12 @@ const WebCam = (props) => {
   };
   
   const uploadImageData = async (dataUrl) => {
-    if (dataUrl) {
+    if (dataUrl&&studentId) {
       const storageRef = ref(storage, 'captured_images/' + studentId + '.png');
-  
       try {
         await uploadString(storageRef, dataUrl, 'data_url');
         console.log('Image uploaded successfully!');
+        window.location.href = '/student/home';
       } catch (error) {
         console.error('Error uploading image:', error.message);
       }
@@ -62,42 +61,6 @@ const WebCam = (props) => {
     setShowDeleteModal(true);
   };
 
-  const handleCaptureImage = async () => {
-    if (videoRef.current) {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-  
-      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-  
-      // Convert the canvas content to a data URL
-      const newDataUrl  = canvas.toDataURL('image/png');
-      // Store the dataUrl in state
-      console.log("newDataUrl",newDataUrl );
-      setDataUrl(newDataUrl );
-  
-      // Upload the data URL to Firebase Storage
-      const storageRef = ref(storage, 'captured_images/' + studentId + '.png');
-      
-      try {
-        await uploadString(storageRef, newDataUrl , 'data_url');
-        console.log('Image uploaded successfully!');
-      } catch (error) {
-        console.error('Error uploading image:', error.message);
-      }
-
-      // Store the dataUrl in state
-      console.log("newDataUrl",newDataUrl );
-      setDataUrl(newDataUrl );
-      
-
-  
-      // Redirect to the homepage
-      //window.location.href = '/student/home'; // Replace '/' with your homepage route
-      
-    }
-  };
 
   return (
     <WebCamSection>
