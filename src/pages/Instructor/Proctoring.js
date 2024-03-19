@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { db } from '../../backend/firebase/firebase'; 
 import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
