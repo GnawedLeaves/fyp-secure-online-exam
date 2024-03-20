@@ -13,7 +13,7 @@ import {
   NavbarProfile,
   NavbarProfileContainer,
   NavbarTitle,
-} from "./NavbarStyles";
+} from "../../components/Navbar/NavbarStyles";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import { LuBookMarked } from "react-icons/lu";
@@ -26,7 +26,7 @@ import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
-const Navbar = (props) => {
+const ProctorNavbar = (props) => {
   const navigate = useNavigate();
 
   const changePage = (path) => {
@@ -65,9 +65,7 @@ const Navbar = (props) => {
         console.log("Error when signing out: ", error);
       });
   };
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+
   return (
     <ThemeProvider theme={theme}>
       <NavbarContainer>
@@ -85,7 +83,10 @@ const Navbar = (props) => {
                 key={index}
                 onClick={() => {
                   navigate(item.path);
-                  window.location.reload();
+                  if (item.path === '/Instructor/InstructorProctor') {
+                    // Refresh the page
+                    window.location.reload();
+                  }
                 }}
               >
                 <NavbarAlignContainer>
@@ -121,4 +122,4 @@ const Navbar = (props) => {
   );
 };
 
-export default Navbar;
+export default ProctorNavbar;

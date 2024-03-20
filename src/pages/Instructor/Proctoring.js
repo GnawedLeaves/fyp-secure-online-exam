@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { db } from '../../backend/firebase/firebase'; 
 import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import { InstructorDashboardContainer, InstructorHomeContainer, PageTitleInstructor } from "./InstructorStyle";
-import Navbar from "../../components/Navbar/Navbar";
 import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt'
 import { IoBackspaceOutline, } from "react-icons/io5";
 import { db,storage } from "../../backend/firebase/firebase";
@@ -15,6 +13,7 @@ import {
   collection,
   serverTimestamp
 } from "firebase/firestore";
+import ProctorNavbar from './ProctorNavBar';
 
 
 const ExamButton = styled.button`
@@ -92,25 +91,25 @@ const Proctoring =() => {
       })
   };
 
-  const handleBack = () => {
-    window.location.href = "/Instructor/InstructorProctor";
-  };
-
-  const renderBackButton = location.pathname !== "/Instructor/InstructorProctor";
-
-
+const instructorNavBarItems = [
+    {
+      title: "Back",
+      path: "/Instructor/InstructorPage",
+      logo: <IoBackspaceOutline/>,
+    },
+  ];  
   
     return (
         <ThemeProvider theme={theme}>
-        <InstructorHomeContainer>
+        <InstructorHomeContainer>  
+          {/* <ProctorNavbar linksArray={instructorNavBarItems}/>             */}
+
           <InstructorDashboardContainer>
             <PageTitleInstructor> 
-               <Container>
-                {renderBackButton && <ExamButton onClick={handleBack}><BackText>Back</BackText></ExamButton>} 
+
                 <ProctoringSessionText>
                 Proctoring Session
                 </ProctoringSessionText>
-                </Container>
                 </PageTitleInstructor>
             <br />
   
