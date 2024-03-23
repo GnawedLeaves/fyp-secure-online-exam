@@ -113,4 +113,5 @@ align-items: center;
 export const AdminPersonnelDetailsHeader = styled.div`
   font-size: 3rem;
   font-weight: bold;
+  text-align: center;
   `

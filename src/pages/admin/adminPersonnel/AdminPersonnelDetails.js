@@ -21,66 +21,120 @@ import {
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import BubbleSelect from "../../../components/BubbleSelect/BubbleSelect";
 import { useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { Timestamp, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { useEffect } from "react";
-
+import { getAuth } from "firebase/auth";
+import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
+import Modal from "../../../components/Modal/Modal";
 
 
 const AdminPersonnelDetailsPage = () => {
   const { userId } = useParams();
-  // const userId = "vbPKgsYVIoRcNc7KOktN"
   const navigate = useNavigate();
 
   const [newUserName, setNewUserName] = useState("");
-  const [currentUserType, setCurrentUserType] = useState("student");
+  const [currentUserType, setCurrentUserType] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserYear, setNewUserYear] = useState("");
   const [newUserCourse, setNewUserCourse] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserPasswordConfirm, setNewUserPasswordConfirm] = useState("");
   const [newUserModules, setNewUserModules] = useState([]);
-  const [showSignUpSuccessModal, setShowSignUpSuccessModal] = useState(false);
-  const [showSignUpFailureModal, setShowSignUpFailureModal] = useState(false);
+  const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
+  const [showEditFailureModal, setShowEditFailureModal] = useState(false);
+  const [editFailureReason, setEditFailureReason] = useState("")
   const [signUpFailureModalContent, setSignUpFailureModalContent] = useState("");
   const [signUpFailureModalTitle, setSignUpFailureModalTitle] = useState("");
   const [allModulesData, setAllModulesData] = useState([])
   const [allModulesName, setAllModuleNames] = useState([]);
   const [currentUserData, setCurrentUserData] = useState()
   const dropdownOptions = ["1", "2", "3", "4", "5", "6"];
+  const userRef = doc(db, "users", userId);
 
 
 
-  const updateUser = () => {
+  const updateUser = async () => {
+    const currentDate = new Date();
+    const timestamp = Timestamp.fromDate(currentDate);
+    if (currentUserType === 'student') {
+      if (newUserName !== currentUserData.name || newUserCourse !== currentUserData.course || newUserYear !== currentUserData.year || newUserModules !== currentUserData.modules) {
+        try {
 
+
+          await updateDoc(userRef, {
+            name: newUserName,
+            year: newUserYear,
+            course: newUserCourse,
+            modules: newUserModules,
+            dateEdited: timestamp,
+          });
+          setShowEditSuccessModal(true)
+        }
+        catch (e) {
+          console.log("cant update user", e)
+          setEditFailureReason(e)
+          setShowEditFailureModal(true)
+        }
+
+      }
+      else {
+        setEditFailureReason("No changes made to user.")
+        setShowEditFailureModal(true)
+      }
+    }
+    else if (currentUserType === 'teacher') {
+      if (newUserName !== currentUserData.name || newUserModules !== currentUserData.modules) {
+        try {
+          await updateDoc(userRef, {
+            name: newUserName,
+            modules: newUserModules,
+            dateEdited: timestamp,
+          });
+          setShowEditSuccessModal(true)
+        }
+        catch (e) {
+          setEditFailureReason("No changes made to user.")
+          setShowEditFailureModal(true)
+        }
+      }
+      else {
+        setEditFailureReason("No changes made to user.")
+        setShowEditFailureModal(true)
+      }
+    }
+    else if (currentUserType === 'admin') {
+      try {
+        await updateDoc(userRef, {
+          name: newUserName,
+          dateEdited: timestamp,
+        });
+        setShowEditSuccessModal(true)
+      }
+      catch (e) {
+        setEditFailureReason("No changes made to user.")
+        setShowEditFailureModal(true)
+      }
+    }
   }
   const getUserData = async () => {
-    const userRef = collection(db, "users");
     try {
-
-      const querySnapshot = await getDocs(query(userRef, where("id", "==", userId)))
-      if (!querySnapshot.empty) {
-        console.log("snapshot not empty")
-        const doc = querySnapshot.docs[0];
-        const userData = doc?.data();
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
         setCurrentUserData(userData)
       }
       else {
-        console.log("snapshot empty")
-
+        console.log("user does not exist")
       }
     }
     catch (e) {
       console.log("Error getting user data", e)
     }
-
   }
-
-
 
   const handleModulesSelected = (modulesSelected) => {
     setNewUserModules(modulesSelected);
-
   }
 
   const getModuleData = async () => {
@@ -101,45 +155,83 @@ const AdminPersonnelDetailsPage = () => {
     }
   };
 
+
+
   useEffect(() => {
     getUserData();
-    // getUserData2(userId)
     getModuleData();
-
-  }, [])
+  }, [userId])
 
   useEffect(() => {
-    console.log("currentUserData", currentUserData)
     setCurrentUserType(currentUserData?.type || "student")
+    setNewUserName(currentUserData?.name || "")
+    setNewUserCourse(currentUserData?.course || "")
+    setNewUserModules(currentUserData?.modules || [])
+    setNewUserYear(currentUserData?.year || "")
   }, [currentUserData])
+
+  useEffect(() => {
+    console.log("newUserModules", newUserModules)
+  }, [newUserModules])
 
 
   useEffect(() => {
     const namesArray = allModulesData.map((obj) => obj.name);
     setAllModuleNames(namesArray);
   }, [allModulesData]);
+
+  const handleEditSuccessModalClose = () => {
+
+  }
   return (
     <ThemeProvider theme={theme}>
       <AdminPersonnelBigContainer>
         <Navbar linksArray={adminNavbarItems} />
         <AdminPersonnelDetailsContainer>
           <BackButton size="2rem" />
+          <Modal
+            handleModalClose={() => {
+              setShowEditSuccessModal(false);
+              // navigate("/admin/personnel")
+            }}
+            actionButtonText="OK"
+            actionButtonColor={theme.primary}
+            filled={true}
+            actionButtonClick={() => { }}
+            show={showEditSuccessModal}
+            modalTitle="Edit User Successful"
+            modalContent="User details have been updated. You may return to the personnel page."
+          />
+          <Modal
+            handleModalClose={() => {
+              setShowEditFailureModal(false);
+              setEditFailureReason("")
+            }}
+            actionButtonText="OK"
+            actionButtonColor={theme.statusError}
+            filled={true}
+            actionButtonClick={() => { }}
+            show={showEditFailureModal}
+            modalTitle="Edit User Not Successful"
+            modalContent={editFailureReason}
+          />
           <AdminNewPersonnelAlignContainer>
             <AdminPersonnelDetailsHeader>
-              Edit User: {userId}
+              Edit {currentUserType.charAt(0).toUpperCase() + currentUserType.slice(1)
+              }: <br />{userId}
             </AdminPersonnelDetailsHeader>
             {currentUserType === "student" && (
               <>
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Name</AdminNewFieldTitle>
                   <AdminNewField
-                    value={currentUserData?.name}
+                    value={newUserName}
                     onChange={(e) => {
                       setNewUserName(e.target.value);
                     }}
                   />
                 </AdminNewFieldContainer>
-                <AdminNewFieldContainer>
+                {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     value={currentUserData?.email}
@@ -147,12 +239,11 @@ const AdminPersonnelDetailsPage = () => {
                       setNewUserEmail(e.target.value);
                     }}
                   />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Course</AdminNewFieldTitle>
                   <AdminNewField
-                    value={currentUserData?.course}
-
+                    value={newUserCourse}
                     onChange={(e) => {
                       setNewUserCourse(e.target.value);
                     }}
@@ -160,24 +251,28 @@ const AdminPersonnelDetailsPage = () => {
                 </AdminNewFieldContainer>
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Year</AdminNewFieldTitle>
-                  <Dropdown
+                  {newUserYear ? <Dropdown
+                    defaultValue={newUserYear}
                     onChange={(e) => {
                       setNewUserYear(e);
                     }}
                     options={dropdownOptions}
-                  />
-                </AdminNewFieldContainer>
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                  <BubbleSelect
-                    preSelectedOptions={currentUserData?.modules}
-                    allOptions={allModulesName}
-                    handleOptionsSelected={handleModulesSelected}
-                  />
+                  /> : <></>}
+
                 </AdminNewFieldContainer>
 
                 <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Password</AdminNewFieldTitle>
+                  <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
+                  {newUserModules ? <BubbleSelect
+                    preSelectedOptions={newUserModules}
+                    allOptions={allModulesName}
+                    handleOptionsSelected={handleModulesSelected}
+                  /> : <></>}
+
+                </AdminNewFieldContainer>
+
+                {/* <AdminNewFieldContainer>
+                  <AdminNewFieldTitle> New Password</AdminNewFieldTitle>
                   <AdminNewField
                     type="password"
                     onChange={(e) => {
@@ -187,11 +282,11 @@ const AdminPersonnelDetailsPage = () => {
                 </AdminNewFieldContainer>
 
                 <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Confirm Password</AdminNewFieldTitle>
+                  <AdminNewFieldTitle>Confirm New Password</AdminNewFieldTitle>
                   <AdminNewField type="password" onChange={(e) => {
                     setNewUserPasswordConfirm(e)
                   }} />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
               </>
             )}
 
@@ -200,67 +295,71 @@ const AdminPersonnelDetailsPage = () => {
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Name</AdminNewFieldTitle>
                   <AdminNewField
+                    value={newUserName}
                     onChange={(e) => {
                       setNewUserName(e.target.value);
                     }}
                   />
                 </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
+                {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
                       setNewUserEmail(e.target.value);
                     }}
                   />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
 
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                  <BubbleSelect
+                  {newUserModules ? <BubbleSelect
+                    preSelectedOptions={newUserModules}
                     allOptions={allModulesName}
                     handleOptionsSelected={handleModulesSelected}
-                  />
+                  /> : <></>}
+
                 </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
+                {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Password</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
                       setNewUserPassword(e.target.value);
                     }}
                   />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
               </>
             )}
 
             {currentUserType === "admin" && (
               <>
-                <AdminNewFieldContainer>
+                {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
                       setNewUserEmail(e.target.value);
                     }}
                   />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Name</AdminNewFieldTitle>
                   <AdminNewField
+                    value={newUserName}
                     onChange={(e) => {
                       setNewUserName(e.target.value);
                     }}
                   />
                 </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
+                {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Password</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
                       setNewUserPassword(e.target.value);
                     }}
                   />
-                </AdminNewFieldContainer>
+                </AdminNewFieldContainer> */}
               </>
             )}
 
@@ -273,7 +372,7 @@ const AdminPersonnelDetailsPage = () => {
                   updateUser();
                 }}
               >
-                Update User
+                Update
               </Button>
               <Button
                 onClick={() => {
@@ -283,13 +382,11 @@ const AdminPersonnelDetailsPage = () => {
                 Cancel
               </Button>
             </AdminNewButtonsContainer>
+            {currentUserData?.dateEdited ? "Last Edited: " + handleFirebaseDate(currentUserData?.dateEdited) : ""} <br />
+            {currentUserData?.dateCreated ? "Date Created: " + handleFirebaseDate(currentUserData?.dateCreated) : ""}
           </AdminNewPersonnelAlignContainer>
-
-
         </AdminPersonnelDetailsContainer>
-
       </AdminPersonnelBigContainer>
-
     </ThemeProvider>
   )
 }

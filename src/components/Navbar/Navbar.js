@@ -51,8 +51,10 @@ const Navbar = (props) => {
         const uid = user.uid;
         setLoggedInUserId(uid);
         setUserLoggedIn(true);
+      }
 
-      } else {
+
+      else {
         setUserLoggedIn(false);
         //TODO: uncomment this when project finished
         // navigate("/login");
@@ -61,6 +63,18 @@ const Navbar = (props) => {
 
 
   }, []);
+
+  useEffect(() => {
+    //check user is in the correct domain
+    if (userData?.type === "student" && (window.location.pathname.includes('admin') || window.location.pathname.includes('Instructor'))) {
+      navigate("/student/home");
+
+    }
+    else if (userData?.type === "teacher" && (window.location.pathname.includes('student') || window.location.pathname.includes('admin'))) {
+      navigate("/Instructor/InstructorPage");
+
+    }
+  }, [userData])
 
   useEffect(() => {
     if (loggedInUserId !== "") {
@@ -74,8 +88,6 @@ const Navbar = (props) => {
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
     setUserData(userData)
-
-
   }
 
   const handleSignOut = () => {
@@ -88,6 +100,10 @@ const Navbar = (props) => {
         console.log("Error when signing out: ", error);
       });
   };
+
+  //Function to check user domain + change page if they are in the wrong domain
+  const checkUserDomain = () => {
+  }
 
   return (
     <ThemeProvider theme={theme}>
