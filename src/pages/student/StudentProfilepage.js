@@ -31,7 +31,7 @@ import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const StudentProfilepage = () => {
@@ -80,7 +80,7 @@ const StudentProfilepage = () => {
     }
   }, [authId]); // Run effect when authId changes
   console.log("authid",authId);
-  
+
   const profileDisplayRef = useRef(null);
   const [profile, setProfiles] = useState([]);
   const profilesRef = collection(db, "users");

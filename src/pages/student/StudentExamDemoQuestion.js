@@ -54,7 +54,7 @@ import {
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamQuestionpage = () => {
   //const studentId = "1221";
@@ -102,7 +102,7 @@ const StudentExamQuestionpage = () => {
     }
   }, [authId]); // Run effect when authId changes
   console.log("authid",authId);
-  
+
   const { examId, questionNo } = useParams();
   const examsRef = collection(db, "exams");
   const questionsRef = collection(db, "questions");

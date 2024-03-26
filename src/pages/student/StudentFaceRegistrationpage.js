@@ -19,14 +19,14 @@ import WebCam from "../../components/WebCam/WebCam";
 import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL  } from "firebase/storage";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { query, where, getDocs, collection } from "firebase/firestore";
 
 const StudentFaceRegistrationpage = () => {
   //get image from storage
 
   //const student = "1221"; //change to a general login id
-  const [studentId, setStudent] = useState();
+  const [student, setStudent] = useState();
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
