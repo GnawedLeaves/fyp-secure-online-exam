@@ -41,6 +41,7 @@ const AdminPersonnelDetailsPage = () => {
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserPasswordConfirm, setNewUserPasswordConfirm] = useState("");
   const [newUserModules, setNewUserModules] = useState([]);
+  const [updatedUserModules, setUpdatedUserModules] = useState([]);
   const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
   const [showEditFailureModal, setShowEditFailureModal] = useState(false);
   const [editFailureReason, setEditFailureReason] = useState("")
@@ -58,7 +59,7 @@ const AdminPersonnelDetailsPage = () => {
     const currentDate = new Date();
     const timestamp = Timestamp.fromDate(currentDate);
     if (currentUserType === 'student') {
-      if (newUserName !== currentUserData.name || newUserCourse !== currentUserData.course || newUserYear !== currentUserData.year || newUserModules !== currentUserData.modules) {
+      if (newUserName !== currentUserData.name || newUserCourse !== currentUserData.course || newUserYear !== currentUserData.year || updatedUserModules !== currentUserData.modules) {
         try {
 
 
@@ -66,7 +67,7 @@ const AdminPersonnelDetailsPage = () => {
             name: newUserName,
             year: newUserYear,
             course: newUserCourse,
-            modules: newUserModules,
+            modules: updatedUserModules,
             dateEdited: timestamp,
           });
           setShowEditSuccessModal(true)
@@ -84,7 +85,7 @@ const AdminPersonnelDetailsPage = () => {
       }
     }
     else if (currentUserType === 'teacher') {
-      if (newUserName !== currentUserData.name || newUserModules !== currentUserData.modules) {
+      if (newUserName !== currentUserData.name || updatedUserModules !== currentUserData.modules) {
         try {
           await updateDoc(userRef, {
             name: newUserName,
@@ -134,7 +135,7 @@ const AdminPersonnelDetailsPage = () => {
   }
 
   const handleModulesSelected = (modulesSelected) => {
-    setNewUserModules(modulesSelected);
+    setUpdatedUserModules(modulesSelected);
   }
 
   const getModuleData = async () => {

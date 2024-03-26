@@ -12,21 +12,21 @@ import {
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
-import  Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import WebCam from "../../components/WebCam/WebCam";
 import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
-import { ref, getDownloadURL  } from "firebase/storage";
-import { getAuth } from "firebase/auth";
+import { ref, getDownloadURL } from "firebase/storage";
 import { query, where, getDocs, collection } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentFaceRegistrationpage = () => {
   //get image from storage
 
   //const student = "1221"; //change to a general login id
-  const [studentId, setStudent] = useState();
+  const [student, setStudent] = useState();
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
@@ -41,7 +41,7 @@ const StudentFaceRegistrationpage = () => {
       }));
       console.log("userInfo", userInfo);
       setStudent(userInfo[0]?.id);
-      
+
 
       return userInfo;
     } catch (error) {
@@ -69,12 +69,12 @@ const StudentFaceRegistrationpage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid",authId);
+  console.log("authid", authId);
 
   const [imageUrl, setImageUrl] = useState('');
-  const getImageUrl  = async (imageName) => {
+  const getImageUrl = async (imageName) => {
     const imageRef = ref(storage, `testing_sample/${imageName}`);
-    
+
     try {
       const downloadUrl = await getDownloadURL(imageRef);
       setImageUrl(downloadUrl);
@@ -85,33 +85,33 @@ const StudentFaceRegistrationpage = () => {
   };
 
   useEffect(() => {
-    getImageUrl (`sample-face-registration.jpg`);
+    getImageUrl(`sample-face-registration.jpg`);
   }, []);
 
-  
+
 
   return (
-      <ThemeProvider theme={theme}>
-        <StudentHomePageContainer>
+    <ThemeProvider theme={theme}>
+      <StudentHomePageContainer>
 
-          <Navbar linksArray={studentNavbarItems} />
-          <StudentNavbarContentContainer>
-            <PageTitle>Face Registration</PageTitle>
-            <FaceRegistrationSection>
-                <SampleContainer>
-                    <SampleText>Sample Image for Face Registration</SampleText>
-                    <SampleImage src={imageUrl} alt="Sample Image of Face Registration" />
-                    <SampleDesc>Please provide an image with your face visible and without any obstructions</SampleDesc>
-                </SampleContainer>
-                <CamContainer>
-                    <WebCam 
-                      studentId={student}/>
-                </CamContainer>
-            </FaceRegistrationSection>
-            <Footer/>
-          </StudentNavbarContentContainer>
-        </StudentHomePageContainer>
-      </ThemeProvider>
+        <Navbar linksArray={studentNavbarItems} />
+        <StudentNavbarContentContainer>
+          <PageTitle>Face Registration</PageTitle>
+          <FaceRegistrationSection>
+            <SampleContainer>
+              <SampleText>Sample Image for Face Registration</SampleText>
+              <SampleImage src={imageUrl} alt="Sample Image of Face Registration" />
+              <SampleDesc>Please provide an image with your face visible and without any obstructions</SampleDesc>
+            </SampleContainer>
+            <CamContainer>
+              <WebCam
+                studentId={student} />
+            </CamContainer>
+          </FaceRegistrationSection>
+          <Footer />
+        </StudentNavbarContentContainer>
+      </StudentHomePageContainer>
+    </ThemeProvider>
   );
 };
 

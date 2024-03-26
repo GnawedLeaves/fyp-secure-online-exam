@@ -15,12 +15,12 @@ import {
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
-import  Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
-import { useRef } from "react"; 
+import { useRef } from "react";
 import {
   Timestamp,
   addDoc,
@@ -29,14 +29,14 @@ import {
   onSnapshot,
   query,
   where,
-} from "firebase/firestore"; 
+} from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
-import {formatDateString} from "../student/StudentExampage";
-import { getAuth } from "firebase/auth";
+import { formatDateString } from "../student/StudentExampage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamReviewpage = () => {
   //const studentId = "1221";
@@ -55,7 +55,7 @@ const StudentExamReviewpage = () => {
       }));
       console.log("userInfo", userInfo);
       setStudent(userInfo[0]?.id);
-      
+
 
       return userInfo;
     } catch (error) {
@@ -83,8 +83,8 @@ const StudentExamReviewpage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid",authId);
-  
+  console.log("authid", authId);
+
   const { examId } = useParams();
   const submissionDisplayRef = useRef(null);
   const [examReview, setExamReview] = useState([]);
@@ -102,18 +102,18 @@ const StudentExamReviewpage = () => {
         console.error("Error: studentId or examId is not defined.");
         return null;
       }
-  
+
       // Perform a query to get the document with matching examId
       const examQuery = query(submissionRef, where("examId", "==", examId));
       const examSnapshot = await getDocs(examQuery);
-  
+
       // Check if there's a matching document
       if (!examSnapshot.empty) {
         const examDoc = examSnapshot.docs[0];
-  
+
         // Retrieve the grade, submission time, exam name, and exam date for the specific student
         const studentInfo = examDoc.data().students && Object.values(examDoc.data().students).find(student => student.id === studentId);
-  
+
         if (studentInfo) {
           const grade = studentInfo.grade;
           const submissionTime = studentInfo.submissionTime ? studentInfo.submissionTime.toDate() : null;
@@ -121,8 +121,8 @@ const StudentExamReviewpage = () => {
           const examName = examDoc.data().name;
           const examEndTime = examDoc.data().endTime ? examDoc.data().endTime.toDate() : null;
           const examDate = examDoc.data().startTime ? examDoc.data().startTime.toDate() : null;
-  
-          return { courseId, grade, submissionTime, examName, examEndTime,examDate };
+
+          return { courseId, grade, submissionTime, examName, examEndTime, examDate };
         } else {
           console.warn(`Student with ID ${studentId} not found for exam with courseId ${examId}.`);
           return null;
@@ -139,7 +139,7 @@ const StudentExamReviewpage = () => {
 
   const fetchSubmissionData = async () => {
     try {
-      const {courseId, grade, submissionTime, examName, examEndTime, examDate } = await getSubmissionDetails(studentId, examId);
+      const { courseId, grade, submissionTime, examName, examEndTime, examDate } = await getSubmissionDetails(studentId, examId);
       setExamReview({
         courseId,
         grade,
@@ -158,44 +158,44 @@ const StudentExamReviewpage = () => {
   }, []);
 
   return (
-      <ThemeProvider theme={theme}>
-        <StudentHomePageContainer>
-          <Navbar linksArray={studentNavbarItems} />
-          <StudentNavbarContentContainer>
-            <PageTitle>Exam Review</PageTitle>
-            <ReviewContainer>
-              <ReviewTable>
-                <ReviewRow>
-                  <ReviewData>Course: </ReviewData>
-                  <NameData>{examReview.courseId} {examReview.examName}</NameData>
-                </ReviewRow>
-                <ReviewRow>
+    <ThemeProvider theme={theme}>
+      <StudentHomePageContainer>
+        <Navbar linksArray={studentNavbarItems} />
+        <StudentNavbarContentContainer>
+          <PageTitle>Exam Review</PageTitle>
+          <ReviewContainer>
+            <ReviewTable>
+              <ReviewRow>
+                <ReviewData>Course: </ReviewData>
+                <NameData>{examReview.courseId} {examReview.examName}</NameData>
+              </ReviewRow>
+              <ReviewRow>
                 <ReviewData>Date: </ReviewData>
-                  <DateData>{examReview.examDate? formatDateString(examReview.examDate): ""}</DateData>
-                </ReviewRow>
-                <ReviewRow>
-                  <ReviewData>Submission Time: </ReviewData>
-                  <EndTimeData>{examReview.submissionTime? examReview.submissionTime.toLocaleTimeString(): ""}</EndTimeData>
-                </ReviewRow>
-                <ReviewRow>
+                <DateData>{examReview.examDate ? formatDateString(examReview.examDate) : ""}</DateData>
+              </ReviewRow>
+              <ReviewRow>
+                <ReviewData>Submission Time: </ReviewData>
+                <EndTimeData>{examReview.submissionTime ? examReview.submissionTime.toLocaleTimeString() : ""}</EndTimeData>
+              </ReviewRow>
+              <ReviewRow>
                 <ReviewData>End Time: </ReviewData>
-                <EndTimeData>{examReview.examEndTime? examReview.examEndTime.toLocaleTimeString(): ""}</EndTimeData>
-                </ReviewRow>
-                
-                <ReviewRow>
-                  <ReviewData>Grade: </ReviewData>
-                  <ResultData>{examReview.grade}</ResultData>
-                </ReviewRow>
-              </ReviewTable>
-              <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => NavigateAllExam()}>
-                  Back
-                </Button>
-            </ReviewContainer>
-            <Footer/>
-          </StudentNavbarContentContainer>
-        </StudentHomePageContainer>
-        
-      </ThemeProvider>
+                <EndTimeData>{examReview.examEndTime ? examReview.examEndTime.toLocaleTimeString() : ""}</EndTimeData>
+              </ReviewRow>
+
+              <ReviewRow>
+                <ReviewData>Grade: </ReviewData>
+                <ResultData>{examReview.grade}</ResultData>
+              </ReviewRow>
+            </ReviewTable>
+            <Button defaultColor={theme.primary} filledColor={theme.primary} filled={false} onClick={() => NavigateAllExam()}>
+              Back
+            </Button>
+          </ReviewContainer>
+          <Footer />
+        </StudentNavbarContentContainer>
+      </StudentHomePageContainer>
+
+    </ThemeProvider>
   );
 };
 
