@@ -41,6 +41,7 @@ import { getAuth } from "firebase/auth";
 const StudentExamReviewpage = () => {
   //const studentId = "1221";
   const [studentId, setStudent] = useState();
+  const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
       const usersRef = collection(db, "users");
@@ -63,12 +64,27 @@ const StudentExamReviewpage = () => {
     }
   };
 
-  const auth = getAuth();
-  const authId = auth.currentUser ? auth.currentUser.uid : null;
-  console.log('authId',authId);
-  if (authId) {
-    getUser(authId);
-  }
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthId(user.uid); // Update authId when user is authenticated
+      } else {
+        setAuthId(null); // Reset authId when user is not authenticated
+      }
+    });
+
+    // Clean up subscription on unmount
+    return () => unsubscribe();
+  }, []); // Empty dependency array to run effect only once on mount
+
+  useEffect(() => {
+    if (authId) {
+      getUser(authId);
+    }
+  }, [authId]); // Run effect when authId changes
+  console.log("authid",authId);
+  
   const { examId } = useParams();
   const submissionDisplayRef = useRef(null);
   const [examReview, setExamReview] = useState([]);

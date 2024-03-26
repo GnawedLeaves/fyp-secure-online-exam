@@ -54,12 +54,13 @@ import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
 import {ZegoUIKitPrebuilt} from '@zegocloud/zego-uikit-prebuilt';
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { appID, serverSecret } from "../../backend/zegocloud/zegocloud";
 
 const StudentExamQuestionpage = () => {
   //const studentId = "1221";
   const [studentId, setStudent] = useState();
+  const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
       const usersRef = collection(db, "users");
@@ -82,12 +83,25 @@ const StudentExamQuestionpage = () => {
     }
   };
 
-  const auth = getAuth();
-  const authId = auth.currentUser ? auth.currentUser.uid : null;
-  console.log('authId',authId);
-  if (authId) {
-    getUser(authId);
-  }
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthId(user.uid); // Update authId when user is authenticated
+      } else {
+        setAuthId(null); // Reset authId when user is not authenticated
+      }
+    });
+
+    // Clean up subscription on unmount
+    return () => unsubscribe();
+  }, []); // Empty dependency array to run effect only once on mount
+
+  useEffect(() => {
+    if (authId) {
+      getUser(authId);
+    }
+  }, [authId]);
 
   const { examId, questionNo } = useParams();
   const examsRef = collection(db, "exams");
@@ -556,7 +570,8 @@ const navigateToQuestion = (exam,number) => {
     );
     
     const zc = ZegoUIKitPrebuilt.create(kitToken);
-    zc.joinRoom({
+    if(studentId){
+      zc.joinRoom({
         showPreJoinView: false,
         container: element,
         scenario:{
@@ -581,7 +596,9 @@ const navigateToQuestion = (exam,number) => {
         showNonVideoUser: false,
         showScreenSharingButton: false,
         layout: "Sidebar",
-    })
+      })
+    }
+    
 };
 
   return (
