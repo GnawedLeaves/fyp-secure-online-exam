@@ -96,7 +96,12 @@ export const NavbarProfileContainer = styled.div`
   padding: 0.5rem 0;
 `;
 
-export const NavbarProfile = styled.div``;
+export const NavbarProfile = styled.div`
+font-size: 1.2rem;
+font-weight: bold;
+width: 80%;
+text-align: center;
+`;
 export const NavbarLogoutButton = styled.button`
   width: 100%;
   padding: 0.7rem 0;

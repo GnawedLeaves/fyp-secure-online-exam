@@ -13,7 +13,6 @@ import { Suspense } from "react";
 import TempNavbar from "./components/Navbar/TempNavbar/TempNavbar";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import Navbar from "./components/Navbar/Navbar";
-import AdminSettingsPage from "./pages/admin/adminSettings/AdminSettingsPage";
 import AdminMessagesPage from "./pages/admin/adminMessages/AdminMessages";
 import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage";
 import Loginpage from "./pages/common/loginPage/LoginPage";
@@ -35,6 +34,8 @@ import AdminExamDetailsPage from "./pages/admin/adminExams/AdminExamDetailsPage"
 import AdminExamsPage from "./pages/admin/adminExams/AdminExamsPage";
 import StudentExamDemoQuestionpage from "./pages/student/StudentExamDemoQuestion";
 import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage";
+import AdminModulesPage from "./pages/admin/adminModules/AdminModulesPage";
+import AdminPersonnelDetailsPage from "./pages/admin/adminPersonnel/AdminPersonnelDetails";
 
 export const adminRoutes = [
   {
@@ -44,8 +45,8 @@ export const adminRoutes = [
   },
   {
     title: "Admin Settings",
-    link: "/admin/settings",
-    element: <AdminSettingsPage />,
+    link: "/admin/modules",
+    element: <AdminModulesPage />,
   },
   {
     title: "Admin Messages",
@@ -66,6 +67,11 @@ export const adminRoutes = [
     title: "Admin Exam Details",
     link: "/admin/exam/:examid",
     element: <AdminExamDetailsPage />,
+  },
+  {
+    title: "Admin Personnel Details",
+    link: "/admin/personnel/:userId",
+    element: <AdminPersonnelDetailsPage />,
   },
   {
     title: "Admin New Personnel",
@@ -123,12 +129,12 @@ export const studentRoutes = [
   {
     title: "Student Exam demo",
     link: "/student/home/:examId/:questionNo",
-    element: <StudentExamDemoQuestionpage/>,
+    element: <StudentExamDemoQuestionpage />,
   },
   {
     title: "Student Exam Demo Detail",
     link: "/student/home/:examId",
-    element:<StudentExamDemoDetailpage />,
+    element: <StudentExamDemoDetailpage />,
   },
   {
     title: "call test",

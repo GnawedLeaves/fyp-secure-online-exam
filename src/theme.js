@@ -8,7 +8,7 @@ export const theme = {
   statusGood: "#36D59D",
   statusError: "#FF8080",
   statusIntermediate: "#FFCF96",
-  grey: "#D3D3D3",
+  grey: "#E9E9E9",
   white: "#ffffff",
   boxShadow: "box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;",
 };

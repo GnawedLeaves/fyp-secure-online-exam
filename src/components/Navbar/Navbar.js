@@ -25,19 +25,24 @@ import { IoPeopleOutline } from "react-icons/io5";
 import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { db } from "../../backend/firebase/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Navbar = (props) => {
   const navigate = useNavigate();
 
   const changePage = (path) => {
-    console.log(`/${path}`);
+
     navigate(`/${path}`);
   };
   const currentURL = window.location.href;
   //TODO: Change depending on who is logged in
 
   const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [userLoggedIn, setUserLoggedIn] = useState();
   const [userData, setUserData] = useState();
+
+
 
   const auth = getAuth();
   useEffect(() => {
@@ -45,15 +50,45 @@ const Navbar = (props) => {
       if (user) {
         const uid = user.uid;
         setLoggedInUserId(uid);
-        setUserData(true);
-        console.log("user is signed in: ", uid);
-      } else {
-        setUserData(false);
+        setUserLoggedIn(true);
+      }
+
+
+      else {
+        setUserLoggedIn(false);
         //TODO: uncomment this when project finished
         // navigate("/login");
       }
     });
+
+
   }, []);
+
+  useEffect(() => {
+    //check user is in the correct domain
+    if (userData?.type === "student" && (window.location.pathname.includes('admin') || window.location.pathname.includes('Instructor'))) {
+      navigate("/student/home");
+
+    }
+    else if (userData?.type === "teacher" && (window.location.pathname.includes('student') || window.location.pathname.includes('admin'))) {
+      navigate("/Instructor/InstructorPage");
+
+    }
+  }, [userData])
+
+  useEffect(() => {
+    if (loggedInUserId !== "") {
+      getUserData(loggedInUserId)
+    }
+  }, [loggedInUserId])
+
+  const getUserData = async (loggedInUserId) => {
+    const userRef = collection(db, "users");
+    const querySnapshot = await getDocs(query(userRef, where("authId", "==", loggedInUserId)))
+    const doc = querySnapshot.docs[0];
+    const userData = doc?.data();
+    setUserData(userData)
+  }
 
   const handleSignOut = () => {
     signOut(auth)
@@ -65,6 +100,10 @@ const Navbar = (props) => {
         console.log("Error when signing out: ", error);
       });
   };
+
+  //Function to check user domain + change page if they are in the wrong domain
+  const checkUserDomain = () => {
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -99,7 +138,7 @@ const Navbar = (props) => {
         </NavbarContentContainer>
         <NavbarProfileContainer>
           <NavbarProfile>
-            {loggedInUserId ? loggedInUserId : "Not Logged In"}
+            {userLoggedIn ? userData?.name : "Not Logged In"} <br />{userData?.course ? "(" + userData.course + ")" : ""}
           </NavbarProfile>
           <NavbarLogoutButton
             onClick={() => {

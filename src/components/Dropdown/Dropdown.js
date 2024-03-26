@@ -1,5 +1,5 @@
 // Dropdown.js
-import React from "react";
+import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 
@@ -19,17 +19,19 @@ const SelectOption = styled.option`
   border-radius: 2rem;
 `;
 
-const Dropdown = ({ options, onChange }) => {
+const Dropdown = ({ options, onChange, defaultValue }) => {
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
     onChange(selectedOption);
   };
 
+
+
   return (
     <ThemeProvider theme={theme}>
       <SelectDropdown onChange={handleSelectChange}>
         <SelectOption value="" disabled selected>
-          -- Select an option --
+          {defaultValue ? defaultValue : "-- Select an option --"}
         </SelectOption>
         {options.map((option, index) => (
           <SelectOption key={index} value={option}>

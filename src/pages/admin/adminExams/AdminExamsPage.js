@@ -21,34 +21,9 @@ import { IoMailOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import LoadingPage from "../../common/loadingPage/LoadingPage";
 import { theme } from "../../../theme";
+import { adminNavbarItems } from "../AdminHomePage";
 
-export const adminNavbarItems = [
-  {
-    title: "Home",
-    path: "/admin/home",
-    logo: <RiHome4Line />,
-  },
-  {
-    title: "Exams",
-    path: "/admin/exams",
-    logo: <IoBookOutline />,
-  },
-  {
-    title: "Personnel",
-    path: "/admin/personnel",
-    logo: <IoPeopleOutline />,
-  },
-  {
-    title: "Messages",
-    path: "/admin/messages",
-    logo: <IoMailOutline />,
-  },
-  {
-    title: "Settings",
-    path: "/admin/settings",
-    logo: <IoSettingsOutline />,
-  },
-];
+
 
 const AdminExamsPage = () => {
   const navigate = useNavigate();

@@ -13,9 +13,11 @@ import {
 } from "../BubbleAdd/BubbleAddStyles";
 import { RxCross2 } from "react-icons/rx";
 
+//TODO: fix this component's not updating 
+
 const BubbleSelect = (props) => {
   const [allOptions, setAllOptions] = useState(props.allOptions);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState(props.preSelectedOptions ? props.preSelectedOptions : []);
   useEffect(() => {
     setAllOptions(props.allOptions);
   }, [props.allOptions]);
@@ -26,15 +28,29 @@ const BubbleSelect = (props) => {
 
   const handleOptionClick = (option) => {
     setSelectedOptions([...selectedOptions, option]);
-    const removedArray = allOptions.filter((o) => {
-      return o !== option;
-    });
+    // const removedArray = allOptions.filter((o) => {
+    //   return o !== option;
+    // });
 
-    setAllOptions(removedArray);
+    // setAllOptions(removedArray);
   };
+
+
+  const updateAllOptions = () => {
+    if (allOptions.length !== 0) {
+      const filteredOptions = allOptions.filter(option => !selectedOptions.includes(option));
+      setAllOptions(filteredOptions);
+    }
+  }
+
+  useEffect(() => {
+    setSelectedOptions(props.preSelectedOptions)
+    updateAllOptions()
+  }, [props.preSelectedOptions, props.allOptions])
 
   useEffect(() => {
     onOptionSelect();
+    updateAllOptions();
   }, [selectedOptions]);
 
   const handleOptionRemove = (data, index) => {
@@ -56,14 +72,17 @@ const BubbleSelect = (props) => {
         onChange={(event) => {
           handleOptionClick(event.target.value);
         }}
+        defaultValue=""
       >
-        <option disabled selected value>
-          -- Select a Module --
+        <option disabled value="">
+          -- Select an option --
         </option>
+
         {allOptions.map((option, index) => {
-          return <BubbleAddOption key={index}>{option}</BubbleAddOption>;
+          return <BubbleAddOption key={index} value={option}>{option}</BubbleAddOption>;
         })}
       </BubbleAddSelect>
+
 
       <BubbleAddBubblesContainer>
         {selectedOptions?.map((data, index) => {
