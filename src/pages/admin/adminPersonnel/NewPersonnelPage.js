@@ -308,6 +308,7 @@ const NewPersonnelPage = () => {
                   <BubbleSelect
                     allOptions={allModulesName}
                     handleOptionsSelected={handleModulesSelected}
+
                   />
                 </AdminNewFieldContainer>
 

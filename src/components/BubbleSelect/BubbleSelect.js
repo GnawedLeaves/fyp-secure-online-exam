@@ -13,14 +13,15 @@ import {
 } from "../BubbleAdd/BubbleAddStyles";
 import { RxCross2 } from "react-icons/rx";
 
-//TODO: fix this component's not updating 
-
 const BubbleSelect = (props) => {
-  const [allOptions, setAllOptions] = useState(props.allOptions);
-  const [selectedOptions, setSelectedOptions] = useState(props.preSelectedOptions ? props.preSelectedOptions : []);
+  const [allOptions, setAllOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
   useEffect(() => {
-    setAllOptions(props.allOptions);
-  }, [props.allOptions]);
+    // Update state when props change
+    setAllOptions(props.allOptions || []);
+    setSelectedOptions(props.preSelectedOptions || []);
+  }, [props.allOptions, props.preSelectedOptions]);
 
   const onOptionSelect = () => {
     props.handleOptionsSelected(selectedOptions);
@@ -28,44 +29,27 @@ const BubbleSelect = (props) => {
 
   const handleOptionClick = (option) => {
     setSelectedOptions([...selectedOptions, option]);
-    // const removedArray = allOptions.filter((o) => {
-    //   return o !== option;
-    // });
-
-    // setAllOptions(removedArray);
+    setAllOptions(allOptions.filter((o) => o !== option));
   };
 
+  const handleOptionRemove = (data, index) => {
+    setSelectedOptions(selectedOptions.filter((_, i) => i !== index));
+    setAllOptions([data, ...allOptions]);
+  };
 
   const updateAllOptions = () => {
+
     if (allOptions.length !== 0) {
       const filteredOptions = allOptions.filter(option => !selectedOptions.includes(option));
+      console.log("updating all options", filteredOptions)
       setAllOptions(filteredOptions);
     }
   }
 
   useEffect(() => {
-    setSelectedOptions(props.preSelectedOptions)
-    updateAllOptions()
-  }, [props.preSelectedOptions, props.allOptions])
-
-  useEffect(() => {
-    onOptionSelect();
     updateAllOptions();
+    onOptionSelect();
   }, [selectedOptions]);
-
-  const handleOptionRemove = (data, index) => {
-    if (selectedOptions.length === 1) {
-      setSelectedOptions([]);
-    } else {
-      const temp = [
-        ...selectedOptions.slice(0, index),
-        ...selectedOptions.slice(index + 1),
-      ];
-      setSelectedOptions(temp);
-    }
-    setAllOptions([data, ...allOptions]);
-  };
-
   return (
     <BubbleSelectContainer>
       <BubbleAddSelect
@@ -83,9 +67,8 @@ const BubbleSelect = (props) => {
         })}
       </BubbleAddSelect>
 
-
       <BubbleAddBubblesContainer>
-        {selectedOptions?.map((data, index) => {
+        {selectedOptions.map((data, index) => {
           return (
             <BubbleAddBubble key={index} newItem={index === 0}>
               {data}

@@ -13,11 +13,11 @@ import {
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
-import  Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Footer/Footer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import sampleFaceRegistrationImg from '../../img/student/sample-face-registration.jpg';
-import { useRef } from "react"; 
+import { useRef } from "react";
 import {
   Timestamp,
   addDoc,
@@ -26,12 +26,12 @@ import {
   onSnapshot,
   query,
   where,
-} from "firebase/firestore"; 
+} from "firebase/firestore";
 import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const StudentProfilepage = () => {
@@ -51,7 +51,7 @@ const StudentProfilepage = () => {
       }));
       console.log("userInfo", userInfo);
       setStudent(userInfo[0]?.id);
-      
+
 
       return userInfo;
     } catch (error) {
@@ -79,8 +79,8 @@ const StudentProfilepage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid",authId);
-  
+  console.log("authid", authId);
+
   const profileDisplayRef = useRef(null);
   const [profile, setProfiles] = useState([]);
   const profilesRef = collection(db, "users");
@@ -98,7 +98,7 @@ const StudentProfilepage = () => {
         id: doc.Id,
         ...doc.data(),
       }));
-      console.log("profileData",profilesData);
+      console.log("profileData", profilesData);
       setProfiles(profilesData);
 
       return profilesData;
@@ -108,13 +108,13 @@ const StudentProfilepage = () => {
     }
   };
 
-  
+
 
   //get image from storage
   const [imageUrl, setImageUrl] = useState('');
-  const getImageUrl  = async (imageName) => {
+  const getImageUrl = async (imageName) => {
     const imageRef = ref(storage, `student_profile/${imageName}`);
-    
+
     try {
       const downloadUrl = await getDownloadURL(imageRef);
       setImageUrl(downloadUrl);
@@ -128,7 +128,7 @@ const StudentProfilepage = () => {
 
   useEffect(() => {
     getProfile(studentId);
-    getImageUrl (`student_${studentId}.jpg`);
+    getImageUrl(`student_${studentId}.jpg`);
   }, []);
 
   const dummy_profile = [
@@ -140,42 +140,42 @@ const StudentProfilepage = () => {
       studentType: "undergraduate",
       enrollment: "enrolled",
       enrollmentYear: "2020",
-      cgpa:4.5,
+      cgpa: 4.5,
     },
   ];
   return (
-      <ThemeProvider theme={theme}>
-        <StudentHomePageContainer>
-          <Navbar linksArray={studentNavbarItems} />
-          <StudentNavbarContentContainer>
-            <PageTitle>Profile</PageTitle>
-            <ProfileContainer>
-              <StudentProfileSection ref={profileDisplayRef}>
-                <LeftContainer>
-                  <DataSection><b>Name: </b>{profile[0]?.name}</DataSection>
-                  <DataSection><b>Matric Card: </b>{profile[0]?.matric}</DataSection>
-                  <DataSection><b>Email Address: </b>{profile[0]?.email}</DataSection>
-                  <DataSection><b>Programme: </b>{profile[0]?.programme}</DataSection>
-                  <DataSection><b>Year: </b>Year {profile[0]?.year}</DataSection>
-                  <DataSection><b>Student Type: </b>{profile[0]?.studentType}</DataSection>
-                  <DataSection><b>Enrollment Status: </b>{profile[0]?.enrollmentStatus}</DataSection>
-                  <DataSection><b>Enrollment Year: </b>{profile[0]?.enrollmentYear}</DataSection>
-                  <DataSection><b>CGPA: </b>{profile[0]?.cgpa.toFixed(1)}</DataSection>
-                </LeftContainer>
-                <RightContainer>
-                  <SampleImage src={imageUrl} alt="Sample Image of Face Registration"/>
-                </RightContainer>
-              </StudentProfileSection>
-              <StudentResultSection>
-                ##Should we put all the result here? <br/>
-                ##or make another page to check it?
-              </StudentResultSection>
-              
-            </ProfileContainer>
-            <Footer/>
-          </StudentNavbarContentContainer>
-        </StudentHomePageContainer>
-      </ThemeProvider>
+    <ThemeProvider theme={theme}>
+      <StudentHomePageContainer>
+        <Navbar linksArray={studentNavbarItems} />
+        <StudentNavbarContentContainer>
+          <PageTitle>Profile</PageTitle>
+          <ProfileContainer>
+            <StudentProfileSection ref={profileDisplayRef}>
+              <LeftContainer>
+                <DataSection><b>Name: </b>{profile[0]?.name}</DataSection>
+                <DataSection><b>Matric Card: </b>{profile[0]?.matric}</DataSection>
+                <DataSection><b>Email Address: </b>{profile[0]?.email}</DataSection>
+                <DataSection><b>Programme: </b>{profile[0]?.programme}</DataSection>
+                <DataSection><b>Year: </b>Year {profile[0]?.year}</DataSection>
+                <DataSection><b>Student Type: </b>{profile[0]?.studentType}</DataSection>
+                <DataSection><b>Enrollment Status: </b>{profile[0]?.enrollmentStatus}</DataSection>
+                <DataSection><b>Enrollment Year: </b>{profile[0]?.enrollmentYear}</DataSection>
+                <DataSection><b>CGPA: </b>{profile[0]?.cgpa.toFixed(1)}</DataSection>
+              </LeftContainer>
+              <RightContainer>
+                <SampleImage src={imageUrl} alt="Sample Image of Face Registration" />
+              </RightContainer>
+            </StudentProfileSection>
+            <StudentResultSection>
+              ##Should we put all the result here? <br />
+              ##or make another page to check it?
+            </StudentResultSection>
+
+          </ProfileContainer>
+          <Footer />
+        </StudentNavbarContentContainer>
+      </StudentHomePageContainer>
+    </ThemeProvider>
   );
 };
 

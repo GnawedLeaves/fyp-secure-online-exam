@@ -24,19 +24,19 @@ import {
 } from "./StudentPagesStyles";
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
-import  Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Footer/Footer";
 import Button from "../../components/Button/Button";
-import  Timer from "../../components/Timer/Timer";
+import Timer from "../../components/Timer/Timer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import { useNavigate } from "react-router-dom";
 import {
   FaClock
-}from "react-icons/fa";
+} from "react-icons/fa";
 import Numberbox from "../../components/Numberbox/Numberbox";
 import RadioButtonGroup from "../../components/student/RadioButtonGroup/RadioButtonGroup";
 import { useParams } from "react-router-dom";
-import { useRef } from "react"; 
+import { useRef } from "react";
 import {
   doc,
   Timestamp,
@@ -50,11 +50,11 @@ import {
   query,
   where,
   deleteDoc
-} from "firebase/firestore"; 
+} from "firebase/firestore";
 import { db } from "../../backend/firebase/firebase";
 import NumberFocusbox from "../../components/Numberbox/NumberFocusbox";
 import UploadModal from '../../components/Modal/UploadModal';
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamQuestionpage = () => {
   //const studentId = "1221";
@@ -73,7 +73,7 @@ const StudentExamQuestionpage = () => {
       }));
       console.log("userInfo", userInfo);
       setStudent(userInfo[0]?.id);
-      
+
 
       return userInfo;
     } catch (error) {
@@ -101,8 +101,8 @@ const StudentExamQuestionpage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid",authId);
-  
+  console.log("authid", authId);
+
   const { examId, questionNo } = useParams();
   const examsRef = collection(db, "exams");
   const questionsRef = collection(db, "questions");
@@ -129,7 +129,7 @@ const StudentExamQuestionpage = () => {
         examId: doc.examId,
         ...doc.data(),
       }));
-      console.log("examData",examsData);
+      console.log("examData", examsData);
 
       return examsData;
     } catch (error) {
@@ -137,10 +137,10 @@ const StudentExamQuestionpage = () => {
       return [];
     }
   };
-  const getQuestionDetail = async (examId,questionNo) => {
+  const getQuestionDetail = async (examId, questionNo) => {
     try {
       // Create a query to get all messages where recipientId matches
-      const questionsQuery = query(questionsRef, 
+      const questionsQuery = query(questionsRef,
         where("examId", "==", examId),
         where("questionNumber", "==", questionNo)
       );
@@ -153,7 +153,7 @@ const StudentExamQuestionpage = () => {
         examId: doc.examId,
         ...doc.data(),
       }));
-      console.log("questionsData",questionsData);
+      console.log("questionsData", questionsData);
 
       return questionsData;
     } catch (error) {
@@ -171,11 +171,11 @@ const StudentExamQuestionpage = () => {
         getAnswerArray(studentId, examId),
         getFlagArray(studentId, examId),
       ]);
-  
+
       setExams(examsData);
       setQuestions(questionsData);
       setAnswerArray(answerArray);
-      setFlagArray(flagArray); 
+      setFlagArray(flagArray);
       setSelectedOption(null);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -218,7 +218,7 @@ const StudentExamQuestionpage = () => {
     try {
       const cheatCollection = collection(db, "cheating");
       const timestamp = Timestamp.fromDate(new Date());
-  
+
       // Add a document to the 'cheat' collection
       await addDoc(cheatCollection, {
         studentId: studentId,
@@ -227,7 +227,7 @@ const StudentExamQuestionpage = () => {
         alertType: alertType,
         dateCreatedAt: timestamp,
       });
-  
+
       console.log("Cheat record added successfully!");
     } catch (error) {
       console.error("Error adding cheat record:", error);
@@ -236,25 +236,25 @@ const StudentExamQuestionpage = () => {
 
   useEffect(() => {
     console.log("Visibility effect mounted");
-  
+
     // Cross-browser function to get the visibility state
     const getVisibilityState = () => {
       return document.visibilityState || document.webkitVisibilityState || document.mozVisibilityState || document.msVisibilityState;
     };
-  
+
     // Cross-browser event handler for visibility change
     const handleVisibilityChange = () => {
       console.log("Visibility changed:", document.visibilityState);
       setIsPageVisible(!document.hidden);
       setShowAlertModal(true);
     };
-  
+
     // Set up event listener for visibility change
     document.addEventListener('visibilitychange', handleVisibilityChange);
-  
+
     // Initialize visibility state
     setIsPageVisible(!document.hidden);
-  
+
     // Clean up event listener when component unmounts
     return () => {
       console.log("Visibility effect unmounted");
@@ -266,14 +266,14 @@ const StudentExamQuestionpage = () => {
   useEffect(() => {
     fetchExamData();
     fetchData();
-    
+
   }, [examId, questionNo]);
-  
+
   const endTime = exams.length > 0 && exams[0]?.endTime?.toDate();
 
   if (endTime) {
     endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-    
+
   } else {
     console.error('No valid exam data found or endTime is not defined.');
   }
@@ -281,9 +281,9 @@ const StudentExamQuestionpage = () => {
   const nextQuestion = async (studentId, examId, totalMCQ, questionNo, optionSelected) => {
     try {
       const currentQuestionNo = parseInt(questionNo, 10);
-  
+
       await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
-  
+
       // Navigate to the next question
       const nextQuestionNo = currentQuestionNo + 1;
       navigate(`/student/home/${examId}/${nextQuestionNo}`);
@@ -294,7 +294,7 @@ const StudentExamQuestionpage = () => {
   const saveQuestion = async (studentId, examId, totalMCQ, questionNo, optionSelected) => {
     try {
       const currentQuestionNo = parseInt(questionNo, 10);
-  
+
       await saveAnswerToDatabase(studentId, examId, totalMCQ, questionNo, optionSelected);
     } catch (error) {
       console.error("Error saving/updating answer to the database:", error);
@@ -304,258 +304,258 @@ const StudentExamQuestionpage = () => {
     try {
       // Navigate to the exam
       navigate(`/student/home`);
-  
+
       const flagsCollection = collection(db, "flags");
       const answersCollection = collection(db, "answers");
-  
+
       // Check if there is an existing record in 'flags' collection
       const existingFlagQuery = query(
         flagsCollection,
         where("studentId", "==", studentId),
         where("examId", "==", examId)
       );
-  
+
       const [existingFlagSnapshot] = await Promise.all([getDocs(existingFlagQuery)]);
-  
+
       // Delete each document found in the 'flags' query
       existingFlagSnapshot.forEach(async (doc) => {
         await deleteDoc(doc.ref);
       });
-  
+
       // Check if there is an existing record in 'answers' collection
       const existingAnswersQuery = query(
         answersCollection,
         where("studentId", "==", studentId),
         where("examId", "==", examId)
       );
-  
+
       const [existingAnswersSnapshot] = await Promise.all([getDocs(existingAnswersQuery)]);
-  
+
       // Delete each document found in the 'answers' query
       existingAnswersSnapshot.forEach(async (doc) => {
         await deleteDoc(doc.ref);
       });
-  
+
     } catch (error) {
       console.error("Error deleting exam_demo:", error);
     }
-  };  
-  
-  const saveAnswerToDatabase = async (studentId, examId, totalMCQ, questionNo, selectedOption ) => {
-  
+  };
+
+  const saveAnswerToDatabase = async (studentId, examId, totalMCQ, questionNo, selectedOption) => {
+
     try {
       if (!examId || !studentId) {
         console.error("Invalid examId or studentId");
         return;
       }
 
-    // Create a reference to the answers collection
-    const answersCollection = collection(db, "answers");
+      // Create a reference to the answers collection
+      const answersCollection = collection(db, "answers");
 
-    // Check if there is an existing record for the provided studentId and examId
-    const existingRecordQuery = query(
-      answersCollection,
-      where("studentId", "==", studentId),
-      where("examId", "==", examId)
-    );
+      // Check if there is an existing record for the provided studentId and examId
+      const existingRecordQuery = query(
+        answersCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
 
-    const [existingRecordSnapshot] = await Promise.all([getDocs(existingRecordQuery)]);
+      const [existingRecordSnapshot] = await Promise.all([getDocs(existingRecordQuery)]);
 
-    // If there is an existing record, update it
-    if (!existingRecordSnapshot.empty) {
-      const existingRecordDoc = existingRecordSnapshot.docs[0];
-      const existingRecordRef = doc(answersCollection, existingRecordDoc.id);
+      // If there is an existing record, update it
+      if (!existingRecordSnapshot.empty) {
+        const existingRecordDoc = existingRecordSnapshot.docs[0];
+        const existingRecordRef = doc(answersCollection, existingRecordDoc.id);
 
-      // Retrieve the existing answers array
-      const existingAnswers = existingRecordDoc.data().answers;
+        // Retrieve the existing answers array
+        const existingAnswers = existingRecordDoc.data().answers;
 
-      // Update the answers array with the new optionSelected for the specific questionNo
-      existingAnswers[questionNo - 1] = selectedOption;
+        // Update the answers array with the new optionSelected for the specific questionNo
+        existingAnswers[questionNo - 1] = selectedOption;
 
-      // Update the document in the "answers" collection
-      await updateDoc(existingRecordRef, { answers: existingAnswers });
-    } else {
-      // If there is no existing record, create a new one with an array of null values
-      const newAnswers = new Array(totalMCQ).fill(null);
-      newAnswers[questionNo - 1] = selectedOption;
+        // Update the document in the "answers" collection
+        await updateDoc(existingRecordRef, { answers: existingAnswers });
+      } else {
+        // If there is no existing record, create a new one with an array of null values
+        const newAnswers = new Array(totalMCQ).fill(null);
+        newAnswers[questionNo - 1] = selectedOption;
 
-      await addDoc(answersCollection, {
-        studentId,
-        examId,
-        answers: newAnswers,
-      });
+        await addDoc(answersCollection, {
+          studentId,
+          examId,
+          answers: newAnswers,
+        });
+      }
+
+      console.log("Answer saved successfully!");
+      //console.log(studentId);
+      //console.log(examId);
+      //console.log(selectedOption);
+    } catch (error) {
+      console.error("Error saving answer:", error);
     }
+  };
 
-    console.log("Answer saved successfully!");
-    //console.log(studentId);
-    //console.log(examId);
-    //console.log(selectedOption);
-  } catch (error) {
-    console.error("Error saving answer:", error);
-  }
-};
-  
-const getAnswerArray = async (studentId, examId) => {
-  try {
-    // Create a reference to the answers collection
-    const answersCollection = collection(db, "answers");
+  const getAnswerArray = async (studentId, examId) => {
+    try {
+      // Create a reference to the answers collection
+      const answersCollection = collection(db, "answers");
 
-    // Query to get the specific document for the provided studentId and examId
-    const answersQuery = query(
-      answersCollection,
-      where("studentId", "==", studentId),
-      where("examId", "==", examId)
-    );
+      // Query to get the specific document for the provided studentId and examId
+      const answersQuery = query(
+        answersCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
 
-    // Get the documents based on the query
-    const querySnapshot = await getDocs(answersQuery);
+      // Get the documents based on the query
+      const querySnapshot = await getDocs(answersQuery);
 
-    // If there is a document, return the answers array
-    if (!querySnapshot.empty) {
-      const answerArray = querySnapshot.docs[0].data().answers;
-      return answerArray;
+      // If there is a document, return the answers array
+      if (!querySnapshot.empty) {
+        const answerArray = querySnapshot.docs[0].data().answers;
+        return answerArray;
+      }
+
+      // If no document is found, return an empty array or handle it as needed
+      return [];
+    } catch (error) {
+      console.error("Error getting answerArray:", error);
+      return [];
     }
+  };
 
-    // If no document is found, return an empty array or handle it as needed
-    return [];
-  } catch (error) {
-    console.error("Error getting answerArray:", error);
-    return [];
-  }
-};
+  const updateStudentStatusInExam = async (examId, studentId, status) => {
+    try {
+      const examsRef = collection(db, "exams");
+      const examsQuery = query(examsRef, where("examId", "==", examId));
+      // Get the current exam documents based on the query
+      const examSnapshot = await getDocs(examsQuery);
 
-const updateStudentStatusInExam = async (examId, studentId, status) => {
-  try {
-    const examsRef = collection(db, "exams");
-    const examsQuery = query(examsRef, where("examId", "==", examId));
-    // Get the current exam documents based on the query
-    const examSnapshot = await getDocs(examsQuery);
+      // Check if there are any documents
+      if (examSnapshot.empty) {
+        console.warn(`No exams found for exam with examId ${examId}.`);
+        return null;
+      }
 
-    // Check if there are any documents
-    if (examSnapshot.empty) {
-      console.warn(`No exams found for exam with examId ${examId}.`);
-      return null;
+      // Access the first document in the snapshot
+      const examDoc = examSnapshot.docs[0];
+      // Access the data of the document
+      const exam = examDoc.data();
+
+      // Check if the student with ID exists for the current exam
+      const studentInfo = exam.students && exam.students.findIndex(student => student.id === studentId);
+
+      if (studentInfo === -1) {
+        console.warn(`Student with ID ${studentId} not found for exam with examId ${examId}.`);
+        return null; // Skip updating this exam
+      }
+
+      // Update the status for the specific student
+      exam.students[studentInfo].status = status;
+      exam.students[studentInfo].grade = "Not graded yet";
+      exam.students[studentInfo].submissionTime = new Date();
+
+      // Update the document in the "exams" collection
+      await updateDoc(examDoc.ref, { students: exam.students });
+
+      console.log("Student status updated successfully!");
+    } catch (error) {
+      console.error("Error updating student status in exam:", error);
     }
+  };
 
-    // Access the first document in the snapshot
-    const examDoc = examSnapshot.docs[0];
-    // Access the data of the document
-    const exam = examDoc.data();
 
-    // Check if the student with ID exists for the current exam
-    const studentInfo = exam.students && exam.students.findIndex(student => student.id === studentId);
 
-    if (studentInfo === -1) {
-      console.warn(`Student with ID ${studentId} not found for exam with examId ${examId}.`);
-      return null; // Skip updating this exam
+  const saveFlagToDatabase = async (studentId, examId, totalMCQ, questionNo, flagStatus) => {
+    console.log(flagStatus);
+    try {
+      if (!Array.isArray(flagArray)) {
+        console.error("Invalid flagArray:", flagArray);
+        return;
+      }
+
+      if (!examId || !studentId) {
+        console.error("Invalid examId or studentId");
+        return;
+      }
+
+      // Create a copy of the current flagArray to avoid mutating the state directly
+      const newFlagArray = [...flagArray];
+
+      // Update the flag status for the specific questionNo
+      newFlagArray[questionNo - 1] = flagStatus;
+
+      // Update the state with the new flagArray
+      setFlagArray(newFlagArray);
+      console.log(newFlagArray);
+
+      // Now, update the database with the new flag status
+      const flagsCollection = collection(db, "flags");
+      const existingFlagQuery = query(
+        flagsCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
+
+      const [existingFlagSnapshot] = await Promise.all([getDocs(existingFlagQuery)]);
+
+      // If there is an existing record, update it
+      if (!existingFlagSnapshot.empty) {
+        const existingFlagDoc = existingFlagSnapshot.docs[0];
+        const existingFlagRef = doc(flagsCollection, existingFlagDoc.id);
+
+        await updateDoc(existingFlagRef, { flags: newFlagArray });
+      } else {
+        const newFlags = new Array(totalMCQ).fill(null);
+        newFlags[questionNo - 1] = flagStatus;
+
+        await addDoc(flagsCollection, {
+          studentId,
+          examId,
+          flags: newFlags,
+        });
+      }
+
+      console.log("Flag status saved successfully!");
+    } catch (error) {
+      console.error("Error saving flags:", error);
     }
-
-    // Update the status for the specific student
-    exam.students[studentInfo].status = status;
-    exam.students[studentInfo].grade = "Not graded yet";
-    exam.students[studentInfo].submissionTime = new Date();
-
-    // Update the document in the "exams" collection
-    await updateDoc(examDoc.ref, { students: exam.students });
-
-    console.log("Student status updated successfully!");
-  } catch (error) {
-    console.error("Error updating student status in exam:", error);
-  }
-};
+  };
 
 
+  const getFlagArray = async (studentId, examId) => {
+    try {
+      // Create a reference to the flags collection
+      const flagsCollection = collection(db, "flags");
 
-const saveFlagToDatabase = async (studentId, examId, totalMCQ, questionNo, flagStatus) => {
-  console.log(flagStatus);
-  try {
-    if (!Array.isArray(flagArray)) {
-      console.error("Invalid flagArray:", flagArray);
-      return;
+      // Query to get the specific document for the provided studentId and examId
+      const flagsQuery = query(
+        flagsCollection,
+        where("studentId", "==", studentId),
+        where("examId", "==", examId)
+      );
+
+      // Get the documents based on the query
+      const querySnapshot = await getDocs(flagsQuery);
+
+      // If there is a document, return the flags array
+      if (!querySnapshot.empty) {
+        const flagArray = querySnapshot.docs[0].data().flags;
+        return flagArray || []; // Return an empty array if flagArray is falsy
+      }
+
+      // If no document is found, return an empty array or handle it as needed
+      return [];
+    } catch (error) {
+      console.error("Error getting flagArray:", error);
+      return [];
     }
+  };
+  const navigateToQuestion = (exam, number) => {
+    //  "/student/exam/:examId/:questionNo"
 
-    if (!examId || !studentId) {
-      console.error("Invalid examId or studentId");
-      return;
-    }
-
-    // Create a copy of the current flagArray to avoid mutating the state directly
-    const newFlagArray = [...flagArray];
-
-    // Update the flag status for the specific questionNo
-    newFlagArray[questionNo - 1] = flagStatus;
-
-    // Update the state with the new flagArray
-    setFlagArray(newFlagArray);
-    console.log(newFlagArray);
-
-    // Now, update the database with the new flag status
-    const flagsCollection = collection(db, "flags");
-    const existingFlagQuery = query(
-      flagsCollection,
-      where("studentId", "==", studentId),
-      where("examId", "==", examId)
-    );
-
-    const [existingFlagSnapshot] = await Promise.all([getDocs(existingFlagQuery)]);
-
-    // If there is an existing record, update it
-    if (!existingFlagSnapshot.empty) {
-      const existingFlagDoc = existingFlagSnapshot.docs[0];
-      const existingFlagRef = doc(flagsCollection, existingFlagDoc.id);
-
-      await updateDoc(existingFlagRef, { flags: newFlagArray });
-    } else {
-      const newFlags = new Array(totalMCQ).fill(null);
-      newFlags[questionNo - 1] = flagStatus;
-
-      await addDoc(flagsCollection, {
-        studentId,
-        examId,
-        flags: newFlags,
-      });
-    }
-
-    console.log("Flag status saved successfully!");
-  } catch (error) {
-    console.error("Error saving flags:", error);
-  }
-};
-
-
-const getFlagArray = async (studentId, examId) => {
-  try {
-    // Create a reference to the flags collection
-    const flagsCollection = collection(db, "flags");
-
-    // Query to get the specific document for the provided studentId and examId
-    const flagsQuery = query(
-      flagsCollection,
-      where("studentId", "==", studentId),
-      where("examId", "==", examId)
-    );
-
-    // Get the documents based on the query
-    const querySnapshot = await getDocs(flagsQuery);
-
-    // If there is a document, return the flags array
-    if (!querySnapshot.empty) {
-      const flagArray = querySnapshot.docs[0].data().flags;
-      return flagArray || []; // Return an empty array if flagArray is falsy
-    }
-
-    // If no document is found, return an empty array or handle it as needed
-    return [];
-  } catch (error) {
-    console.error("Error getting flagArray:", error);
-    return [];
-  }
-};
-const navigateToQuestion = (exam,number) => {
-  //  "/student/exam/:examId/:questionNo"
-  
-  navigate(`/student/home/${exam}/${number}`);
-};
+    navigate(`/student/home/${exam}/${number}`);
+  };
 
   const grid = [];
 
@@ -565,7 +565,7 @@ const navigateToQuestion = (exam,number) => {
       const currentNumber = 5 * i + j + 1;
       if (currentNumber <= exams[0]?.totalMCQ) {
         // Check if the current number is equal to the question number
-        
+
         const isQuestionNumber = currentNumber === parseInt(questionNo, 10);
 
         const hasAnswer = answerArray[currentNumber - 1] !== null && answerArray[currentNumber - 1] !== undefined;
@@ -573,20 +573,20 @@ const navigateToQuestion = (exam,number) => {
         // Push the appropriate component based on the condition
         row.push(
           isQuestionNumber ? (
-            <NumberFocusbox number={currentNumber}  isFlagged={hasFlag} onClickFunction={() => navigateToQuestion(examId, currentNumber)}/>
+            <NumberFocusbox number={currentNumber} isFlagged={hasFlag} onClickFunction={() => navigateToQuestion(examId, currentNumber)} />
           ) : (
-            <Numberbox number={currentNumber} hasOption={hasAnswer} isFlagged={hasFlag} onClickFunction={() => navigateToQuestion(examId, currentNumber)}/>
+            <Numberbox number={currentNumber} hasOption={hasAnswer} isFlagged={hasFlag} onClickFunction={() => navigateToQuestion(examId, currentNumber)} />
           )
         );
       }
     }
     grid.push(<QuestionRow>{row}</QuestionRow>);
   }
-  
+
 
   return (
-      <ThemeProvider theme={theme}>
-        <StudentHomePageContainer>
+    <ThemeProvider theme={theme}>
+      <StudentHomePageContainer>
         <UploadModal
           handleModalClose={() => {
             setShowAlertModal(false);
@@ -602,127 +602,127 @@ const navigateToQuestion = (exam,number) => {
           modalContent="You are not allowed to navigate to other windows or tabs. This action will be recorded."
         />
         <UploadModal
-        handleModalClose={() => {
-          setShowSubmitModal(false);
-        }}
-        modalType="action"
-        actionButtonText="Yes"
-        actionButtonColor={theme.statusGood}
-        actionButtonClick={() => {
-          deleteExamDemo(studentId, examId);
-        }}
-        show={showSubmitModal}
-        modalTitle="Submit Answer"
-        modalContent="Are you sure you want to submit your answer? This action cannot be undone."
-      />
-          <StudentExamDetailContainer>
-            <QuestionPageTitle>{exams[0]?.name}</QuestionPageTitle>
-            <QuestionContainer>
+          handleModalClose={() => {
+            setShowSubmitModal(false);
+          }}
+          modalType="action"
+          actionButtonText="Yes"
+          actionButtonColor={theme.statusGood}
+          actionButtonClick={() => {
+            deleteExamDemo(studentId, examId);
+          }}
+          show={showSubmitModal}
+          modalTitle="Submit Answer"
+          modalContent="Are you sure you want to submit your answer? This action cannot be undone."
+        />
+        <StudentExamDetailContainer>
+          <QuestionPageTitle>{exams[0]?.name}</QuestionPageTitle>
+          <QuestionContainer>
             {exams.length > 0 && questions.length > 0 ? (
-            <>
-              <LeftContainer>
-                <QuestionSection>
-                  <QuestionPageDescription>Question {questions[0]?.questionNo} :</QuestionPageDescription>
-                  <QuestionPageDescription>{questions[0]?.question} </QuestionPageDescription>
-                  <PageEnterSpace/>
-                  <PageChoice>
-                      <RadioButtonGroup 
-                        index={questions[0]?.questionNo} 
-                        options={questions[0]?.options} 
+              <>
+                <LeftContainer>
+                  <QuestionSection>
+                    <QuestionPageDescription>Question {questions[0]?.questionNo} :</QuestionPageDescription>
+                    <QuestionPageDescription>{questions[0]?.question} </QuestionPageDescription>
+                    <PageEnterSpace />
+                    <PageChoice>
+                      <RadioButtonGroup
+                        index={questions[0]?.questionNo}
+                        options={questions[0]?.options}
                         onChange={(option) => setSelectedOption(option)}
                         selectedOption={selectedOption}
                       />
-                  </PageChoice>
-                </QuestionSection>
-              </LeftContainer>
-              <RightContainer>
-                <FaClock style={{ float: 'left', marginTop: '3px' }} />
-                <Timer endTime={endTime} />
-                <QuestionGrid>{grid}</QuestionGrid>
-              </RightContainer>
-            </>
+                    </PageChoice>
+                  </QuestionSection>
+                </LeftContainer>
+                <RightContainer>
+                  <FaClock style={{ float: 'left', marginTop: '3px' }} />
+                  <Timer endTime={endTime} />
+                  <QuestionGrid>{grid}</QuestionGrid>
+                </RightContainer>
+              </>
             ) : (
               <p>Loading...</p> // or any other message you want to show while data is being loaded
             )}
-            </QuestionContainer>
-            <QuestionContainer>
-              <LeftContainer>
-                <ButtonContainer>
-                  <Button 
-                    defaultColor={theme.primary} 
-                    filledColor={theme.primary} 
-                    filled={false} 
-                    onClick={() => {
-                      if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
-                        nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
-                      } else {
-                        saveQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
-                      }
-                    }}
-                  >
-                    {parseInt(questionNo, 10) < exams[0]?.totalMCQ ? 'Save & Next' : 'Save'}
-                  </Button>
-                  <Button 
-                    defaultColor={theme.primary} 
-                    filledColor={theme.primary} 
-                    filled={false} 
-                    onClick={() => {
-                        setShowSubmitModal(true);
-                    }}
-                  >Submit
-                  </Button>
-                  <Button 
-                    defaultColor={theme.primary} 
-                    filledColor={theme.primary} 
-                    filled={false} 
-                    onClick={() => {
-                      if (flagArray[questionNo-1] =="true" ) {
-                        saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "false");
-                      } else {
-                        saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "true");
-                      }
-                    }}
-                  >
-                    {flagArray[questionNo - 1] =="true" ? 'Unflag' : 'Flag'}
-                  </Button>
-                </ButtonContainer>
-              </LeftContainer>
-              <RightContainer>
-                <QuestionLegend>
-                  <LegendRow>
-                    <LegendData colSpan="2" style={{ backgroundColor: 'grey'}}>Overall Summary</LegendData>
-                  </LegendRow>
-                  <LegendRow>
-                    <LegendData>
-                      <LegendBlueColor></LegendBlueColor>
-                    </LegendData>
-                    <LegendData>
-                      <LegendText>Attempted</LegendText>
-                    </LegendData>
-                  </LegendRow>
-                  <LegendRow>
-                    <LegendData>
-                      <LegendGreyColor></LegendGreyColor>
-                    </LegendData>
-                    <LegendData>
-                      <LegendText>Not Attempted</LegendText>
-                    </LegendData>
-                  </LegendRow>
-                  <LegendRow>
-                    <LegendData>
-                      <LegendRedColor></LegendRedColor>
-                    </LegendData>
-                    <LegendData>
-                      <LegendText>Flag</LegendText>
-                    </LegendData>
-                  </LegendRow>
-                </QuestionLegend>
-              </RightContainer>
-            </QuestionContainer>
-            <Footer/>
-          </StudentExamDetailContainer>
-        </StudentHomePageContainer>  
-      </ThemeProvider>
+          </QuestionContainer>
+          <QuestionContainer>
+            <LeftContainer>
+              <ButtonContainer>
+                <Button
+                  defaultColor={theme.primary}
+                  filledColor={theme.primary}
+                  filled={false}
+                  onClick={() => {
+                    if (parseInt(questionNo, 10) < exams[0]?.totalMCQ) {
+                      nextQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+                    } else {
+                      saveQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+                    }
+                  }}
+                >
+                  {parseInt(questionNo, 10) < exams[0]?.totalMCQ ? 'Save & Next' : 'Save'}
+                </Button>
+                <Button
+                  defaultColor={theme.primary}
+                  filledColor={theme.primary}
+                  filled={false}
+                  onClick={() => {
+                    setShowSubmitModal(true);
+                  }}
+                >Submit
+                </Button>
+                <Button
+                  defaultColor={theme.primary}
+                  filledColor={theme.primary}
+                  filled={false}
+                  onClick={() => {
+                    if (flagArray[questionNo - 1] == "true") {
+                      saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "false");
+                    } else {
+                      saveFlagToDatabase(studentId, examId, exams[0]?.totalMCQ, questionNo, "true");
+                    }
+                  }}
+                >
+                  {flagArray[questionNo - 1] == "true" ? 'Unflag' : 'Flag'}
+                </Button>
+              </ButtonContainer>
+            </LeftContainer>
+            <RightContainer>
+              <QuestionLegend>
+                <LegendRow>
+                  <LegendData colSpan="2" style={{ backgroundColor: 'grey' }}>Overall Summary</LegendData>
+                </LegendRow>
+                <LegendRow>
+                  <LegendData>
+                    <LegendBlueColor></LegendBlueColor>
+                  </LegendData>
+                  <LegendData>
+                    <LegendText>Attempted</LegendText>
+                  </LegendData>
+                </LegendRow>
+                <LegendRow>
+                  <LegendData>
+                    <LegendGreyColor></LegendGreyColor>
+                  </LegendData>
+                  <LegendData>
+                    <LegendText>Not Attempted</LegendText>
+                  </LegendData>
+                </LegendRow>
+                <LegendRow>
+                  <LegendData>
+                    <LegendRedColor></LegendRedColor>
+                  </LegendData>
+                  <LegendData>
+                    <LegendText>Flag</LegendText>
+                  </LegendData>
+                </LegendRow>
+              </QuestionLegend>
+            </RightContainer>
+          </QuestionContainer>
+          <Footer />
+        </StudentExamDetailContainer>
+      </StudentHomePageContainer>
+    </ThemeProvider>
   );
 };
 
