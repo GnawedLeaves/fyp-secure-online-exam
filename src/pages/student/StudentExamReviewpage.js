@@ -36,7 +36,7 @@ import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
 import {formatDateString} from "../student/StudentExampage";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamReviewpage = () => {
   //const studentId = "1221";
@@ -84,7 +84,7 @@ const StudentExamReviewpage = () => {
     }
   }, [authId]); // Run effect when authId changes
   console.log("authid",authId);
-  
+
   const { examId } = useParams();
   const submissionDisplayRef = useRef(null);
   const [examReview, setExamReview] = useState([]);
