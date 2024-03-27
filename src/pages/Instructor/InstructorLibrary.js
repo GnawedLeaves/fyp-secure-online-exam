@@ -73,6 +73,27 @@ const CloseButton = styled.button`
   }
 `;
 
+const BackButton = styled.button`
+padding: 0.5rem 1rem;
+  border-radius: 10rem;
+  text-align: center;
+  border: 2px solid rgb(0, 134, 203);
+  color: rgb(255, 255, 255);
+  background: rgb(0, 174, 243);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  height: fit-content;
+  width: fit-content;
+  font-weight: 600;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  &:hover {
+    background: rgb(0, 134, 203); 
+    border-color: rgb(0, 134, 203); 
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -210,6 +231,15 @@ const InstructorLibrary = () => {
         querySnapshot.forEach((doc) => {
           exams.push(doc.data());
         });
+        
+        exams.sort((a, b) => {
+          const dateA = new Date(a.startTime.toDate());
+          const dateB = new Date(b.startTime.toDate());
+          return dateA - dateB;
+        });
+
+        //right now showing from top, oldest to newest(bottom)
+        exams.reverse(); //reverse order of date.
 
         console.log("Fetched exams:", exams);
         setModuleExams((prevExams) => ({ ...prevExams, [courseId]: exams }));
@@ -255,18 +285,25 @@ const InstructorLibrary = () => {
       const q = query(examsRef, where("courseId", "==", courseId));
       const querySnapshot = await getDocs(q);
       const exams = [];
+  
       querySnapshot.forEach((doc) => {
-        exams.push(doc.data());
+        const examData = doc.data();
+        if (examData.startTime) {
+          exams.push({ ...examData, examId: doc.id });
+        }
       });
-
-      console.log("Fetched exams:", exams);
+  
+      // Sort exams by startTime in descending order
+      exams.sort((a, b) => {
+        return b.startTime.toDate() - a.startTime.toDate();
+      });
+  
       setModuleExams((prevExams) => ({ ...prevExams, [courseId]: exams }));
       console.log("Fetched Exams for Module:", courseId, exams);
     } catch (error) {
       console.error("Error fetching exams for module:", error);
     }
   };
-
 
   //opening of modal for questions
   const handleExamFieldClick = async (examId) => {
@@ -341,7 +378,8 @@ const InstructorLibrary = () => {
           {activeContent === "examsFor" && selectedModule && moduleExams[selectedModule] && (
             <>
 
-          <button onClick={handleBackButtonClick}>Back</button>
+          <BackButton onClick={handleBackButtonClick}>Back</BackButton>
+          
           {selectedModule && moduleExams[selectedModule] ? (
               <div>
                 <h2>Exams for {selectedModule}</h2>
