@@ -155,32 +155,32 @@ export const studentRoutes = [
 
 export const teacherRoutes = [
   {
-    title: "Teacher Dashboard",
+    title: "Instructor Dashboard",
     link: "/Instructor/InstructorPage",
     element: <InstructorPage />,
   },
   {
-    title: "Teacher Library",
+    title: "Instructor Library",
     link: "/Instructor/InstructorLibrary",
     element: <InstructorLibrary />,
   },
   {
-    title: "Teacher Exam Page",
+    title: "Instructor Exam Page",
     link: "/Instructor/InstructorExamPage",
     element: <InstructorExamPage />,
   },
   {
-    title: "Teacher Proctor",
+    title: "Instructor Proctor",
     link: "/Instructor/InstructorProctor",
     element: <InstructorProctorPage />,
   },
   {
-    title: "Teacher Contact Admin",
+    title: "Instructor Contact Admin",
     link: "/Instructor/ContactAdmin",
     element: <ContactAdmin />,
   },
   {
-    title: "Proctoring",
+    title: "Instructor Proctoring",
     link: "/Instructor/Proctoring",
     element: <Proctoring />,
   },
