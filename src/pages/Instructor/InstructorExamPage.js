@@ -257,7 +257,8 @@ const InstructorExamPage =() => {
       
       const questionsData = [];
       questionQuerySnapshot.forEach((doc) => {
-        questionsData.push(doc.data());
+        const questionData = doc.data();
+        questionsData.push({ id: doc.id, ...questionData }); // Include document ID in the question object
       });
       
       console.log('Questions:', questionsData);
