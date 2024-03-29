@@ -12,6 +12,7 @@ import {
   AdminPersonnelSummaryButtonsContainer,
   AdminPersonnelSummaryContainer,
   AdminPersonnelTable,
+  AdminPersonnelTitle,
 } from "./AdminPersonnelStyles";
 import Navbar from "../../../components/Navbar/Navbar";
 import { adminNavbarItems } from "../AdminHomePage";
@@ -160,6 +161,9 @@ const AdminPersonnelPage = () => {
 
         <Navbar linksArray={adminNavbarItems} />
         <AdminPersonnelContainer>
+          <AdminPersonnelTitle>
+            Personnel
+          </AdminPersonnelTitle>
           <AdminPersonnelNavbarContainer>
             <FilterBar
               filters={filters}
