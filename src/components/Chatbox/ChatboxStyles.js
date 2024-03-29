@@ -134,8 +134,10 @@ border:none;
 
 `
 export const ChatboxHeaderBig = styled(ChatboxHeader)`
-padding: 0.8rem 0.5rem;
-font-size: 1.4rem;
+padding: 0.8rem 0.8rem;
+font-size: 1.5rem;
+font-weight: bold;
+background: ${props => props.theme.background};
 `
 
 export const AdminMessageInputBarBig = styled(AdminMessageInputBar)`

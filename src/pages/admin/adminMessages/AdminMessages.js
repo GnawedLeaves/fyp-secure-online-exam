@@ -39,6 +39,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -60,6 +61,8 @@ const AdminMessagesPage = () => {
   const [uniqueSenderIds, setUniqueSenderIds] = useState([])
   const [uniquePreviewChats, setUniquePreviewChats] = useState([])
   const [chatIdSelected, setChatIdSelected] = useState("");
+  const [chatNameSelected, setChatNameSelected] = useState("Name Not Available");
+
 
   const auth = getAuth()
   useEffect(() => {
@@ -87,16 +90,32 @@ const AdminMessagesPage = () => {
   }, [allMessagesData])
 
   //function to get all messages with the specific userId
-  const constructPreviews = () => {
-    // Filter messages only once
-    const filteredMessages = uniqueSenderIds.map(senderId =>
-      allMessagesData.find(message => message.senderId === senderId)
-    );
-    const previewChats = [...filteredMessages];
-    // Update state with functional update
-    // setUniquePreviewChats(prevChats => [...prevChats, ...previewChats]);
-    setUniquePreviewChats(previewChats)
+  const constructPreviews = async () => {
+    try {
+      // Filter messages only once
+      const filteredMessages = uniqueSenderIds.map(senderId =>
+        allMessagesData.find(message => message.senderId === senderId)
+      );
+
+      // Fetch user names for all filtered messages in parallel
+      const userNamesPromises = filteredMessages.map(message =>
+        getUserNameFromId(message.senderId)
+      );
+      const userNames = await Promise.all(userNamesPromises);
+
+      // Combine filtered messages with user names
+      const filteredMessagesWithName = filteredMessages.map((message, index) => ({
+        ...message,
+        name: userNames[index] // Use the corresponding user name
+      }));
+
+      // Update state with filtered messages including user names
+      setUniquePreviewChats(filteredMessagesWithName);
+    } catch (error) {
+      console.error("Error constructing previews:", error);
+    }
   }
+
 
 
   const getAllMessages = async (recipientId, senderId) => {
@@ -169,8 +188,25 @@ const AdminMessagesPage = () => {
     }
   };
 
-  const getUserNameFromId = async (id) => {
 
+  const getUserNameFromId = async (id) => {
+    const userRef = doc(db, "users", id);
+
+    try {
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        console.log(userData.name)
+        return userData.name + " (" + userData.type + " ID: " + id + ")"
+      }
+      else {
+        console.log("user does not exist")
+        return "Name Not Available (ID: " + id + ")"
+      }
+    }
+    catch (e) {
+      console.log("Error getting user data", e)
+    }
   }
 
 
@@ -186,9 +222,11 @@ const AdminMessagesPage = () => {
                 {uniquePreviewChats?.map((message, index) => (
                   <AdminMessageChatTab key={index} selected={chatIdSelected === message.senderId} onClick={() => {
                     setChatIdSelected(message.senderId);
+                    setChatNameSelected(message.name)
                   }}>
                     <AdminMessageChatTabTitle>
-                      {constructTruncatedText(message.senderId, 15)}
+
+                      {constructTruncatedText(message.name, 15)}
 
                     </AdminMessageChatTabTitle>
                     <AdminMessageChatTabPreview>
@@ -196,12 +234,10 @@ const AdminMessagesPage = () => {
                     </AdminMessageChatTabPreview>
                   </AdminMessageChatTab>
                 ))}
-
-
               </AdminMessagesChatsContainer>
 
               {chatIdSelected !== "" ? <AdminMessagesMessageContainer>
-                <ChatboxBig userId={userId} otherPersonId={chatIdSelected} />
+                <ChatboxBig userId={userId} otherPersonId={chatIdSelected} otherPersonName={chatNameSelected} />
               </AdminMessagesMessageContainer> : <AdminNoChatSelectedContainer>Select a chat to start messaging</AdminNoChatSelectedContainer>}</> : <AdminNoChatDisplay >You have no chats</AdminNoChatDisplay>}
 
 

@@ -47,10 +47,12 @@ const ChatboxBig = (props) => {
    const [allMessagesData, setAllMessagesData] = useState([]);
    const userId = props.userId ? props.userId : "1";
    let otherPersonId = props.otherPersonId ? props.otherPersonId : "2";
+   let otherPersonName = props.otherPersonName ? props.otherPersonName : "Name Not Available"
 
    useEffect(() => {
       otherPersonId = props.otherPersonId;
-   }, [props.otherPersonId])
+      otherPersonName = props.otherPersonName
+   }, [props])
 
    const messagesRef = collection(db, "messages");
 
@@ -202,7 +204,7 @@ const ChatboxBig = (props) => {
    return (
       <ThemeProvider theme={theme}>
          <AdminMessagingContainerBig>
-            <ChatboxHeaderBig>{otherPersonId}</ChatboxHeaderBig>
+            <ChatboxHeaderBig>{otherPersonName}</ChatboxHeaderBig>
             <AdminMessagingDisplayContainerBig ref={messageDisplayRef}>
                {allMessagesData && allMessagesData.length > 0 ? (
                   allMessagesData.map((message, index) => {
