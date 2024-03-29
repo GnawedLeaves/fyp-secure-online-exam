@@ -115,3 +115,10 @@ export const AdminPersonnelDetailsHeader = styled.div`
   font-weight: bold;
   text-align: center;
   `
+
+
+export const AdminPersonnelTitle = styled.div`
+font-size: 2rem;
+font-weight: bold;
+margin-bottom: 2rem;
+  `
