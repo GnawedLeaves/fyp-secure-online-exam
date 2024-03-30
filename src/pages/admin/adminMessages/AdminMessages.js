@@ -71,7 +71,6 @@ const AdminMessagesPage = () => {
         const uid = user.uid;
         setUserId(uid);
         console.log(uid)
-
       }
     });
   }, []);
@@ -120,8 +119,9 @@ const AdminMessagesPage = () => {
 
   const getAllMessages = async (recipientId, senderId) => {
     const recivedMessages = await getRecievedMessages(userId);
+    const sentMessages = await getSentMessages(userId)
     //const sentMessages = await getSentMessages(recipientId, senderId);
-    const allMessages = [...recivedMessages];
+    const allMessages = [...recivedMessages, ...sentMessages];
     const sortedArray = sortByFirebaseTimestamp(allMessages, "dateAdded").reverse();
     setAllMessagesData([...sortedArray]);
   };
@@ -151,13 +151,12 @@ const AdminMessagesPage = () => {
     }
   };
 
-  const getSentMessages = async (recipientId, senderId) => {
+  const getSentMessages = async (senderId) => {
     try {
       // Create a query to get all messages where recipientId matches
       const messagesQuery = query(
         messagesRef,
-        where("recipientId", "==", senderId),
-        where("senderId", "==", recipientId)
+        where("senderId", "==", senderId)
       );
 
       // Get the documents based on the query
@@ -196,11 +195,11 @@ const AdminMessagesPage = () => {
       const docSnap = await getDoc(userRef);
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        console.log(userData.name)
+
         return userData.name + " (" + userData.type + " ID: " + id + ")"
       }
       else {
-        console.log("user does not exist")
+
         return "Name Not Available (ID: " + id + ")"
       }
     }
@@ -247,7 +246,7 @@ const AdminMessagesPage = () => {
             {/* HvsgLenfY6boyakI2YP3e63NgeC3 */}
             {/* 1 */}
             {/* cKL7rVQnMbvlqeXwys8F */}
-
+            <Chatbox userId={"IwMbg6vDfl20hX1rjJZ6"} otherPersonId={userId} />
 
           </MessageDisplayContainer>
         </AdminMessagesContainer>

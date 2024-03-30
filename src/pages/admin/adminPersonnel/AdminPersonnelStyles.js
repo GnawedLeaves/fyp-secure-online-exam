@@ -122,3 +122,13 @@ font-size: 2rem;
 font-weight: bold;
 margin-bottom: 2rem;
   `
+
+export const AdminPersonnelIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right:  1rem;
+`
+
+

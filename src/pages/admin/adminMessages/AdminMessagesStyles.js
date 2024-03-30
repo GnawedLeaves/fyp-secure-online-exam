@@ -137,6 +137,7 @@ width: 30%;
 overflow-y: auto;
 height: 100%;
 border-right: 2px solid ${(props) => props.theme.grey};
+cursor: pointer;
 `
 
 export const AdminMessageChatTab = styled.div`
@@ -145,11 +146,11 @@ width: 100%;
 box-sizing: border-box;
 border-bottom: 2px solid ${(props) => props.theme.grey};
 padding: 0.8rem 1rem;
-cursor: pointer;
 background: ${(props) => props.selected ? props.theme.primary : props.theme.background};
 color: ${(props) => props.selected ? props.theme.background : props.theme.text};
 box-shadow: ${props => props.theme.boxShadow};
 border-radius: 4px;
+cursor: pointer;
 `
 
 export const AdminMessageChatTabTitle = styled.div`
