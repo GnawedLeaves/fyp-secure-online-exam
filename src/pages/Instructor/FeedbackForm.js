@@ -6,19 +6,19 @@ import {
   collection,
   serverTimestamp
 } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const FeedbackForm = () => {
   const [formData, setFormData] = useState({
     questionCategory: "General",
     description: "",
+    attachment: null,
   });
 
   const [categories, setCategories] = useState([
     { value: "general", label: "General" },
     { value: "user", label: "User" },
     { value: "bugs", label: "Bugs" },
-    { value: "report", label: "Report" },
     { value: "accountHelp", label: "Account Help" },
   ]);
 
@@ -27,6 +27,21 @@ const FeedbackForm = () => {
     event.preventDefault();
   
     try {
+      let attachmentUrl = null;
+
+      // Check if an attachment is provided
+      if (formData.attachment) {
+        // Get a reference to the storage location and the path where the file is saved
+        const fileRef = ref(storage, `contact_admin/${formData.attachment.name}`);
+  
+        // Upload the file to Firebase Storage
+        await uploadBytes(fileRef, formData.attachment);
+  
+        // Get the download URL of the uploaded file
+        attachmentUrl = await getDownloadURL(fileRef); 
+  
+        console.log("File uploaded successfully!");
+      }
       // Add message data to Firestore
       await addDoc(collection(db, "messages"), {
         dateAdded: serverTimestamp(),
@@ -34,14 +49,18 @@ const FeedbackForm = () => {
         questionCategory: formData.questionCategory,
         recipientId: "2", 
         senderId:'Instructor',
+        attachmentUrl: attachmentUrl,
       });
 
       // Reset form data
       setFormData({
         questionCategory: "General",
         description: "",
+        attachment: null,
       });
-
+      
+      document.getElementById("attachment").value = null; //clear the attachment field
+      
       console.log("Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -53,6 +72,14 @@ const FeedbackForm = () => {
     setFormData({
       ...formData,
       [name]: value === "general" ? "" : value,
+    });
+  };
+
+    const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    setFormData({
+      ...formData,
+      attachment: file, // Set the attachment to the selected file
     });
   };
 
@@ -72,7 +99,7 @@ const FeedbackForm = () => {
                 fontWeight: "bold", 
               }}
               >Question Category:</label>
-            </div>
+            
             <select
               id="questionCategory"
               name="questionCategory"
@@ -88,7 +115,8 @@ const FeedbackForm = () => {
                 </option>
               ))}
             </select>
-            <br />
+            </div>
+            
             <br />
             <div className="descriptionLabel">
               <label htmlFor="description"
@@ -126,16 +154,12 @@ const FeedbackForm = () => {
                 fontWeight: "bold", 
               }}
               >Attachment:</label>
-            </div>
-            <div className="attachmentbutton">
+
               <input
                 type="file"
                 id="attachment"
                 name="attachment"
-                value={formData.attachment}
-                onChange={(e) =>
-                  setFormData({ ...formData, attachment: e.target.value })
-                }
+                onChange={handleFileChange}
 
                 style={{
                     padding: "8px",
@@ -146,6 +170,7 @@ const FeedbackForm = () => {
 
               />
             </div>
+                
             <br />
             <div className="adminSubmit">
               <input type="submit" value="Submit" 
