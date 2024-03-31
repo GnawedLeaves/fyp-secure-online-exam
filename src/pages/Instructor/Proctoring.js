@@ -107,11 +107,14 @@ const StyledOption = styled.option`
 
 const Proctoring =() => {
 
-    const { courseId } = useParams();
+    const { courseId, examId } = useParams();
     const location = useLocation();
 
-    const roomId = "e3695c3f-ef0c-4ab3-a971-ac58bb9142751221";
-    const teacherId = "1234";
+  console.log('Current ExamId: ',examId);
+  console.log('And the courseId: ',courseId);
+
+    const roomId = examId;
+    const teacherId = "Instructor";
 
     const myMeeting = async (element) => {
       const appID=1581360116;
@@ -177,10 +180,12 @@ const Proctoring =() => {
         alertType: alertType,
         dateCreatedAt: serverTimestamp(),
         description: message,
-        examId: courseId,
+        examId: examId,
+        courseId: courseId,
         studentId: studentId
       };
       await addDoc(collection(db, "cheating"), messageData);
+      
       setMessage(""); 
       setStudentId(""); 
       setAlertType("medium");
@@ -219,10 +224,10 @@ const Proctoring =() => {
             <h2>Reporting Guidelines</h2>
           <p>Please follow these guidelines while reporting any incidents:</p>
           <ul>
-            <li>Provide accurate information about the incident.</li>
-            <li>Include specific details such student's background.</li>
-            <li>Describe the incident clearly and concisely.</li>
-            <li>In the event of <strong>multiple students</strong>,leave the Description <br/>as <strong><u>"ENS"</u></strong> (Emergency Notification System).</li>
+            <li >Provide accurate information about the incident.</li>
+            <li style={{ paddingBottom: "10px" }}>Include specific details such student's background.</li>
+            {/* <li>Describe the incident clearly and concisely.</li> */}
+            <li style={{ paddingBottom: "10px" }}>In the event of <strong>multiple students</strong>,leave the Description <br/>as <strong><u>"ENS"</u></strong> (Emergency Notification System).</li>
             <li>Do not make false accusations or provide any <br/>misleading information.</li>
           </ul>
             </ReportBox>
