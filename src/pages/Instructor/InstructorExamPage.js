@@ -94,6 +94,7 @@ const InstructorExamPage =() => {
   const [questions, setQuestions] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [currentExamId, setCurrentExamId] = useState(null);
 
   const handleSetActiveContent = (content) => {
     setActiveContent(content);
@@ -229,6 +230,7 @@ const InstructorExamPage =() => {
       console.log('Fetched Questions:', fetchedQuestions); // Log the fetched questions
       setShowModal(true);
       setQuestions(fetchedQuestions); // Set state with fetched questions
+      setCurrentExamId(examId);
     } catch (error) {
       console.error('Error fetching questions:', error);
     }
@@ -245,7 +247,8 @@ const InstructorExamPage =() => {
           ))}
         </ul>
         <p><strong>Correct Answer:</strong>  <span style={{ textDecoration: 'underline' }}>{question.correct_answer}</span></p>
-      </div>
+        <br/>
+        </div>
     ));
   };
   
@@ -286,7 +289,7 @@ const InstructorExamPage =() => {
     const endTime = new Date(startTimeTime.getTime() + hours * 60 * 60 * 1000 + minutes * 60 * 1000);
   
     try {
-      // Create exam document
+      
       const examRef = await addDoc(collection(db, 'exams'), {
         startTime: Timestamp.fromDate(startTimeTime),
         endTime: Timestamp.fromDate(endTime),
@@ -356,22 +359,55 @@ const InstructorExamPage =() => {
   // Function to save changes made by the tutor
 const saveChanges = async () => {
   try {
-    // Update questions in Firebase
+    // Update existing questions in Firebase
     await Promise.all(questions.map(async (question, index) => {
-      const questionRef = doc(db, 'questions', question.id); // Assuming you have an 'id' field in your question object
-      await updateDoc(questionRef, {
-        question: question.question,
-        options: question.options,
-        correct_answer: question.correct_answer
-      });
+      // If the question has an 'id', it means it already exists in Firestore and needs to be updated
+      if (question.id) {
+        const questionRef = doc(db, 'questions', question.id);
+        await updateDoc(questionRef, {
+          question: question.question,
+          options: question.options,
+          correct_answer: question.correct_answer
+        });
+      } else {
+        // If the question does not have an 'id', it means it's a new question and needs to be added to Firestore
+        const newQuestionFirestore = {
+          examId: currentExamId,
+          questionNumber: index + 1,
+          question: question.question,
+          options: question.options,
+          correct_answer: question.correct_answer
+        };
+        const newQuestionRef = await addDoc(collection(db, 'questions'), newQuestionFirestore);
+        console.log('New question added to Firestore with ID:', newQuestionRef.id);
+      }
     }));
-    
+
     console.log('Questions updated successfully');
+
+    const totalMCQ = questions.length;
+    console.log('number of mcq: ', totalMCQ)
+
+    const examRef = doc(db, 'exams', currentExamId);
+
+    const updatedSections = examData.sections && examData.sections.length > 0 ? [...examData.sections] : [];
+    if (updatedSections.length > 0) {
+      await updateDoc(examRef, {
+        totalMCQ: totalMCQ,
+        sections: [{
+          ...updatedSections[0], // Update the first section if it exists
+          description: `MCQ (${totalMCQ}) questions`
+        }]
+      });
+      console.log('Exam document updated successfully');
+    } else {
+      console.error('Error updating questions: Exam sections are undefined or empty.');
+    }
+
     setEditMode(false); // Exit edit mode after saving changes
   } catch (error) {
-    console.error('Error updating questions:', error);
+    console.error('Error updating questionsv 1:', error);
   }
-
 };
 
 useEffect(() => {
@@ -437,6 +473,24 @@ if(confirmation){
 }
 };
 
+const handleAddNewQuestion = () => {
+  // Add an empty question to the local state
+  const newQuestion = {
+    examId: currentExamId, //bring over the examId to this new question
+    question: '',
+    options: ['', '', '', ''],
+    correct_answer: ''
+  };
+
+  const updatedQuestions = [...questions, newQuestion];
+
+  setQuestions([...questions, newQuestion]);
+
+  setNumQuestions(updatedQuestions.length); // Update the numQuestions state based on the length of the updated questions array
+  console.log('New question added for examId:', currentExamId);
+  console.log('Update Question number: ', updatedQuestions.length)
+};
+
 // Function to handle changes in question text edit view
 const handleQuestionTextChange = (index, e) => {
   const updatedQuestions = [...questions];
@@ -495,6 +549,8 @@ const renderEditableFields = () => {
       </select>
       <button onClick={() => deleteQuestion(index)}
       style={{ marginLeft: '10px' }}>Delete</button>
+      <button onClick={() => handleAddNewQuestion(index)}
+      style={{ marginLeft: '10px' }}>Add</button>
       <br></br>
     </div>
   ));
@@ -504,6 +560,7 @@ const renderActionButtons = () => {
   if (editMode) {
     return (
       <>
+        <br />
         <button onClick={saveChanges}>Save</button>
         <button onClick={toggleEditMode}>Cancel</button>
       </>
