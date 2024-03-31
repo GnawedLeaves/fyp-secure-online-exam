@@ -81,9 +81,9 @@ const InstructorProctorPage = () => {
 
           {exams.map(exam => (
             <ExamItem key={exam.id}>
-              <BoldExamText><h3>Course ID: <Link to={`/Instructor/InstructorProctor/${exam.courseId}`}>{exam.courseId}</Link></h3>
-              <p>Name: <Underlined><Link to={`/Instructor/InstructorProctor/${exam.courseId}`}>{exam.name}</Link></Underlined></p>
-              <p>Start Time: <Underlined><Link to={`/Instructor/InstructorProctor/${exam.courseId}`}>{formatDate(exam.startTime.toDate())}</Link></Underlined></p>
+              <BoldExamText><h3>Course ID: <Link to={`/Instructor/InstructorProctor/${exam.courseId}/${exam.examId}`}>{exam.courseId}</Link></h3>
+              <p>Name: <Underlined><Link to={`/Instructor/InstructorProctor/${exam.courseId}/${exam.examId}`}>{exam.name}</Link></Underlined></p>
+              <p>Start Time: <Underlined><Link to={`/Instructor/InstructorProctor/${exam.courseId}/${exam.examId}`}>{formatDate(exam.startTime.toDate())}</Link></Underlined></p>
               </BoldExamText>
             </ExamItem>
           ))}
