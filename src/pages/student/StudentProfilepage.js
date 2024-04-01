@@ -129,7 +129,7 @@ const StudentProfilepage = () => {
   useEffect(() => {
     getProfile(studentId);
     getImageUrl(`student_${studentId}.jpg`);
-  }, []);
+  }, [studentId]);
 
   const dummy_profile = [
     {
@@ -167,8 +167,6 @@ const StudentProfilepage = () => {
               </RightContainer>
             </StudentProfileSection>
             <StudentResultSection>
-              ##Should we put all the result here? <br />
-              ##or make another page to check it?
             </StudentResultSection>
 
           </ProfileContainer>
