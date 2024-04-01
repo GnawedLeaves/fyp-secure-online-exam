@@ -113,7 +113,7 @@ const Proctoring =() => {
   console.log('Current ExamId: ',examId);
   console.log('And the courseId: ',courseId);
 
-    const roomId = examId;
+    const roomId = "e3695c3f-ef0c-4ab3-a971-ac58bb9142751221";
     const teacherId = "Instructor";
 
     const myMeeting = async (element) => {
@@ -212,7 +212,7 @@ const Proctoring =() => {
             <br />
   
             <div >
-            <h1>Room ID: {roomId} </h1>
+            <h1>Room ID: {examId} </h1>
             <div ref={myMeeting}/>
         </div>
 
