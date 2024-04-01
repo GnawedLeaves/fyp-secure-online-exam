@@ -267,7 +267,7 @@ const StudentExamQuestionpage = () => {
     fetchExamData();
     fetchData();
     
-  }, [examId, questionNo]);
+  }, [studentId, examId, questionNo]);
   
   const endTime = exams.length > 0 && exams[0]?.endTime?.toDate();
 
@@ -634,7 +634,7 @@ const navigateToQuestion = (exam,number) => {
       />
           
           <StudentExamDetailContainer>
-            <QuestionPageTitle>{exams[0]?.name}</QuestionPageTitle>
+            <QuestionPageTitle>{exams[0]?.courseId} {exams[0]?.name}</QuestionPageTitle>
             <QuestionContainer>
             {exams.length > 0 && questions.length > 0 ? (
             <>
@@ -743,7 +743,6 @@ const navigateToQuestion = (exam,number) => {
                 />
               </div>
             </QuestionContainer>
-            <Footer/>
           </StudentExamDetailContainer>
         </StudentHomePageContainer>  
       </ThemeProvider>

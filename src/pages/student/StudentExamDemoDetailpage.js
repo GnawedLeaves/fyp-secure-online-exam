@@ -83,7 +83,7 @@ const StudentExamDemoDetailpage = () => {
       <StudentHomePageContainer>
         <Navbar linksArray={studentNavbarItems} />
         <StudentExamDetailContainer ref={examDisplayRef}>
-          <PageTitle>{exams[0]?.name}</PageTitle>
+          <PageTitle>{exams[0]?.courseId} {exams[0]?.name}</PageTitle>
           <SectionContainer>
             <PageSubtitle>Section Description</PageSubtitle>
             <PageList>

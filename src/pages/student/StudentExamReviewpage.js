@@ -155,7 +155,7 @@ const StudentExamReviewpage = () => {
 
   useEffect(() => {
     fetchSubmissionData();
-  }, []);
+  }, [studentId]);
 
   return (
     <ThemeProvider theme={theme}>
