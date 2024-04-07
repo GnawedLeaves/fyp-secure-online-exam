@@ -120,19 +120,38 @@ export const ChatboxHeader = styled.div`
 `;
 
 
-export const AdminMessagingDisplayContainerBig = styled(AdminMessagingDisplayContainer)`
-width: 100%;
-height: 85%;
 
-`
-
-export const AdminMessagingContainerBig = styled(AdminMessagingContainer)`
+export const AdminMessagingContainerBig = styled.div`
+box-sizing: border-box;
 width: 100%;
 height: 100%;
 border:none;
-
+overflow: hidden;
+display: grid; 
+grid-template-rows: 0.1fr 1fr 0.1fr;
 
 `
+
+export const AdminMessagingDisplayContainerBig = styled.div`
+overflow-y: auto;
+padding: 1rem 0;
+width: 100%;
+grid-row: 2;
+&::-webkit-scrollbar {
+  width: 0px;
+}
+`
+
+export const AdminMessageInputBarBig = styled(AdminMessageInputBar)`
+height: 100%;
+display: grid;
+grid-template-columns: 0.95fr 0.05fr;
+grid-row: 3;
+background: ${props => props.theme.background};
+
+`
+
+
 export const ChatboxHeaderBig = styled(ChatboxHeader)`
 padding: 0.8rem 0.8rem;
 font-size: 1.5rem;
@@ -140,11 +159,7 @@ font-weight: bold;
 background: ${props => props.theme.background};
 `
 
-export const AdminMessageInputBarBig = styled(AdminMessageInputBar)`
-// background: lime;
-display: grid;
-grid-template-columns: 0.95fr 0.05fr;
-`
+
 
 export const AdminMessageInputBig = styled(AdminMessageInput)`
 width: 90%;
@@ -161,6 +176,5 @@ transition: 0.3s;
 &:hover {
   transform: scale(1.3);
 }
-// background: blue;
 width: 100%;
 `
