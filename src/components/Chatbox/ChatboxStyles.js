@@ -118,3 +118,49 @@ export const ChatboxHeader = styled.div`
   font-weight: bold;
   padding: 0.5rem 0.5rem;
 `;
+
+
+export const AdminMessagingDisplayContainerBig = styled(AdminMessagingDisplayContainer)`
+width: 100%;
+height: 85%;
+
+`
+
+export const AdminMessagingContainerBig = styled(AdminMessagingContainer)`
+width: 100%;
+height: 100%;
+border:none;
+
+
+`
+export const ChatboxHeaderBig = styled(ChatboxHeader)`
+padding: 0.8rem 0.8rem;
+font-size: 1.5rem;
+font-weight: bold;
+background: ${props => props.theme.background};
+`
+
+export const AdminMessageInputBarBig = styled(AdminMessageInputBar)`
+// background: lime;
+display: grid;
+grid-template-columns: 0.95fr 0.05fr;
+`
+
+export const AdminMessageInputBig = styled(AdminMessageInput)`
+width: 90%;
+padding: 0.8rem 1rem;
+font-size: 1.1rem;
+`
+
+
+export const AdminMessageArrowContainerBig = styled(AdminMessageArrowContainer)`
+display: flex;
+align-items: center;
+cursor: pointer;
+transition: 0.3s;
+&:hover {
+  transform: scale(1.3);
+}
+// background: blue;
+width: 100%;
+`

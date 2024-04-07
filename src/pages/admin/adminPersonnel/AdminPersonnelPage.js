@@ -7,11 +7,13 @@ import {
   AdminPersonnelFiltersTitle,
   AdminPersonnelHeader,
   AdminPersonnelHeaderContainer,
+  AdminPersonnelIconContainer,
   AdminPersonnelNavbarContainer,
   AdminPersonnelSummary,
   AdminPersonnelSummaryButtonsContainer,
   AdminPersonnelSummaryContainer,
   AdminPersonnelTable,
+  AdminPersonnelTitle,
 } from "./AdminPersonnelStyles";
 import Navbar from "../../../components/Navbar/Navbar";
 import { adminNavbarItems } from "../AdminHomePage";
@@ -25,16 +27,29 @@ import {
   descendingAlphabeticalSort,
 } from "../../../functions/sortArray";
 import ToggleArrow from "../../../components/ToggleArrow/ToggleArrow";
-import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
 import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
 import { useNavigate } from "react-router-dom";
+import { IoMailOutline } from "react-icons/io5";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
   const [filtersSelected, setFiltersSelected] = useState(["All"]);
+  const [userId, setUserId] = useState()
   const navigate = useNavigate();
+
+  const auth = getAuth()
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUserId(uid);
+      }
+    });
+  }, []);
 
   const handleFilterBarData = (data) => {
     const lowerCaseFilters = data.map((filter) => filter.toLowerCase());
@@ -140,6 +155,32 @@ const AdminPersonnelPage = () => {
     navigate(`/admin/personnel/${userId}`);
   }
 
+  const handleMessagePersonnel = (otherPersonId) => {
+    console.log("otherPersonId", otherPersonId)
+    sendMessage(userId, otherPersonId)
+  }
+
+  const sendMessage = async (senderId, recipientId) => {
+    const messagesRef = collection(db, "messages");
+    const currentDate = new Date();
+    const timestamp = Timestamp.fromDate(currentDate);
+
+    try {
+      // Use the addDoc method to add a document and obtain the DocumentReference
+      const messageDocRef = await addDoc(messagesRef, {
+        messageBody: "",
+        senderId: recipientId,
+        recipientId: senderId,
+        dateAdded: timestamp,
+      });
+      console.log("message sent")
+      navigate("/admin/messages")
+    } catch (e) {
+      console.log("Error sending message: ", e);
+    }
+
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AdminPersonnelBigContainer>
@@ -157,9 +198,26 @@ const AdminPersonnelPage = () => {
           modalTitle="Delete User"
           modalContent="Are you sure you want to delete this user? This action cannot be undone."
         />
+        <Modal
+          handleModalClose={() => {
+            setShowDeleteModal(false);
+          }}
+          modalType=""
+          actionButtonText="Delete"
+          actionButtonColor={theme.primary}
+          actionButtonClick={() => {
+            setShowDeleteModal(false);
+          }}
+          show={showDeleteModal}
+          modalTitle="Message Sent"
+          modalContent="Please check the messages tab to continue messaging"
+        />
 
         <Navbar linksArray={adminNavbarItems} />
         <AdminPersonnelContainer>
+          <AdminPersonnelTitle>
+            Personnel
+          </AdminPersonnelTitle>
           <AdminPersonnelNavbarContainer>
             <FilterBar
               filters={filters}
@@ -233,6 +291,12 @@ const AdminPersonnelPage = () => {
                       {user.dateCreated}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummaryButtonsContainer>
+                      <AdminPersonnelIconContainer onClick={() => {
+                        handleMessagePersonnel(user.id)
+                      }}>
+                        <IoMailOutline size={"2rem"} />
+                      </AdminPersonnelIconContainer>
+
                       <Button filledColor={theme.text} onClick={() => {
 
                         onPersonnelDetailsClick(user.id)
