@@ -36,6 +36,7 @@ import StudentExamDemoQuestionpage from "./pages/student/StudentExamDemoQuestion
 import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage";
 import AdminModulesPage from "./pages/admin/adminModules/AdminModulesPage";
 import AdminPersonnelDetailsPage from "./pages/admin/adminPersonnel/AdminPersonnelDetails";
+import StudentCardVerificationpage from "./pages/student/StudentCardVerificationpage";
 
 export const adminRoutes = [
   {
@@ -150,6 +151,11 @@ export const studentRoutes = [
     title: "test recoring",
     link: "/student/testrecord",
     element: <TestRecordingpage />,
+  },
+  {
+    title: "card verification",
+    link: "student/exam/:examId/cardVerify",
+    element: <StudentCardVerificationpage />,
   },
 ];
 
