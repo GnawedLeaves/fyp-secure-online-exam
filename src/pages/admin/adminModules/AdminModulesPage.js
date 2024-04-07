@@ -303,7 +303,7 @@ const AdminModulesPage = () => {
               </AdminModuleModalContainer>
             </Modal>
 
-            <PageTitle>Home</PageTitle>
+
             <AdminAddModuleContainer>
               <AdminAddModuleTitleAndButton>
                 <AdminAddModuleTitle>Modules</AdminAddModuleTitle>
