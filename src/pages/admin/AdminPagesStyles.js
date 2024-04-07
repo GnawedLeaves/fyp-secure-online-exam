@@ -328,7 +328,7 @@ export const AdminModuleFieldContainer = styled.div`
 `;
 export const AdminModuleFieldTitle = styled.div``;
 export const AdminModuleField = styled.input`
-  font-family: "Inter", sans-serif;
+  font-family: ${props => props.theme.font};
   border: 2px solid ${(props) => props.theme.text};
   padding: 0.5rem 1rem;
   font-size: 1.1rem;
