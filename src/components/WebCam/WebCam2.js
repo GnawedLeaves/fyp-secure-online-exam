@@ -2,12 +2,16 @@ import React, { useRef, useState } from 'react';
 import { WebCamSection, WebCamVideo, WebCamButtonContainer } from "./WebCamStyles";
 import Button from '../Button/Button';
 import { theme } from '../../theme';
-import { ref, uploadString } from 'firebase/storage';
+import { db } from "../../backend/firebase/firebase";
+import { ref, uploadString} from 'firebase/storage';
+import { query, where, getDocs, collection, updateDoc } from "firebase/firestore";
 import { storage } from '../../backend/firebase/firebase';
 import UploadModal from '../Modal/UploadModal';
 
-const WebCam = (props) => {
+const WebCam2 = (props) => {
   const studentId = props.studentId;
+  const examId = props.examId;
+  const file = props.file;
   const videoRef = useRef(null);
   const [webcamStarted, setWebcamStarted] = useState(false);
 
@@ -42,14 +46,53 @@ const WebCam = (props) => {
       setDataUrl(newDataUrl);
     }
   };
+  const updateStudentStatusInExam = async (examId, studentId, status) => {
+    try {
+      const examsRef = collection(db, "exams");
+      const examsQuery = query(examsRef, where("examId", "==", examId));
+      // Get the current exam documents based on the query
+      const examSnapshot = await getDocs(examsQuery);
+  
+      // Check if there are any documents
+      if (examSnapshot.empty) {
+        console.warn(`No exams found for exam with examId ${examId}.`);
+        return null;
+      }
+  
+      // Access the first document in the snapshot
+      const examDoc = examSnapshot.docs[0];
+      // Access the data of the document
+      const exam = examDoc.data();
+  
+      // Check if the student with ID exists for the current exam
+      const studentInfo = exam.students && exam.students.findIndex(student => student.id === studentId);
+  
+      if (studentInfo === -1) {
+        console.warn(`Student with ID ${studentId} not found for exam with examId ${examId}.`);
+        return null; // Skip updating this exam
+      }
+  
+      // Update the status for the specific student
+      exam.students[studentInfo].status = status;
+  
+      // Update the document in the "exams" collection
+      await updateDoc(examDoc.ref, { students: exam.students });
+  
+      console.log("Student status updated successfully!");
+    } catch (error) {
+      console.error("Error updating student status in exam:", error);
+    }
+  };
+
   
   const uploadImageData = async (dataUrl) => {
-    if (dataUrl&&studentId) {
-      const storageRef = ref(storage, 'student_face_registration/' + studentId + '.png');
+    if (dataUrl&&examId&&studentId) {
+      const storageRef = ref(storage, 'captured_images/' + studentId + '-' + examId + '.png');
       try {
         await uploadString(storageRef, dataUrl, 'data_url');
         console.log('Image uploaded successfully!');
-        window.location.href = '/student/home';
+        await updateStudentStatusInExam(examId, studentId, "In Progress");
+        window.location.href = '/student/exam/'+ examId ;
       } catch (error) {
         console.error('Error uploading image:', error.message);
       }
@@ -75,7 +118,7 @@ const WebCam = (props) => {
           uploadImageData(dataUrl);
         }}
         show={showDeleteModal}
-        modalTitle="Face Registration"
+        modalTitle="Matric Card Verification"
         modalContent="Are you sure you want to submit your image? This action cannot be undone."
         imageCaptured={dataUrl}
       />
@@ -89,4 +132,4 @@ const WebCam = (props) => {
   );
 };
 
-export default WebCam;
+export default WebCam2;
