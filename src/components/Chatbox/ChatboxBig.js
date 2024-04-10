@@ -4,6 +4,9 @@ import {
   AdminAdminSentMessageDate,
   AdminMessageArrowContainer,
   AdminMessageArrowContainerBig,
+  AdminMessageArrowContainerSmall,
+  AdminMessageAttachmentPreview,
+  AdminMessageAttachmentPreviewIcon,
   AdminMessageInput,
   AdminMessageInputBar,
   AdminMessageInputBarBig,
@@ -14,6 +17,7 @@ import {
   AdminMessagingDisplayContainerBig,
   AdminRecievedMessage,
   AdminRecievedMessageContainer,
+  AdminRecievedMessageMedia,
   AdminSentMessage,
   AdminSentMessageContainer,
   ChatboxHeader,
@@ -35,24 +39,32 @@ import {
 } from "firebase/firestore";
 
 import { theme } from "../../theme";
-import { db } from "../../backend/firebase/firebase";
+import { db, storage } from "../../backend/firebase/firebase";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
+import { IoMdAttach } from "react-icons/io";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { RxCross2 } from "react-icons/rx";
 
 const ChatboxBig = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
   const messageDisplayRef = useRef(null);
 
   const [messageContent, setMessageContent] = useState("");
+  const [messageFile, setMessageFile] = useState(null);
   const [allMessagesData, setAllMessagesData] = useState([]);
   const userId = props.userId ? props.userId : "1";
   let otherPersonId = props.otherPersonId ? props.otherPersonId : "2";
-  let otherPersonName = props.otherPersonName ? props.otherPersonName : "Name Not Available"
+  let otherPersonName = props.otherPersonName
+    ? props.otherPersonName
+    : "Name Not Available";
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     otherPersonId = props.otherPersonId;
-    otherPersonName = props.otherPersonName
-  }, [props])
+    otherPersonName = props.otherPersonName;
+  }, [props]);
 
   const messagesRef = collection(db, "messages");
 
@@ -73,17 +85,34 @@ const ChatboxBig = (props) => {
   };
 
   const sendMessage = async (senderId, recipientId) => {
-    if (messageContent !== "") {
+    if (messageContent !== "" || messageFile !== null) {
       const currentDate = new Date();
       const timestamp = Timestamp.fromDate(currentDate);
 
       try {
+        let attachmentUrl = null;
+
+        // Check if an attachment is provided
+        if (messageFile) {
+          // Get a reference to the storage location and the path where the file is saved
+          const fileRef = ref(storage, `messages/${messageFile}`);
+
+          // Upload the file to Firebase Storage
+          await uploadBytes(fileRef, messageFile);
+
+          // Get the download URL of the uploaded file
+          attachmentUrl = await getDownloadURL(fileRef);
+
+          console.log("File uploaded successfully!", attachmentUrl);
+          setMessageFile(null);
+        }
         // Use the addDoc method to add a document and obtain the DocumentReference
         const messageDocRef = await addDoc(messagesRef, {
           messageBody: messageContent,
           senderId: senderId,
           recipientId: recipientId,
           dateAdded: timestamp,
+          attachmentUrl: attachmentUrl,
         });
 
         // Access the generated ID from the DocumentReference
@@ -176,6 +205,7 @@ const ChatboxBig = (props) => {
 
   useEffect(() => {
     scrollToBottom();
+    console.log("allMessagesData", allMessagesData);
   }, [allMessagesData]);
 
   const scrollToBottom = () => {
@@ -201,6 +231,16 @@ const ChatboxBig = (props) => {
     };
   }, [props.otherPersonId]);
 
+  const handleIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    setMessageFile(file);
+    console.log("file", file);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AdminMessagingContainerBig>
@@ -211,21 +251,92 @@ const ChatboxBig = (props) => {
               if (message.recipientId === userId) {
                 return (
                   <AdminRecievedMessageContainer key={index}>
-                    <AdminAdminRecievedMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminRecievedMessageDate>
-                    <AdminRecievedMessage>
-                      {message.messageBody}
-                    </AdminRecievedMessage>
+                    {message.attachmentUrl ? (
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminRecievedMessageDate>
+
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachmentUrl,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachmentUrl}
+                          poster={message.attachmentUrl}
+                        />
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    {message.messageBody ? (
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminRecievedMessageDate>
+                        <AdminRecievedMessage>
+                          {message.questionCategory ? (
+                            <b>
+                              {message.questionCategory} <br />
+                            </b>
+                          ) : (
+                            ""
+                          )}
+                          {message.messageBody}
+                        </AdminRecievedMessage>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </AdminRecievedMessageContainer>
                 );
               } else {
                 return (
                   <AdminSentMessageContainer key={index}>
-                    <AdminAdminSentMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminSentMessageDate>
-                    <AdminSentMessage>{message.messageBody}</AdminSentMessage>
+                    {message.attachmentUrl ? (
+                      <>
+                        <AdminAdminSentMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminSentMessageDate>
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachmentUrl,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachmentUrl}
+                          poster={message.attachmentUrl}
+                        />{" "}
+                      </>
+                    ) : (
+                      ""
+                    )}
+
+                    {message.messageBody ? (
+                      <>
+                        <AdminAdminSentMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminSentMessageDate>
+                        <AdminSentMessage>
+                          {message.questionCategory ? (
+                            <b>
+                              {message.questionCategory} <br />
+                            </b>
+                          ) : (
+                            ""
+                          )}
+                          {message.messageBody}
+                        </AdminSentMessage>{" "}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {/* <AdminSentMessage>{message.messageBody}</AdminSentMessage> */}
                   </AdminSentMessageContainer>
                 );
               }
@@ -235,6 +346,18 @@ const ChatboxBig = (props) => {
           )}
         </AdminMessagingDisplayContainerBig>
         <AdminMessageInputBarBig>
+          <AdminMessageAttachmentPreview
+            transformValue={messageFile ? "-2.5rem" : "1rem"}
+          >
+            Attached File: {messageFile ? messageFile.name : ""}
+            <AdminMessageAttachmentPreviewIcon
+              onClick={() => {
+                setMessageFile(null);
+              }}
+            >
+              <RxCross2 size={"1.4rem"} />
+            </AdminMessageAttachmentPreviewIcon>
+          </AdminMessageAttachmentPreview>
           <AdminMessageInputBig
             value={messageContent}
             rows="1"
@@ -242,16 +365,39 @@ const ChatboxBig = (props) => {
             type="text"
             onFocus={handleInputFocus}
             onBlur={handleBlur}
+            placeholder="Write a message..."
             onChange={(e) => {
               setMessageContent(e.target.value);
             }}
           />
-          <AdminMessageArrowContainerBig
+          {/* <AdminMessageArrowContainerBig
             onClick={() => {
               sendMessage(userId, otherPersonId);
             }}
           >
-            <IoMdSend size="1.5rem" />
+            <IoMdAttach size="1.5rem" />
+          </AdminMessageArrowContainerBig> */}
+
+          <AdminMessageArrowContainerBig>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,video/*"
+              onChange={handleFileChange}
+              style={{
+                display: "none",
+              }}
+            />
+            <AdminMessageArrowContainerSmall onClick={handleIconClick}>
+              <IoMdAttach size="2rem" style={{ transform: "rotate(45deg)" }} />
+            </AdminMessageArrowContainerSmall>
+            <AdminMessageArrowContainerSmall
+              onClick={() => {
+                sendMessage(userId, otherPersonId);
+              }}
+            >
+              <IoMdSend size="2rem" />
+            </AdminMessageArrowContainerSmall>
           </AdminMessageArrowContainerBig>
         </AdminMessageInputBarBig>
       </AdminMessagingContainerBig>
