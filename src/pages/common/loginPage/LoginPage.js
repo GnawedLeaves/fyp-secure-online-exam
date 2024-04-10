@@ -70,12 +70,12 @@ const Loginpage = () => {
       if (user) {
         const uid = user.uid;
         const userType = loggedInUserData?.type;
-        console.log("userType", userType);
-        if (userType == "student") {
+        console.log("userType", userType, loggedInUserData?.name);
+        if (userType === "student") {
           navigate("/student/home");
-        } else if (userType == "instructor") {
+        } else if (userType === "teacher") {
           navigate("/Instructor/InstructorPage");
-        } else if (userType == "admin") {
+        } else if (userType === "admin") {
           navigate("/admin/home");
         }
       } else {
@@ -109,7 +109,7 @@ const Loginpage = () => {
           }}
           actionButtonText="OK"
           actionButtonColor={theme.statusError}
-          actionButtonClick={() => {}}
+          actionButtonClick={() => { }}
           show={showLogInFailureModal}
           modalTitle="Log In Unsuccessful"
           modalContent="Wrong Email or Password. Please try again."
