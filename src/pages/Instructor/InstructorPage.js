@@ -16,6 +16,13 @@ import { useState } from "react";
 import { instructorNavBarItems } from "./ContactAdmin";
 import Navbar from "../../components/Navbar/Navbar";
 import ExamCalendar from "./CalendarGenerator";
+import { db } from "../../backend/firebase/firebase";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 
 export const InstructorNotificationBox = styled.div`
   background-color: #ffe066;
@@ -51,13 +58,80 @@ const StudentCount = styled.p`
 
 const InstructorPage = () => {
   const [activeContent, setActiveContent] = useState("examCalendar");
-  const TutorialGroupTab = [
-    { id: 1, name: "Tutorial Group A", students: ["Student A", "Student B", "Student C","Student D"] },
-    { id: 2, name: "Tutorial Group B", students: ["Student E", "Student G", "Student F"] },
-    { id: 3, name: "Tutorial Group C", students: ["Student H", "Student J", "Student I", "Student I", "Student I"] },
-  
-  ];
+  const [tutorialGroups, setTutorialGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [studentsCounts, setStudentsCounts] = useState({});
 
+  //get the exams courseId and courseName
+  useEffect(() => {
+    const fetchTutorialGroups = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "exams"));
+        const groups = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        // Fetch student count for each group
+        const counts = {};
+        for (const group of groups) {
+          const groupData = await getDoc(doc(db, "exams", group.id));
+          const { courseId } = groupData.data();
+          const usersQuerySnapshot = await getDocs(collection(db, "users"));
+          const studentsData = usersQuerySnapshot.docs.map((doc) => doc.data());
+          const studentsInCourse = studentsData.filter(
+            (student) => student.modules && student.modules.includes(courseId)
+          );
+          counts[group.id] = studentsInCourse.length;
+        }
+
+        // Set tutorial groups and student counts
+        setTutorialGroups(groups);
+        setStudentsCounts(counts);
+      } catch (error) {
+        console.error("Error fetching tutorial groups and student counts:", error);
+      }
+    };
+
+    fetchTutorialGroups();
+  }, []);
+
+  //fetching the student detail
+  useEffect(() => {
+    const fetchStudents = async () => {
+      console.log("Fetching students...");
+      if (!selectedGroup) {
+        console.log("No selected group.");
+        return;
+      }
+  
+      try {
+        const groupData = await getDoc(doc(db, "exams", selectedGroup));
+        const { courseId } = groupData.data();
+  
+        console.log("Selected Group:", selectedGroup);
+        console.log("Course ID:", courseId);
+  
+        const usersQuerySnapshot = await getDocs(collection(db, "users"));
+        const studentsData = usersQuerySnapshot.docs.map((doc) => doc.data());
+  
+        // Filter students based on the selected course
+        const studentsInCourse = studentsData.filter((student) =>
+          student.modules && student.modules.includes(courseId)
+        );
+        console.log("Students in Course:", studentsInCourse);
+  
+        setStudents(studentsInCourse);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+  
+    fetchStudents();
+  }, [selectedGroup]);
+
+  
   return (
     <ThemeProvider theme={theme}>
       <InstructorHomeContainer>
@@ -91,23 +165,16 @@ const InstructorPage = () => {
               
             )}
             
-            {activeContent === "tutorialGroup" && (
+             {activeContent === "tutorialGroup" && (
               <div >
                 <ul>
-
-                {TutorialGroupTab.map((tutorialGroup) => (
-                <div key={tutorialGroup.id}>
-
-                <InstructorGroupBox>
-                  <GroupTitle>{tutorialGroup.name}</GroupTitle>
-                  <StudentCount>
-                
-                    Total Students: {tutorialGroup.students.length}{" "}
-                    <Link to ={'/students/${tutorialGroup.id}'}>View Students</Link>
-
+                {tutorialGroups.map((group) => (
+                <InstructorGroupBox key={group.id}>
+                  <GroupTitle>{group.name}</GroupTitle>
+                  <StudentCount onClick={() => setSelectedGroup(group.id)}>
+                  Total Students: {studentsCounts[group.id] || 0}
                   </StudentCount>
-
-                </InstructorGroupBox></div>
+                </InstructorGroupBox>
                 ))}
                 </ul>
               </div>
