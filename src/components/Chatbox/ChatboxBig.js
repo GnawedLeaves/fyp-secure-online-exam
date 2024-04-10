@@ -251,35 +251,43 @@ const ChatboxBig = (props) => {
               if (message.recipientId === userId) {
                 return (
                   <AdminRecievedMessageContainer key={index}>
-                    <AdminAdminRecievedMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminRecievedMessageDate>
                     {message.attachmentUrl ? (
-                      <AdminRecievedMessageMedia
-                        onClick={() => {
-                          window.open(
-                            message.attachmentUrl,
-                            "_blank",
-                            "noopener"
-                          );
-                        }}
-                        src={message.attachmentUrl}
-                        poster={message.attachmentUrl}
-                      />
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminRecievedMessageDate>
+
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachmentUrl,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachmentUrl}
+                          poster={message.attachmentUrl}
+                        />
+                      </>
                     ) : (
                       ""
                     )}
                     {message.messageBody ? (
-                      <AdminRecievedMessage>
-                        {message.questionCategory ? (
-                          <b>
-                            {message.questionCategory} <br />
-                          </b>
-                        ) : (
-                          ""
-                        )}
-                        {message.messageBody}
-                      </AdminRecievedMessage>
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminRecievedMessageDate>
+                        <AdminRecievedMessage>
+                          {message.questionCategory ? (
+                            <b>
+                              {message.questionCategory} <br />
+                            </b>
+                          ) : (
+                            ""
+                          )}
+                          {message.messageBody}
+                        </AdminRecievedMessage>
+                      </>
                     ) : (
                       <></>
                     )}
@@ -288,36 +296,43 @@ const ChatboxBig = (props) => {
               } else {
                 return (
                   <AdminSentMessageContainer key={index}>
-                    <AdminAdminSentMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminSentMessageDate>
                     {message.attachmentUrl ? (
-                      <AdminRecievedMessageMedia
-                        onClick={() => {
-                          window.open(
-                            message.attachmentUrl,
-                            "_blank",
-                            "noopener"
-                          );
-                        }}
-                        src={message.attachmentUrl}
-                        poster={message.attachmentUrl}
-                      />
+                      <>
+                        <AdminAdminSentMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminSentMessageDate>
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachmentUrl,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachmentUrl}
+                          poster={message.attachmentUrl}
+                        />{" "}
+                      </>
                     ) : (
                       ""
                     )}
 
                     {message.messageBody ? (
-                      <AdminSentMessage>
-                        {message.questionCategory ? (
-                          <b>
-                            {message.questionCategory} <br />
-                          </b>
-                        ) : (
-                          ""
-                        )}
-                        {message.messageBody}
-                      </AdminSentMessage>
+                      <>
+                        <AdminAdminSentMessageDate>
+                          {getDateFromFirebaseDate(message.dateAdded)}
+                        </AdminAdminSentMessageDate>
+                        <AdminSentMessage>
+                          {message.questionCategory ? (
+                            <b>
+                              {message.questionCategory} <br />
+                            </b>
+                          ) : (
+                            ""
+                          )}
+                          {message.messageBody}
+                        </AdminSentMessage>{" "}
+                      </>
                     ) : (
                       <></>
                     )}

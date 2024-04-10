@@ -27,7 +27,17 @@ import {
   descendingAlphabeticalSort,
 } from "../../../functions/sortArray";
 import ToggleArrow from "../../../components/ToggleArrow/ToggleArrow";
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
 import { handleFirebaseDate } from "../../../backend/firebase/handleFirebaseDate";
 import { getAllDocuments } from "../../../backend/firebase/getAllDocuments";
@@ -38,18 +48,28 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
   const [filtersSelected, setFiltersSelected] = useState(["All"]);
-  const [userId, setUserId] = useState()
+  const [userId, setUserId] = useState();
   const navigate = useNavigate();
 
-  const auth = getAuth()
+  const auth = getAuth();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
-        setUserId(uid);
+        getUserId(uid);
       }
     });
   }, []);
+
+  const getUserId = async (authId) => {
+    const q = query(collection(db, "users"), where("authId", "==", authId));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const firstDoc = querySnapshot.docs[0];
+      const userId = firstDoc.id;
+      setUserId(userId);
+    }
+  };
 
   const handleFilterBarData = (data) => {
     const lowerCaseFilters = data.map((filter) => filter.toLowerCase());
@@ -68,30 +88,30 @@ const AdminPersonnelPage = () => {
 
   const deletePersonnel = async () => {
     if (userDataToDelete !== null) {
-
       //Delete user from the exams if student
       if (userDataToDelete.type === "student") {
-        const examsRef = collection(db, "exams")
+        const examsRef = collection(db, "exams");
         userDataToDelete.modules.forEach(async (module) => {
           try {
-            const querySnapshot = await getDocs(query(examsRef, where("courseId", "==", module)))
+            const querySnapshot = await getDocs(
+              query(examsRef, where("courseId", "==", module))
+            );
             if (!querySnapshot.empty) {
-              const doc = querySnapshot.docs[0]
+              const doc = querySnapshot.docs[0];
               const examData = doc?.data();
-              const updatedStudentArray = examData.students.filter((student) => {
-                return student.id !== userDataToDelete.id
-              })
-              updateDoc(doc.ref, { students: updatedStudentArray })
-              console.log("Remove user from exams complete")
+              const updatedStudentArray = examData.students.filter(
+                (student) => {
+                  return student.id !== userDataToDelete.id;
+                }
+              );
+              updateDoc(doc.ref, { students: updatedStudentArray });
+              console.log("Remove user from exams complete");
             }
+          } catch (e) {
+            console.log("Error deleting user from exams", module);
           }
-          catch (e) {
-            console.log("Error deleting user from exams", module)
-          }
-        })
+        });
       }
-
-
 
       const documentRef = doc(usersRef, userDataToDelete.id);
 
@@ -153,12 +173,12 @@ const AdminPersonnelPage = () => {
 
   const onPersonnelDetailsClick = (userId) => {
     navigate(`/admin/personnel/${userId}`);
-  }
+  };
 
   const handleMessagePersonnel = (otherPersonId) => {
-    console.log("otherPersonId", otherPersonId)
-    sendMessage(userId, otherPersonId)
-  }
+    console.log("otherPersonId", otherPersonId);
+    sendMessage(userId, otherPersonId);
+  };
 
   const sendMessage = async (senderId, recipientId) => {
     const messagesRef = collection(db, "messages");
@@ -173,12 +193,11 @@ const AdminPersonnelPage = () => {
         recipientId: senderId,
         dateAdded: timestamp,
       });
-      console.log("message sent")
-      navigate("/admin/messages")
+      console.log("message sent");
+      navigate("/admin/messages");
     } catch (e) {
       console.log("Error sending message: ", e);
     }
-
   };
 
   return (
@@ -215,9 +234,7 @@ const AdminPersonnelPage = () => {
 
         <Navbar linksArray={adminNavbarItems} />
         <AdminPersonnelContainer>
-          <AdminPersonnelTitle>
-            Personnel
-          </AdminPersonnelTitle>
+          <AdminPersonnelTitle>Personnel</AdminPersonnelTitle>
           <AdminPersonnelNavbarContainer>
             <FilterBar
               filters={filters}
@@ -291,23 +308,28 @@ const AdminPersonnelPage = () => {
                       {user.dateCreated}
                     </AdminPersonnelSummary>
                     <AdminPersonnelSummaryButtonsContainer>
-                      <AdminPersonnelIconContainer onClick={() => {
-                        handleMessagePersonnel(user.id)
-                      }}>
+                      <AdminPersonnelIconContainer
+                        onClick={() => {
+                          handleMessagePersonnel(user.id);
+                        }}
+                      >
                         <IoMailOutline size={"2rem"} />
                       </AdminPersonnelIconContainer>
 
-                      <Button filledColor={theme.text} onClick={() => {
-
-                        onPersonnelDetailsClick(user.id)
-                      }}>Details</Button>
+                      <Button
+                        filledColor={theme.text}
+                        onClick={() => {
+                          onPersonnelDetailsClick(user.id);
+                        }}
+                      >
+                        Details
+                      </Button>
                       <Button
                         filled={false}
                         defaultColor={theme.statusError}
                         filledColor={theme.statusError}
                         onClick={() => {
-
-                          setUserDataToDelete(user)
+                          setUserDataToDelete(user);
 
                           setShowDeleteModal(true);
                         }}
