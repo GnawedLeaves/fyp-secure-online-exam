@@ -214,7 +214,7 @@ const AdminMessagesPage = () => {
       <AdminMessagesBigContainer>
         <Navbar linksArray={adminNavbarItems} />
         <AdminMessagesContainer >
-          <AdminMessagesTitle>Messages</AdminMessagesTitle>
+          {/* <AdminMessagesTitle>Messages</AdminMessagesTitle> */}
           <AdminMessagesDisplayBigContainer onKeyDown={handleKeyDown}>
             {uniquePreviewChats?.length !== 0 ? <>
               <AdminMessagesChatsContainer>
@@ -246,7 +246,7 @@ const AdminMessagesPage = () => {
             {/* HvsgLenfY6boyakI2YP3e63NgeC3 */}
             {/* 1 */}
             {/* cKL7rVQnMbvlqeXwys8F */}
-            <Chatbox userId={"IwMbg6vDfl20hX1rjJZ6"} otherPersonId={userId} />
+            {/* <Chatbox userId={"IwMbg6vDfl20hX1rjJZ6"} otherPersonId={userId} /> */}
 
           </MessageDisplayContainer>
         </AdminMessagesContainer>

@@ -12,7 +12,7 @@ const SelectDropdown = styled.select`
 `;
 
 const SelectOption = styled.option`
-  font-family: "Inter", sans-serif;
+  font-family: ${props => props.theme.font};
   padding: 0.5rem 1rem;
   font-size: 1.1rem;
   border-color: ${(props) => props.theme.text};

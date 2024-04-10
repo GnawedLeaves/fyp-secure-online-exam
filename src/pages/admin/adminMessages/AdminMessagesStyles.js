@@ -10,7 +10,6 @@ export const AdminMessagesContainer = styled.div`
 
 export const AdminMessagingContainer = styled.div`
   border: 2px solid ${(props) => props.theme.text};
-
   box-sizing: border-box;
   overflow: hidden;
 `;
@@ -66,7 +65,7 @@ export const AdminMessageInput = styled.textarea`
   border: none;
   padding: 1rem;
   font-size: 1rem;
-  font-family: "Inter", sans-serif;
+  font-family: ${props => props.theme.font};
   word-wrap: break-word;
   resize: none;
 
