@@ -233,6 +233,7 @@ const AdminPersonnelPage = () => {
         />
 
         <Navbar linksArray={adminNavbarItems} />
+
         <AdminPersonnelContainer>
           <AdminPersonnelTitle>Personnel</AdminPersonnelTitle>
           <AdminPersonnelNavbarContainer>
