@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import {
   AdminHomePageContainer,
@@ -22,11 +22,31 @@ import { IoLogOutOutline } from "react-icons/io5";
 import LoadingPage from "../../common/loadingPage/LoadingPage";
 import { theme } from "../../../theme";
 import { adminNavbarItems } from "../AdminHomePage";
-
-
+import {
+  getAllDocuments,
+  getAllDocumentsWithoutDate,
+} from "../../../backend/firebase/getAllDocuments";
+import { db } from "../../../backend/firebase/firebase";
+import { collection } from "firebase/firestore";
 
 const AdminExamsPage = () => {
   const navigate = useNavigate();
+  const examRef = collection(db, "exams");
+  const [allExamsData, setAllExamsData] = useState([]);
+
+  const getAllExams = async () => {
+    try {
+      const examData = await getAllDocumentsWithoutDate("exams");
+      setAllExamsData(examData);
+      console.log("examData", examData);
+    } catch (error) {
+      console.error("Error getting all exams:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("examData", allExamsData);
+  }, [allExamsData]);
   const changePage = () => {
     navigate("/adminexamdetails");
   };
