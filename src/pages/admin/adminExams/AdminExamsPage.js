@@ -27,7 +27,11 @@ import {
   getAllDocumentsWithoutDate,
 } from "../../../backend/firebase/getAllDocuments";
 import { db } from "../../../backend/firebase/firebase";
-import { collection } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import {
+  calculateDifferenceInHours,
+  handleFirebaseDate,
+} from "../../../backend/firebase/handleFirebaseDate";
 
 const AdminExamsPage = () => {
   const navigate = useNavigate();
@@ -36,17 +40,41 @@ const AdminExamsPage = () => {
 
   const getAllExams = async () => {
     try {
-      const examData = await getAllDocumentsWithoutDate("exams");
-      setAllExamsData(examData);
-      console.log("examData", examData);
+      const querySnapshot = await getDocs(collection(db, "exams"));
+      const examDataArray = querySnapshot.docs.map((doc) => {
+        const docData = doc.data();
+        if (doc.endTime !== null && doc.startTime !== null) {
+          const calculatedDurationHours = calculateDifferenceInHours(
+            docData.startTime,
+            docData.endTime
+          );
+          const convertedEndTime = handleFirebaseDate(docData.endTime);
+          const convertedStartTime = handleFirebaseDate(docData.startTime);
+          return {
+            id: doc.id,
+            convertedEndTime: convertedEndTime,
+            convertedStartTime: convertedStartTime,
+            calculatedDurationHours: calculatedDurationHours,
+            ...docData,
+          };
+        } else {
+          return {
+            id: doc.id,
+            ...docData,
+          };
+        }
+      });
+      console.log("examDataArray", examDataArray);
+      setAllExamsData(examDataArray);
     } catch (error) {
       console.error("Error getting all exams:", error);
     }
   };
 
   useEffect(() => {
-    console.log("examData", allExamsData);
-  }, [allExamsData]);
+    getAllExams();
+  }, []);
+
   const changePage = () => {
     navigate("/adminexamdetails");
   };
@@ -109,6 +137,22 @@ const AdminExamsPage = () => {
                     examId={exam.examId}
                     studentsCount={exam.studentsCount}
                     timeLeft={exam.timeLeft}
+                    alertsCount={exam.alertsCount}
+                    status={exam.status}
+                  />
+                ))}
+              </OngoingExams>
+            </OngoingExamsContainer>
+            <OngoingExamsContainer>
+              <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
+              <OngoingExams>
+                {allExamsData.map((exam, index) => (
+                  <Exambox
+                    key={index}
+                    title={exam.courseId}
+                    examId={exam.id}
+                    studentsCount={exam.students?.length}
+                    timeLeft={exam.calculatedDurationHours + "h"}
                     alertsCount={exam.alertsCount}
                     status={exam.status}
                   />
