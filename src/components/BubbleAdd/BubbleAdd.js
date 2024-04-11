@@ -61,6 +61,7 @@ const BubbleAdd = (props) => {
             {props.title ? props.title : "New Item"}
           </AdminModuleFieldTitle>
           <AdminModuleField
+            placeholder="Type & 'Enter'... "
             onKeyDown={handleFieldKeyDown}
             value={newData}
             onChange={(e) => {

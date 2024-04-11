@@ -20,3 +20,19 @@ export const handleFirebaseDate = (inputDate) => {
 
   return extractedDateString;
 };
+
+//difference between timestamps
+export const calculateDifferenceInHours = (startTime, endTime) => {
+  // Convert both times to seconds
+  let startInSeconds = startTime.seconds + startTime.nanoseconds / 1e9;
+  let endInSeconds = endTime.seconds + endTime.nanoseconds / 1e9;
+
+  // Calculate the difference
+  let differenceInSeconds = endInSeconds - startInSeconds;
+  let differenceInHours = differenceInSeconds / 3600;
+  let differenceInMinutes = differenceInSeconds / 60;
+
+  return differenceInHours;
+};
+
+// Example usa
