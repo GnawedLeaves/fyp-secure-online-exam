@@ -57,75 +57,121 @@ import ChatboxBig from "../../../components/Chatbox/ChatboxBig";
 const AdminMessagesPage = () => {
   const messagesRef = collection(db, "messages");
   const [userId, setUserId] = useState();
-  const [allMessagesData, setAllMessagesData] = useState([])
-  const [uniqueSenderIds, setUniqueSenderIds] = useState([])
-  const [uniquePreviewChats, setUniquePreviewChats] = useState([])
+  const [allMessagesData, setAllMessagesData] = useState([]);
+  const [uniqueSenderIds, setUniqueSenderIds] = useState([]);
+  const [uniquePreviewChats, setUniquePreviewChats] = useState([]);
   const [chatIdSelected, setChatIdSelected] = useState("");
-  const [chatNameSelected, setChatNameSelected] = useState("Name Not Available");
+  const [chatNameSelected, setChatNameSelected] =
+    useState("Name Not Available");
 
-
-  const auth = getAuth()
+  const auth = getAuth();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
-        setUserId(uid);
-        console.log(uid)
+        getUserId(uid);
       }
     });
   }, []);
 
-  useEffect(() => { getAllMessages() }, [userId])
+  const getUserId = async (authId) => {
+    const q = query(collection(db, "users"), where("authId", "==", authId));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const firstDoc = querySnapshot.docs[0];
+      const userId = firstDoc.id;
+      setUserId(userId);
+    }
+  };
 
-  useEffect(() => { constructPreviews() }, [uniqueSenderIds])
+  useEffect(() => {
+    getAllMessages();
+  }, [userId]);
+
+  useEffect(() => {
+    constructPreviews();
+  }, [uniqueSenderIds]);
 
   //Unqiue senders ids
   useEffect(() => {
     const filteredSenderIDs = allMessagesData
-      .filter(message => message.recipientId === userId)
-      .map(message => message.senderId);
+      .filter((message) => message.recipientId === userId)
+      .map((message) => message.senderId);
     const uniqueArray = [...new Set(filteredSenderIDs)];
-    setUniqueSenderIds(uniqueArray)
-  }, [allMessagesData])
+    setUniqueSenderIds(uniqueArray);
+  }, [allMessagesData]);
+
+  //Unique Conversations which doesnt really work
+  // useEffect(() => {
+  //   console.log("allMessagesData", allMessagesData);
+  //   console.log("uniqueSenderIds", uniqueSenderIds);
+  //   const uniqueSenderIds2 = uniqueSenderIds;
+  //   const checkedUniqueSenderIds = [];
+  //   let messageNameAndPreviews = [];
+  //   uniqueSenderIds2.map((id) => {
+  //     const messagesFromId = allMessagesData.filter(
+  //       (message) => message.senderId === id || message.recipientId === id
+  //     );
+  //     const firstMessage = messagesFromId.reverse()[0];
+
+  //     messageNameAndPreviews = [
+  //       ...messageNameAndPreviews,
+  //       {
+  //         id: id,
+  //         message: firstMessage.messageBody,
+  //       },
+  //     ];
+  //   });
+  //   console.log("messageNameAndPreviews", messageNameAndPreviews);
+  //   const userNamesPromises = messageNameAndPreviews.map((message) => ({
+  //     ...message,
+  //     name: getUserNameFromId(message.id),
+  //   }));
+  //   console.log("userNamesPromises", userNamesPromises);
+  //   // setUniquePreviewChats(userNamesPromises);
+  // }, [uniqueSenderIds]);
 
   //function to get all messages with the specific userId
   const constructPreviews = async () => {
     try {
       // Filter messages only once
-      const filteredMessages = uniqueSenderIds.map(senderId =>
-        allMessagesData.find(message => message.senderId === senderId)
+      const filteredMessages = uniqueSenderIds.map((senderId) =>
+        allMessagesData.find((message) => message.senderId === senderId)
       );
 
       // Fetch user names for all filtered messages in parallel
-      const userNamesPromises = filteredMessages.map(message =>
+      const userNamesPromises = filteredMessages.map((message) =>
         getUserNameFromId(message.senderId)
       );
       const userNames = await Promise.all(userNamesPromises);
 
       // Combine filtered messages with user names
-      const filteredMessagesWithName = filteredMessages.map((message, index) => ({
-        ...message,
-        name: userNames[index] // Use the corresponding user name
-      }));
+      const filteredMessagesWithName = filteredMessages.map(
+        (message, index) => ({
+          ...message,
+          name: userNames[index], // Use the corresponding user name
+        })
+      );
 
       // Update state with filtered messages including user names
+
       setUniquePreviewChats(filteredMessagesWithName);
     } catch (error) {
       console.error("Error constructing previews:", error);
     }
-  }
-
-
+  };
 
   const getAllMessages = async (recipientId, senderId) => {
     const recivedMessages = await getRecievedMessages(userId);
-    const sentMessages = await getSentMessages(userId)
+    const sentMessages = await getSentMessages(userId);
     //const sentMessages = await getSentMessages(recipientId, senderId);
     const allMessages = [...recivedMessages, ...sentMessages];
-    const sortedArray = sortByFirebaseTimestamp(allMessages, "dateAdded").reverse();
+    const sortedArray = sortByFirebaseTimestamp(
+      allMessages,
+      "dateAdded"
+    ).reverse();
     setAllMessagesData([...sortedArray]);
   };
-
 
   //Get messages from database and display them
   const getRecievedMessages = async (recipientId) => {
@@ -176,17 +222,16 @@ const AdminMessagesPage = () => {
   };
 
   const constructTruncatedText = (text, maxLength) => {
-    const truncatedText = text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+    const truncatedText =
+      text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
     return truncatedText;
-  }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
-      setChatIdSelected("")
-      console.log("escape pressed")
+      setChatIdSelected("");
     }
   };
-
 
   const getUserNameFromId = async (id) => {
     const userRef = doc(db, "users", id);
@@ -196,58 +241,78 @@ const AdminMessagesPage = () => {
       if (docSnap.exists()) {
         const userData = docSnap.data();
 
-        return userData.name + " (" + userData.type + " ID: " + id + ")"
+        return userData.name + " (" + userData.type + " ID: " + id + ")";
+      } else {
+        return "Name Not Available (ID: " + id + ")";
       }
-      else {
-
-        return "Name Not Available (ID: " + id + ")"
-      }
+    } catch (e) {
+      console.log("Error getting user data", e);
     }
-    catch (e) {
-      console.log("Error getting user data", e)
-    }
-  }
-
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <AdminMessagesBigContainer>
         <Navbar linksArray={adminNavbarItems} />
-        <AdminMessagesContainer >
-          <AdminMessagesTitle>Messages</AdminMessagesTitle>
+        <AdminMessagesContainer>
+          {/* <AdminMessagesTitle>Messages</AdminMessagesTitle> */}
           <AdminMessagesDisplayBigContainer onKeyDown={handleKeyDown}>
-            {uniquePreviewChats?.length !== 0 ? <>
-              <AdminMessagesChatsContainer>
-                {uniquePreviewChats?.map((message, index) => (
-                  <AdminMessageChatTab key={index} selected={chatIdSelected === message.senderId} onClick={() => {
-                    setChatIdSelected(message.senderId);
-                    setChatNameSelected(message.name)
-                  }}>
-                    <AdminMessageChatTabTitle>
+            {uniquePreviewChats && uniquePreviewChats?.length !== 0 ? (
+              <>
+                <AdminMessagesChatsContainer>
+                  {uniquePreviewChats?.map((message, index) => (
+                    <AdminMessageChatTab
+                      key={index}
+                      selected={chatIdSelected === message.senderId}
+                      onClick={() => {
+                        setChatIdSelected(message.senderId);
+                        setChatNameSelected(message.name);
+                      }}
+                    >
+                      <AdminMessageChatTabTitle>
+                        {constructTruncatedText(message.name, 15)}
+                      </AdminMessageChatTabTitle>
+                      <AdminMessageChatTabPreview>
+                        {constructTruncatedText(message.messageBody, 40)}
+                      </AdminMessageChatTabPreview>
+                    </AdminMessageChatTab>
+                  ))}
+                </AdminMessagesChatsContainer>
 
-                      {constructTruncatedText(message.name, 15)}
-
-                    </AdminMessageChatTabTitle>
-                    <AdminMessageChatTabPreview>
-                      {constructTruncatedText(message.messageBody, 40)}
-                    </AdminMessageChatTabPreview>
-                  </AdminMessageChatTab>
-                ))}
-              </AdminMessagesChatsContainer>
-
-              {chatIdSelected !== "" ? <AdminMessagesMessageContainer>
-                <ChatboxBig userId={userId} otherPersonId={chatIdSelected} otherPersonName={chatNameSelected} />
-              </AdminMessagesMessageContainer> : <AdminNoChatSelectedContainer>Select a chat to start messaging</AdminNoChatSelectedContainer>}</> : <AdminNoChatDisplay >You have no chats</AdminNoChatDisplay>}
-
-
-
+                {chatIdSelected !== "" ? (
+                  <AdminMessagesMessageContainer>
+                    <ChatboxBig
+                      userId={userId}
+                      otherPersonId={chatIdSelected}
+                      otherPersonName={chatNameSelected}
+                    />
+                  </AdminMessagesMessageContainer>
+                ) : (
+                  <AdminNoChatSelectedContainer>
+                    Select a chat to start messaging
+                  </AdminNoChatSelectedContainer>
+                )}
+              </>
+            ) : (
+              <AdminNoChatDisplay>You have no chats</AdminNoChatDisplay>
+            )}
           </AdminMessagesDisplayBigContainer>
           <MessageDisplayContainer>
             {/* HvsgLenfY6boyakI2YP3e63NgeC3 */}
             {/* 1 */}
             {/* cKL7rVQnMbvlqeXwys8F */}
-            <Chatbox userId={"IwMbg6vDfl20hX1rjJZ6"} otherPersonId={userId} />
-
+            <div
+              style={{
+                width: "30%",
+                height: "50vh",
+                border: "1px solid black",
+              }}
+            >
+              <ChatboxBig
+                userId={"iToNpi2Be8ybxo1wvP9i"}
+                otherPersonId={userId}
+              />
+            </div>
           </MessageDisplayContainer>
         </AdminMessagesContainer>
       </AdminMessagesBigContainer>

@@ -19,9 +19,6 @@ import {
   getDocs,
   getDoc,
   doc,
-  onSnapshot,
-  query,
-  where,
 } from "firebase/firestore";
 
 export const InstructorNotificationBox = styled.div`
@@ -131,7 +128,7 @@ const InstructorPage = () => {
     fetchStudents();
   }, [selectedGroup]);
 
-
+  
   return (
     <ThemeProvider theme={theme}>
       <InstructorHomeContainer>
@@ -166,7 +163,7 @@ const InstructorPage = () => {
               
             )}
             
-            {activeContent === "tutorialGroup" && (
+             {activeContent === "tutorialGroup" && (
               <div >
                 <ul>
                 {tutorialGroups.map((group) => (
