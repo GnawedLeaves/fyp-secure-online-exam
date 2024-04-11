@@ -22,16 +22,6 @@ import { IoLogOutOutline } from "react-icons/io5";
 import LoadingPage from "../../common/loadingPage/LoadingPage";
 import { theme } from "../../../theme";
 import { adminNavbarItems } from "../AdminHomePage";
-import {
-  getAllDocuments,
-  getAllDocumentsWithoutDate,
-} from "../../../backend/firebase/getAllDocuments";
-import { db } from "../../../backend/firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import {
-  calculateDifferenceInHours,
-  handleFirebaseDate,
-} from "../../../backend/firebase/handleFirebaseDate";
 
 const AdminExamsPage = () => {
   const navigate = useNavigate();
