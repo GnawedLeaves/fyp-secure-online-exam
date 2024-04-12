@@ -148,7 +148,7 @@ const InstructorPage = () => {
             active={activeContent === "tutorialGroup"}
             onClick={() => setActiveContent("tutorialGroup")}
           >
-            Tutorial Group
+            Module Group
 
           </NavItem>
           <NavItem
