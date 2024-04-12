@@ -52,9 +52,9 @@ const StudentCount = styled.p`
 const InstructorPage = () => {
   const [activeContent, setActiveContent] = useState("examCalendar");
   const TutorialGroupTab = [
-    { id: 1, name: "Tutorial Group A", students: ["Student A", "Student B", "Student C","Student D"] },
-    { id: 2, name: "Tutorial Group B", students: ["Student E", "Student G", "Student F"] },
-    { id: 3, name: "Tutorial Group C", students: ["Student H", "Student J", "Student I", "Student I", "Student I"] },
+    { id: 1, name: "Web App Design", students: ["Student A", "Student B", "Student C","Student D"] },
+    { id: 2, name: "Information Security", students: ["Student E", "Student G", "Student F"] },
+    { id: 3, name: "Software Engineering", students: ["Student H", "Student J", "Student I", "Student I", "Student I"] },
   
   ];
 
@@ -77,7 +77,7 @@ const InstructorPage = () => {
             active={activeContent === "tutorialGroup"}
             onClick={() => setActiveContent("tutorialGroup")}
           >
-            Tutorial Group
+            Module Group
           </NavItem>
           <NavItem
             active={activeContent === "notification"}
