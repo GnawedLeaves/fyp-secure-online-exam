@@ -305,13 +305,12 @@ const AdminMessagesPage = () => {
               style={{
                 width: "30%",
                 height: "50vh",
-                border: "1px solid black",
               }}
             >
-              <ChatboxBig
-                userId={"iToNpi2Be8ybxo1wvP9i"}
+              {/* <ChatboxBig
+                userId={"lSdjlreJxFMmwsuDZlOS"}
                 otherPersonId={userId}
-              />
+              /> */}
             </div>
           </MessageDisplayContainer>
         </AdminMessagesContainer>

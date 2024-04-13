@@ -217,7 +217,10 @@ function App() {
               <Route key={index} path={route.link} element={route.element} />
             );
           })}
-      <Route path="/Instructor/InstructorProctor/:courseId/:examId" element={<Proctoring />} />
+          <Route
+            path="/Instructor/InstructorProctor/:courseId/:examId"
+            element={<Proctoring />}
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>
