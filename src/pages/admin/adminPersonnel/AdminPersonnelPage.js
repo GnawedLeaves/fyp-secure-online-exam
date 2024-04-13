@@ -47,6 +47,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AdminPersonnelPage = () => {
   const filters = ["Teacher", "Student", "Admin", "Others"];
+
   const [filtersSelected, setFiltersSelected] = useState(["All"]);
   const [userId, setUserId] = useState();
   const navigate = useNavigate();
@@ -176,7 +177,6 @@ const AdminPersonnelPage = () => {
   };
 
   const handleMessagePersonnel = (otherPersonId) => {
-    console.log("otherPersonId", otherPersonId);
     sendMessage(userId, otherPersonId);
   };
 
@@ -216,20 +216,6 @@ const AdminPersonnelPage = () => {
           show={showDeleteModal}
           modalTitle="Delete User"
           modalContent="Are you sure you want to delete this user? This action cannot be undone."
-        />
-        <Modal
-          handleModalClose={() => {
-            setShowDeleteModal(false);
-          }}
-          modalType=""
-          actionButtonText="Delete"
-          actionButtonColor={theme.primary}
-          actionButtonClick={() => {
-            setShowDeleteModal(false);
-          }}
-          show={showDeleteModal}
-          modalTitle="Message Sent"
-          modalContent="Please check the messages tab to continue messaging"
         />
 
         <Navbar linksArray={adminNavbarItems} />
@@ -331,7 +317,6 @@ const AdminPersonnelPage = () => {
                         filledColor={theme.statusError}
                         onClick={() => {
                           setUserDataToDelete(user);
-
                           setShowDeleteModal(true);
                         }}
                       >
