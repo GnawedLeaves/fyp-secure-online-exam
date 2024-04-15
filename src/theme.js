@@ -10,7 +10,7 @@ export const theme = {
   statusIntermediate: "#FFCF96",
   grey: "#E9E9E9",
   white: "#ffffff",
-  boxShadow: "box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;",
+  boxShadow: "box-shadow: 2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
 };
 
 export const darktheme = {
