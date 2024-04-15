@@ -150,9 +150,9 @@ const Loginpage = () => {
           >
             Log In
           </LoginButton>
-          <LoginButton onClick={changePage}>
+          {/* <LoginButton onClick={changePage}>
             Enter without logging in
-          </LoginButton>
+          </LoginButton> */}
         </LoginPageFormContainer>
       </LoginPageContainer>
     </ThemeProvider>

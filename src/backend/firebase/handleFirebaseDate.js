@@ -27,12 +27,17 @@ export const calculateDifferenceInHours = (startTime, endTime) => {
   let startInSeconds = startTime.seconds + startTime.nanoseconds / 1e9;
   let endInSeconds = endTime.seconds + endTime.nanoseconds / 1e9;
 
-  // Calculate the difference
+  // Calculate the difference in seconds
   let differenceInSeconds = endInSeconds - startInSeconds;
-  let differenceInHours = differenceInSeconds / 3600;
-  let differenceInMinutes = differenceInSeconds / 60;
 
-  return differenceInHours;
+  // Calculate hours and minutes from the difference in seconds
+  let hours = Math.floor(differenceInSeconds / 3600); // Get whole hours
+  let remainderSeconds = differenceInSeconds % 3600;
+  let minutes = Math.floor(remainderSeconds / 60); // Get remainder minutes
+  let seconds = Math.floor(remainderSeconds % 60); // Get remaining seconds
+
+  // Format output
+  return `${hours}h ${minutes}m ${seconds}s`;
 };
 
 // Example usa
