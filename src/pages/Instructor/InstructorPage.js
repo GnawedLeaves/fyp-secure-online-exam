@@ -73,11 +73,15 @@ const InstructorPage = () => {
           const groupData = await getDoc(doc(db, "exams", group.id));
           const { courseId } = groupData.data();
           const usersQuerySnapshot = await getDocs(collection(db, "users"));
-          const studentsData = usersQuerySnapshot.docs.map((doc) => doc.data());
-          const studentsInCourse = studentsData.filter(
-            (student) => student.modules && student.modules.includes(courseId)
+          const studentsData = usersQuerySnapshot.docs
+          .map((doc) => doc.data())
+          // Filter students based on the selected course and type "student"
+          .filter((student) =>
+            student.modules &&
+            student.modules.includes(courseId) &&
+            student.type === "student"
           );
-          counts[group.id] = studentsInCourse.length;
+          counts[group.id] = studentsData.length;
         }
 
         // Set tutorial groups and student counts
