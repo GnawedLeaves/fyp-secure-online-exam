@@ -105,10 +105,14 @@ const NewPersonnelPage = () => {
               authId: id,
               name: newUserName,
               year: newUserYear,
-              course: newUserCourse,
+              programme: newUserProgramme,
               modules: newUserModules,
               type: newUserType,
               dateCreated: timestamp,
+              studentType: newUserStudentType,
+              enrollmentYear: newUserEnrollmentYear,
+              enrollmentStatus: newUserEnrollmentStatus,
+              cgpa: newUserCgpa,
               // Add user data here
             }
           : newUserType === "teacher"
