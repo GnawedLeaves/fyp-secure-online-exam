@@ -132,6 +132,7 @@ const NewPersonnelPage = () => {
       );
 
       const newUserFirebaseId = userDocRef.id;
+      console.log("newUserFirebaseId", newUserFirebaseId);
 
       if (newUserType === "student") {
         addStudentsToExam(newUserModules, newUserFirebaseId);
@@ -171,7 +172,7 @@ const NewPersonnelPage = () => {
             : [newExamStudentObj];
           // 4. Send back the updated student array
           updateDoc(doc.ref, { students: updatedStudents });
-          console.log("update complete");
+          console.log("Added student to exams array");
         } else {
           console.log("exam is in the past!");
         }

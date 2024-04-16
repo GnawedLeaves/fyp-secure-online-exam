@@ -489,6 +489,7 @@ export const AdminExamDetailsPersonnel = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 2rem;
 `;
 export const AdminExamDetailsPersonnelBox = styled.div`
   display: flex;
