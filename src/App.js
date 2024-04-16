@@ -37,15 +37,16 @@ import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage
 import AdminModulesPage from "./pages/admin/adminModules/AdminModulesPage";
 import AdminPersonnelDetailsPage from "./pages/admin/adminPersonnel/AdminPersonnelDetails";
 import StudentCardVerificationpage from "./pages/student/StudentCardVerificationpage";
+import AdminExamDetailsPage2 from "./pages/admin/adminExams/AdminExamDetailsPage2";
 
 export const adminRoutes = [
+  // {
+  //   title: "Admin Home",
+  //   link: "/admin/home",
+  //   element: <AdminHomePage />,
+  // },
   {
-    title: "Admin Home",
-    link: "/admin/home",
-    element: <AdminHomePage />,
-  },
-  {
-    title: "Admin Settings",
+    title: "Admin Modules",
     link: "/admin/modules",
     element: <AdminModulesPage />,
   },
@@ -66,8 +67,8 @@ export const adminRoutes = [
   },
   {
     title: "Admin Exam Details",
-    link: "/admin/exam/:examid",
-    element: <AdminExamDetailsPage />,
+    link: "/admin/exams/:examid",
+    element: <AdminExamDetailsPage2 />,
   },
   {
     title: "Admin Personnel Details",
@@ -78,6 +79,11 @@ export const adminRoutes = [
     title: "Admin New Personnel",
     link: "/admin/personnel/newuser",
     element: <NewPersonnelPage />,
+  },
+  {
+    title: "Admin Exams",
+    link: "/admin/*",
+    element: <AdminExamsPage />,
   },
 ];
 
@@ -217,7 +223,10 @@ function App() {
               <Route key={index} path={route.link} element={route.element} />
             );
           })}
-      <Route path="/Instructor/InstructorProctor/:courseId/:examId" element={<Proctoring />} />
+          <Route
+            path="/Instructor/InstructorProctor/:courseId/:examId"
+            element={<Proctoring />}
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>

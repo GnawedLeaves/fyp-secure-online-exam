@@ -38,7 +38,7 @@ const Loginpage = () => {
         navigate("/Instructor/InstructorPage");
         break;
       case "Admin":
-        navigate("/admin/home");
+        navigate("/admin/exams");
         break;
     }
   };
@@ -72,11 +72,14 @@ const Loginpage = () => {
         const userType = loggedInUserData?.type;
         console.log("userType", userType, loggedInUserData?.name);
         if (userType === "student") {
+          setLoggedInUserData(null);
           navigate("/student/home");
         } else if (userType === "teacher") {
+          setLoggedInUserData(null);
           navigate("/Instructor/InstructorPage");
         } else if (userType === "admin") {
-          navigate("/admin/home");
+          setLoggedInUserData(null);
+          navigate("/admin/exams");
         }
       } else {
         //Not signed in
@@ -109,7 +112,7 @@ const Loginpage = () => {
           }}
           actionButtonText="OK"
           actionButtonColor={theme.statusError}
-          actionButtonClick={() => { }}
+          actionButtonClick={() => {}}
           show={showLogInFailureModal}
           modalTitle="Log In Unsuccessful"
           modalContent="Wrong Email or Password. Please try again."
@@ -147,9 +150,9 @@ const Loginpage = () => {
           >
             Log In
           </LoginButton>
-          <LoginButton onClick={changePage}>
+          {/* <LoginButton onClick={changePage}>
             Enter without logging in
-          </LoginButton>
+          </LoginButton> */}
         </LoginPageFormContainer>
       </LoginPageContainer>
     </ThemeProvider>

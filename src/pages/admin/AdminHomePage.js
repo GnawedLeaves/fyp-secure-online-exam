@@ -51,11 +51,11 @@ import {
 } from "firebase/firestore";
 
 export const adminNavbarItems = [
-  {
-    title: "Home",
-    path: "/admin/home",
-    logo: <RiHome4Line />,
-  },
+  // {
+  //   title: "Home",
+  //   path: "/admin/home",
+  //   logo: <RiHome4Line />,
+  // },
   {
     title: "Exams",
     path: "/admin/exams",
@@ -77,7 +77,6 @@ export const adminNavbarItems = [
     path: "/admin/messages",
     logo: <IoMailOutline />,
   },
-
 ];
 
 const AdminHomePage = () => {
@@ -232,11 +231,12 @@ const AdminHomePage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.primary}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showModuleEditingSuccessModal}
               modalTitle="Changes Saved"
-              modalContent={`Module ${moduleEditingName ? moduleEditingName : ""
-                } has been updated.`}
+              modalContent={`Module ${
+                moduleEditingName ? moduleEditingName : ""
+              } has been updated.`}
             />
             <Modal
               handleModalClose={() => {
@@ -259,7 +259,7 @@ const AdminHomePage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.primary}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showAddModuleSuccessModal}
               modalTitle="Success!"
               modalContent="Add module successful."
@@ -272,13 +272,13 @@ const AdminHomePage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.statusError}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showAddModuleFailureModal}
               modalTitle="Error!"
               modalContent={`${addModuleError ? addModuleError : ""}`}
             />
             <Modal
-              handleModalClose={() => { }}
+              handleModalClose={() => {}}
               modalType="empty"
               show={openAddNewModule}
             >

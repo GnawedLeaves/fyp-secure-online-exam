@@ -11,7 +11,7 @@ export const AdminHomePageContainer = styled.div`
 export const AdminHomePage = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 0 2rem;
+  padding: 2rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,7 +283,8 @@ export const AdminModuleBox = styled.div`
   display: flex;
   width: 15rem;
   padding: 1rem 2rem;
-  box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;
+  ${(props) => props.theme.boxShadow};
+
   border-radius: 0.3rem;
   align-items: center;
   justify-content: space-between;
@@ -328,7 +329,7 @@ export const AdminModuleFieldContainer = styled.div`
 `;
 export const AdminModuleFieldTitle = styled.div``;
 export const AdminModuleField = styled.input`
-  font-family: ${props => props.theme.font};
+  font-family: ${(props) => props.theme.font};
   border: 2px solid ${(props) => props.theme.text};
   padding: 0.5rem 1rem;
   font-size: 1.1rem;
@@ -345,4 +346,152 @@ export const AdminModuleModalIcon = styled.div`
 
 export const AdminModuleBubbleContaier = styled.div`
   width: 100%;
+`;
+
+export const AdminExamDetailsTitle = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+`;
+
+export const AdminExamDetailsSubtitle = styled.div`
+  font-size: 1rem;
+`;
+
+export const AdminExamDetailsDetailsContainer = styled.div`
+  margin-top: -10rem;
+  width: 100%;
+  background: ${(props) => props.theme.white};
+  height: 100%;
+  // background: red;
+  position: relative;
+  z-index: 90;
+  border-top: 3px solid ${(props) => props.theme.grey};
+  padding: 0 2rem;
+  box-sizing: border-box;
+  padding-top: 12rem;
+`;
+
+export const AdminExamDetailsTimeContainer = styled.div`
+  background: ${(props) => props.theme.white};
+  ${(props) => props.theme.boxShadow};
+  border-top: 1px solid ${(props) => props.theme.grey};
+  box-sizing: border-box;
+  padding: 2rem 1rem;
+  border-radius: 1rem;
+  width: 30rem;
+  // min-height: 20rem;
+  margin-top: 3rem;
+  position: relative;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const AdminExamDetailsTimeField = styled.div`
+  font-size: 1.1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.4rem;
+`;
+
+export const AdminExamDetailsPage = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const AdminExamDetailsStatusDisplay = styled.div`
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const AdminExamDetailsBackButtonContainer = styled.div`
+  width: 100%;
+  padding-left: 3rem;
+`;
+
+export const AdminExamDetailsStatusBall = styled.div`
+  background: ${(props) =>
+    props.status === "Ongoing" ? props.theme.statusError : ""};
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 1rem;
+  animation: 2s fade 0s infinite;
+  @keyframes fade {
+    0% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+`;
+
+export const EditTimeModalTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const EditTimeModalContainer = styled.div`
+  // padding: 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const EditTimeModalInput = styled.input`
+  height: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+`;
+
+export const EditTimeModalButtonContainer = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const EditTimeModalEditIconContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+`;
+export const EditTimeModalTitleAndIcon = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  align-items: center;
+`;
+
+export const AdminExamDetailsDetailsTitle = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+export const AdminExamDetailsPersonnel = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+export const AdminExamDetailsPersonnelBox = styled.div`
+  width: 5rem;
+  height: 5rem;
+  background: red;
 `;

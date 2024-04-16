@@ -51,7 +51,6 @@ import {
 } from "firebase/firestore";
 import { adminNavbarItems } from "../AdminHomePage";
 
-
 const AdminModulesPage = () => {
   const navigate = useNavigate();
   const modulesRef = collection(db, "modules");
@@ -204,11 +203,12 @@ const AdminModulesPage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.primary}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showModuleEditingSuccessModal}
               modalTitle="Changes Saved"
-              modalContent={`Module ${moduleEditingName ? moduleEditingName : ""
-                } has been updated.`}
+              modalContent={`Module ${
+                moduleEditingName ? moduleEditingName : ""
+              } has been updated.`}
             />
             <Modal
               handleModalClose={() => {
@@ -231,7 +231,7 @@ const AdminModulesPage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.primary}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showAddModuleSuccessModal}
               modalTitle="Success!"
               modalContent="Add module successful."
@@ -244,13 +244,13 @@ const AdminModulesPage = () => {
               actionButtonText="OK"
               actionButtonColor={theme.statusError}
               filled={true}
-              actionButtonClick={() => { }}
+              actionButtonClick={() => {}}
               show={showAddModuleFailureModal}
               modalTitle="Error!"
               modalContent={`${addModuleError ? addModuleError : ""}`}
             />
             <Modal
-              handleModalClose={() => { }}
+              handleModalClose={() => {}}
               modalType="empty"
               show={openAddNewModule}
             >

@@ -38,13 +38,14 @@ const BubbleSelect = (props) => {
   };
 
   const updateAllOptions = () => {
-
     if (allOptions.length !== 0) {
-      const filteredOptions = allOptions.filter(option => !selectedOptions.includes(option));
-      console.log("updating all options", filteredOptions)
+      const filteredOptions = allOptions.filter(
+        (option) => !selectedOptions.includes(option)
+      );
+      console.log("updating all options", filteredOptions);
       setAllOptions(filteredOptions);
     }
-  }
+  };
 
   useEffect(() => {
     updateAllOptions();
@@ -63,7 +64,11 @@ const BubbleSelect = (props) => {
         </option>
 
         {allOptions.map((option, index) => {
-          return <BubbleAddOption key={index} value={option}>{option}</BubbleAddOption>;
+          return (
+            <BubbleAddOption key={index} value={option}>
+              {option}
+            </BubbleAddOption>
+          );
         })}
       </BubbleAddSelect>
 
