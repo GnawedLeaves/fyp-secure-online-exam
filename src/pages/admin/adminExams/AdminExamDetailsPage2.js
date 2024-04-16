@@ -14,6 +14,10 @@ import {
   AdminExamDetailsTitle,
   AdminHomePage,
   AdminHomePageContainer,
+  EditTimeModalButtonContainer,
+  EditTimeModalContainer,
+  EditTimeModalInput,
+  EditTimeModalTitle,
 } from "../AdminPagesStyles";
 import Navbar from "../../../components/Navbar/Navbar";
 import Exambox from "../../../components/Exambox/Exambox";
@@ -30,7 +34,9 @@ import { collection, doc, getDoc, query, where } from "firebase/firestore";
 import {
   calculateDifferenceInHours,
   handleFirebaseDate,
+  handleFirebaseDateWithSeconds,
 } from "../../../backend/firebase/handleFirebaseDate";
+import Modal from "../../../components/Modal/Modal";
 
 const AdminExamDetailsPage2 = () => {
   const [examData, setExamData] = useState();
@@ -60,10 +66,53 @@ const AdminExamDetailsPage2 = () => {
     console.log("examData", examData);
   }, [examData]);
 
+  const [showEditStartTimeModal, setShowEditStartTimeModal] = useState(false);
+  const [showEditEndTimeModal, setShowEditEndTimeModal] = useState(true);
+  const [newStartTime, setNewStartTime] = useState("");
+  const [newEndTime, setNewEndTime] = useState("");
+
+  const handleNewStartTime = () => {};
+
   return (
     <ThemeProvider theme={theme}>
       <AdminHomePageContainer>
         <Navbar linksArray={adminNavbarItems} />
+        <Modal
+          handleModalClose={() => {
+            setShowEditStartTimeModal(false);
+          }}
+          actionButtonText="OK"
+          actionButtonColor={theme.primary}
+          filled={true}
+          modalType={"action2"}
+          show={showEditStartTimeModal}
+          actionButtonText={"Confirm"}
+          closingButtonText={"Cancel"}
+          actionButtonClick={() => {
+            handleNewStartTime();
+          }}
+        >
+          <EditTimeModalContainer>
+            <EditTimeModalTitle>Choose New Start Time</EditTimeModalTitle>
+            <EditTimeModalInput
+              type="datetime-local"
+              onChange={(e) => {
+                console.log(e.target.value);
+                setNewStartTime(e.target.value);
+              }}
+            />
+            {/* <EditTimeModalButtonContainer>
+              <Button filled={theme.primary}>Confirm</Button>
+              <Button
+                onClick={() => {
+                  setShowEditStartTimeModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </EditTimeModalButtonContainer> */}
+          </EditTimeModalContainer>
+        </Modal>
         <AdminExamDetailsPage>
           {examData ? (
             <>
@@ -90,11 +139,18 @@ const AdminExamDetailsPage2 = () => {
                   </div>
                 </AdminExamDetailsTimeField>
                 <AdminExamDetailsTimeField>
-                  Start Time: {handleFirebaseDate(examData?.startTime)}{" "}
-                  <Button>Edit</Button>
+                  Start Time:{" "}
+                  {handleFirebaseDateWithSeconds(examData?.startTime)}{" "}
+                  <Button
+                    onClick={() => {
+                      setShowEditStartTimeModal(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
                 </AdminExamDetailsTimeField>
                 <AdminExamDetailsTimeField>
-                  End Time: {handleFirebaseDate(examData?.endTime)}
+                  End Time: {handleFirebaseDateWithSeconds(examData?.endTime)}
                   <Button>Edit</Button>
                 </AdminExamDetailsTimeField>
               </AdminExamDetailsTimeContainer>
