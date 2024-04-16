@@ -78,24 +78,16 @@ const AdminExamsPage = () => {
   const changePage = () => {
     navigate("/adminexamdetails");
   };
-  const examList = [
-    {
-      title: "IE4171: Web Design",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "ongoing",
-    },
-    {
-      title: "IE3000: Algorithms",
-      examId: "00012",
-      studentsCount: 108,
-      timeLeft: "2h 15mins 10sec",
-      alertsCount: 0,
-      status: "ongoing",
-    },
-  ];
+
+  const [ongoingExams, setOngoingExams] = useState([]);
+  const [completedExams, setCompletedExams] = useState([]);
+  const [upcomingExams, setUpcomingExams] = useState([]);
+
+  const sortExams = () => {};
+
+  useEffect(() => {
+    sortExams();
+  }, [allExamsData]);
 
   const examList2 = [
     {
@@ -126,23 +118,6 @@ const AdminExamsPage = () => {
           <Navbar linksArray={adminNavbarItems} />
           <AdminNavbarContentContainer>
             <PageTitle>Exams</PageTitle>
-
-            <OngoingExamsContainer>
-              <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
-            </OngoingExamsContainer>
             <OngoingExamsContainer>
               <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
               <OngoingExams>

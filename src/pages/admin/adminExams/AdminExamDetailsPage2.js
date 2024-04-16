@@ -9,6 +9,7 @@ import {
   AdminExamDetailsPage,
   AdminExamDetailsPersonnel,
   AdminExamDetailsPersonnelBox,
+  AdminExamDetailsPersonnelBoxButtons,
   AdminExamDetailsStatusBall,
   AdminExamDetailsStatusDisplay,
   AdminExamDetailsSubtitle,
@@ -51,6 +52,7 @@ import {
 } from "../../../backend/firebase/handleFirebaseDate";
 import Modal from "../../../components/Modal/Modal";
 import { MdOutlineEdit } from "react-icons/md";
+import { AdminNewField } from "../adminPersonnel/AdminPersonnelStyles";
 
 const AdminExamDetailsPage2 = () => {
   const [examData, setExamData] = useState();
@@ -82,6 +84,8 @@ const AdminExamDetailsPage2 = () => {
 
   const [showEditStartTimeModal, setShowEditStartTimeModal] = useState(false);
   const [showEditEndTimeModal, setShowEditEndTimeModal] = useState(false);
+  const [showAddExamUserModal, setShowAddExamUserModal] = useState(false);
+  const [newUserInExam, setNewUserInExam] = useState("");
   const [newStartTime, setNewStartTime] = useState("");
   const [newEndTime, setNewEndTime] = useState("");
 
@@ -125,6 +129,49 @@ const AdminExamDetailsPage2 = () => {
     }
   };
 
+  const deleteStudentFromExam = async (index) => {
+    try {
+      const examRef = doc(db, "exams", examId);
+      const updatedStudentArray = [...examData.students];
+      updatedStudentArray.splice(index, 1);
+      await updateDoc(examRef, {
+        students: updatedStudentArray,
+      });
+      getExamById(examId);
+    } catch (e) {
+      console.log("Error removing student from exam", e);
+    }
+  };
+
+  const addStudentToExam = async () => {
+    try {
+      const examRef = doc(db, "exams", examId);
+      let updatedStudentArray = [];
+      if (examData.students?.length > 0) {
+        updatedStudentArray = [
+          {
+            id: newUserInExam,
+            status: "Not submitted yet",
+          },
+          ...examData.students,
+        ];
+      } else {
+        updatedStudentArray = [
+          {
+            id: newUserInExam,
+            status: "Not submitted yet",
+          },
+        ];
+      }
+      await updateDoc(examRef, {
+        students: [...updatedStudentArray],
+      });
+      getExamById(examId);
+    } catch (e) {
+      console.log("Error adding student to exam", e);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AdminHomePageContainer>
@@ -133,7 +180,6 @@ const AdminExamDetailsPage2 = () => {
           handleModalClose={() => {
             setShowEditStartTimeModal(false);
           }}
-          actionButtonText="OK"
           actionButtonColor={theme.primary}
           filled={true}
           modalType={"action2"}
@@ -161,7 +207,6 @@ const AdminExamDetailsPage2 = () => {
           handleModalClose={() => {
             setShowEditEndTimeModal(false);
           }}
-          actionButtonText="OK"
           actionButtonColor={theme.primary}
           filled={true}
           modalType={"action2"}
@@ -180,6 +225,33 @@ const AdminExamDetailsPage2 = () => {
               onChange={(e) => {
                 console.log(e.target.value);
                 setNewEndTime(e.target.value);
+              }}
+            />
+          </EditTimeModalContainer>
+        </Modal>
+
+        <Modal
+          handleModalClose={() => {
+            setShowAddExamUserModal(false);
+          }}
+          actionButtonColor={theme.primary}
+          filled={true}
+          modalType={"action2"}
+          show={showAddExamUserModal}
+          actionButtonText={"Add"}
+          closingButtonText={"Cancel"}
+          actionButtonClick={() => {
+            if (newUserInExam !== "") {
+              addStudentToExam();
+            }
+          }}
+        >
+          <EditTimeModalContainer>
+            <EditTimeModalTitle>Add Student To Exam</EditTimeModalTitle>
+            <AdminNewField
+              placeholder="Enter ID"
+              onChange={(e) => {
+                setNewUserInExam(e.target.value);
               }}
             />
           </EditTimeModalContainer>
@@ -242,17 +314,51 @@ const AdminExamDetailsPage2 = () => {
               <AdminExamDetailsDetailsContainer>
                 <AdminExamDetailsDetailsTitle>
                   <span style={{ fontSize: "1.7rem" }}>Participants</span>
-                  <Button filledColor={theme.text} filled="filled">
-                    Add User +
+
+                  <Button
+                    filledColor={theme.text}
+                    filled="filled"
+                    onClick={() => {
+                      setShowAddExamUserModal(true);
+                    }}
+                  >
+                    Add Student
                   </Button>
                 </AdminExamDetailsDetailsTitle>
 
                 <AdminExamDetailsPersonnel>
-                  {examData?.students?.map((student, index) => {
-                    <AdminExamDetailsPersonnelBox key={index}>
-                      {student.id} hi
-                    </AdminExamDetailsPersonnelBox>;
-                  })}
+                  {examData.students ? (
+                    examData?.students?.map((student, index) => {
+                      return (
+                        <AdminExamDetailsPersonnelBox key={index}>
+                          {student.id}
+                          <AdminExamDetailsPersonnelBoxButtons>
+                            <Button
+                              filledColor={theme.text}
+                              onClick={() => {
+                                navigate(`/admin/personnel/${student.id}`);
+                              }}
+                            >
+                              Details
+                            </Button>
+                            <Button
+                              filled={false}
+                              defaultColor={theme.statusError}
+                              filledColor={theme.statusError}
+                              onClick={() => {
+                                deleteStudentFromExam(index);
+                                console.log("index", index);
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </AdminExamDetailsPersonnelBoxButtons>
+                        </AdminExamDetailsPersonnelBox>
+                      );
+                    })
+                  ) : (
+                    <>No students in exam</>
+                  )}
                 </AdminExamDetailsPersonnel>
               </AdminExamDetailsDetailsContainer>
             </>

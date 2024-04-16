@@ -489,9 +489,19 @@ export const AdminExamDetailsPersonnel = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 2rem;
 `;
 export const AdminExamDetailsPersonnelBox = styled.div`
-  width: 5rem;
-  height: 5rem;
-  background: red;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  ${(props) => props.theme.boxShadow};
+  border: 1px solid ${(props) => props.theme.grey};
+  border-radius: 1rem;
+`;
+
+export const AdminExamDetailsPersonnelBoxButtons = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
