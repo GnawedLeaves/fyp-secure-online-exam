@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
-import { InstructorDashboardContainer, InstructorHomeContainer, NavItem, PageTitleInstructor, SetExamTableContainer, SetExamTableData, SetExamTableRow } from "./InstructorStyle";
+import { BackButton, CloseButton, CustomModalContainer,InstructorDashboardContainer, InstructorHomeContainer, NavItem, PageTitleInstructor, SetExamTableContainer, SetExamTableData, SetExamTableRow, XButton,ModalOverlay, } from "./InstructorStyle";
 import { instructorNavBarItems } from "./ContactAdmin";
 import Navbar from "../../components/Navbar/Navbar";
 import { db } from "../../backend/firebase/firebase";
@@ -20,67 +20,6 @@ import {
   where,
 } from "firebase/firestore";
 
-// Modal without npm install react-modal
-const CustomModalContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border: 1px solid #ccc;
-  width: 35%;
-  max-height: 80%;
-  border-radius: 20px;
-  overflow-y: auto;
-`;
-
-const XButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  text-decoration: underline
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px; 
-  transition: color 0.3s; 
-  &:hover {
-    color: red;
-`;
-
-const CloseButton = styled.button`
-  padding: 0.5rem 1rem;
-  border-radius: 10rem;
-  text-align: center;
-  border: 2px solid rgb(0, 154, 223);
-  color: rgb(255, 255, 255);
-  background: rgb(0, 154, 223);
-  transition: all 0.3s ease 0s;
-  cursor: pointer;
-  height: fit-content;
-  width: fit-content;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  margin-left: 35%;
-  &:hover {
-    background: rgb(0, 134, 203); 
-    border-color: rgb(0, 134, 203); 
-  }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
 const TableStyle = styled.table`
   width: 100%;
   border-collapse: collapse;
