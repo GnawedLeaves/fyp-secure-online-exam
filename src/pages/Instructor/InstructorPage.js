@@ -29,14 +29,6 @@ import {
   doc,
 } from "firebase/firestore";
 
-export const InstructorNotificationBox = styled.div`
-  background-color: #ffe066;
-  padding: 15px;
-  margin: 20px 0;
-  border: 1px solid #ccc;
-  width: 90%;
-`;
-
 const Modal = ({ isOpen, onClose, students }) => {
   if (!isOpen) return null;
 
