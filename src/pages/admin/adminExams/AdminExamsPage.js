@@ -79,6 +79,16 @@ const AdminExamsPage = () => {
     navigate("/adminexamdetails");
   };
 
+  const [ongoingExams, setOngoingExams] = useState([]);
+  const [completedExams, setCompletedExams] = useState([]);
+  const [upcomingExams, setUpcomingExams] = useState([]);
+
+  const sortExams = () => {};
+
+  useEffect(() => {
+    sortExams();
+  }, [allExamsData]);
+
   const examList2 = [
     {
       title: "IE4171: Web Design",

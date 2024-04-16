@@ -201,7 +201,7 @@ export const teacherRoutes = [
 function App() {
   return (
     <BrowserRouter>
-      <TempNavbar />
+      {/* <TempNavbar /> */}
 
       <Suspense>
         <Routes>

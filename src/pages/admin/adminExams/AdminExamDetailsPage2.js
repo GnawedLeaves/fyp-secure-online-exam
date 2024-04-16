@@ -322,7 +322,7 @@ const AdminExamDetailsPage2 = () => {
                       setShowAddExamUserModal(true);
                     }}
                   >
-                    Add User +
+                    Add Student
                   </Button>
                 </AdminExamDetailsDetailsTitle>
 
