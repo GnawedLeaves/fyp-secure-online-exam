@@ -108,19 +108,22 @@ const InstructorPage = () => {
         console.log("Course ID:", courseId);
   
         const usersQuerySnapshot = await getDocs(collection(db, "users"));
-        const studentsData = usersQuerySnapshot.docs.map((doc) => doc.data());
-  
-        // Filter students based on the selected course
-        const studentsInCourse = studentsData.filter((student) =>
-          student.modules && student.modules.includes(courseId)
+        const studentsData = usersQuerySnapshot.docs
+        .map((doc) => doc.data())
+        // Filter students based on the selected course and type "student"
+        .filter((student) =>
+          student.modules && 
+          student.modules.includes(courseId) &&
+          student.type === "student"
         );
-        console.log("Students in Course:", studentsInCourse);
-  
-        setStudents(studentsInCourse);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
+
+      console.log("Students in Course:", studentsData);
+
+      setStudents(studentsData);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
   
     fetchStudents();
   }, [selectedGroup]);
