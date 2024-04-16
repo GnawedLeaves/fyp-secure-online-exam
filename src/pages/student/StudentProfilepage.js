@@ -29,12 +29,11 @@ import {
   doc,
   getDoc
 } from "firebase/firestore";
-import { db } from "../../backend/firebase/firebase";
+import { auth, db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
 import { ref, getDownloadURL } from "firebase/storage";
 import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
 
 const StudentProfilepage = () => {
   //const studentId = "1221";
@@ -83,6 +82,16 @@ const StudentProfilepage = () => {
   useEffect(() => {
     console.log("Updated studentId:", studentId);
   }, [studentId]);
+
+  const [userEmail, setUserEmail] = useState(null);
+
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const email = currentUser.email;
+      setUserEmail(email);
+    }
+  }, [authId]);
 
   const profileDisplayRef = useRef(null);
   const [profile, setProfiles] = useState([]);
@@ -142,7 +151,7 @@ const StudentProfilepage = () => {
             <StudentProfileSection ref={profileDisplayRef}>
               <LeftContainer>
                 <DataSection><b>Name: </b>{profile.name}</DataSection>
-                <DataSection><b>Email Address: </b>{profile.email}</DataSection>
+                <DataSection><b>Email Address: </b>{userEmail}</DataSection>
                 <DataSection><b>Programme: </b>{profile.programme}</DataSection>
                 <DataSection><b>Year: </b>Year {profile.year}</DataSection>
                 <DataSection><b>Student Type: </b>{profile.studentType}</DataSection>
