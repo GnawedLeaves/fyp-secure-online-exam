@@ -9,7 +9,7 @@ export const LoginPageContainer = styled.div`
   justify-content: center;
 `;
 export const LoginPageLogoContainer = styled.div`
-  margin: 5rem 0;
+  margin: 2rem 0;
 `;
 export const LoginPageLogo = styled.img``;
 export const LoginPageTitle = styled.div`

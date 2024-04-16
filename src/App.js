@@ -37,7 +37,7 @@ import StudentExamDemoDetailpage from "./pages/student/StudentExamDemoDetailpage
 import AdminModulesPage from "./pages/admin/adminModules/AdminModulesPage";
 import AdminPersonnelDetailsPage from "./pages/admin/adminPersonnel/AdminPersonnelDetails";
 import StudentCardVerificationpage from "./pages/student/StudentCardVerificationpage";
-import AdminExamDetailsPage2 from "./pages/admin/adminExams/AdminExamDetailsPagee2";
+import AdminExamDetailsPage2 from "./pages/admin/adminExams/AdminExamDetailsPage2";
 
 export const adminRoutes = [
   {
@@ -67,7 +67,7 @@ export const adminRoutes = [
   },
   {
     title: "Admin Exam Details",
-    link: "/admin/exam/:examid",
+    link: "/admin/exams/:examid",
     element: <AdminExamDetailsPage2 />,
   },
   {
