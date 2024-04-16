@@ -21,6 +21,16 @@ export const handleFirebaseDate = (inputDate) => {
   return extractedDateString;
 };
 
+export const handleFirebaseDateWithSeconds = (inputDate) => {
+  const date = new Date(
+    inputDate.seconds * 1000 + inputDate.nanoseconds / 1000000
+  );
+  date.setHours(date.getHours() + 8);
+  const extractedDateString = date.toUTCString().slice(0, -4);
+
+  return extractedDateString;
+};
+
 //difference between timestamps
 export const calculateDifferenceInHours = (startTime, endTime) => {
   // Convert both times to seconds

@@ -376,7 +376,7 @@ export const AdminExamDetailsTimeContainer = styled.div`
   padding: 1rem;
   border-radius: 1rem;
   width: 30rem;
-  min-height: 20rem;
+  // min-height: 20rem;
   margin-top: 3rem;
   position: relative;
   z-index: 99;
@@ -433,4 +433,28 @@ export const AdminExamDetailsStatusBall = styled.div`
       opacity: 1;
     }
   }
+`;
+
+export const EditTimeModalTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const EditTimeModalContainer = styled.div`
+  // padding: 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const EditTimeModalInput = styled.input`
+  height: 2rem;
+`;
+
+export const EditTimeModalButtonContainer = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;

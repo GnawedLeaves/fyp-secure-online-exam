@@ -87,7 +87,6 @@ const Modal = (props) => {
                 style={{ cursor: "pointer" }}
               />
             </EmptyModalCloseContainer>
-
             {props.children}
           </EmptyModalContainer>
         );
@@ -96,6 +95,32 @@ const Modal = (props) => {
           <ModalContainer display={props.show} ref={modalRef}>
             <ModalTitle>{props.modalTitle}</ModalTitle>
             <ModalContent>{props.modalContent}</ModalContent>
+            <ModalButtonContainer>
+              <Button
+                filled={true}
+                filledColor={props.actionButtonColor}
+                defaultColor={props.actionButtonColor}
+                onClick={() => {
+                  closeModal();
+                  props.actionButtonClick();
+                }}
+              >
+                {props.actionButtonText ? props.actionButtonText : "OK"}
+              </Button>
+              <Button
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                {props.closingButtonText ? props.closingButtonText : "Cancel"}
+              </Button>
+            </ModalButtonContainer>
+          </ModalContainer>
+        );
+      case "action2":
+        return (
+          <ModalContainer display={props.show} ref={modalRef}>
+            <ModalContent>{props.children}</ModalContent>
             <ModalButtonContainer>
               <Button
                 filled={true}
