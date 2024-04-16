@@ -366,6 +366,9 @@ export const AdminExamDetailsDetailsContainer = styled.div`
   position: relative;
   z-index: 90;
   border-top: 3px solid ${(props) => props.theme.grey};
+  padding: 0 2rem;
+  box-sizing: border-box;
+  padding-top: 12rem;
 `;
 
 export const AdminExamDetailsTimeContainer = styled.div`
@@ -474,4 +477,21 @@ export const EditTimeModalTitleAndIcon = styled.div`
   gap: 0.5rem;
   font-size: 1.2rem;
   align-items: center;
+`;
+
+export const AdminExamDetailsDetailsTitle = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+export const AdminExamDetailsPersonnel = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+export const AdminExamDetailsPersonnelBox = styled.div`
+  width: 5rem;
+  height: 5rem;
+  background: red;
 `;

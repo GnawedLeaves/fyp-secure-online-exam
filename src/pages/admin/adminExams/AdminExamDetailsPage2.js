@@ -5,7 +5,10 @@ import { useState } from "react";
 import {
   AdminExamDetailsBackButtonContainer,
   AdminExamDetailsDetailsContainer,
+  AdminExamDetailsDetailsTitle,
   AdminExamDetailsPage,
+  AdminExamDetailsPersonnel,
+  AdminExamDetailsPersonnelBox,
   AdminExamDetailsStatusBall,
   AdminExamDetailsStatusDisplay,
   AdminExamDetailsSubtitle,
@@ -237,7 +240,20 @@ const AdminExamDetailsPage2 = () => {
               </AdminExamDetailsTimeContainer>
 
               <AdminExamDetailsDetailsContainer>
-                Details
+                <AdminExamDetailsDetailsTitle>
+                  <span style={{ fontSize: "1.7rem" }}>Participants</span>
+                  <Button filledColor={theme.text} filled="filled">
+                    Add User +
+                  </Button>
+                </AdminExamDetailsDetailsTitle>
+
+                <AdminExamDetailsPersonnel>
+                  {examData?.students?.map((student, index) => {
+                    <AdminExamDetailsPersonnelBox key={index}>
+                      {student.id} hi
+                    </AdminExamDetailsPersonnelBox>;
+                  })}
+                </AdminExamDetailsPersonnel>
               </AdminExamDetailsDetailsContainer>
             </>
           ) : (

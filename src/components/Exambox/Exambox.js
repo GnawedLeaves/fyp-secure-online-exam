@@ -35,7 +35,6 @@ const Exambox = (props) => {
           <ExamboxDetail>Exam ID: {props.examId}</ExamboxDetail>
           <ExamboxDetail>Students: {props.studentsCount}</ExamboxDetail>
           <ExamboxDetail>Time left: {props.timeLeft}</ExamboxDetail>
-          <ExamboxDetail>Alerts: {props.alertsCount}</ExamboxDetail>
           <ExamboxDetail>Status: {props.status}</ExamboxDetail>
 
           <ExamboxButtonContainer>
