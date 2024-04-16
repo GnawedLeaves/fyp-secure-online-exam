@@ -12,6 +12,7 @@ import {
   ModalTitle,
   ModalTitleContainer,
   ModalExamContainer,
+  ModalContainerExam,
 } from "./InstructorModalStyles";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
@@ -167,7 +168,7 @@ const InstructorModal = (props) => {
 
         case "successExam":
         return (
-          <ModalContainer display={props.show} ref={modalRef}>
+          <ModalContainerExam display={props.show} ref={modalRef}>
             <ModalSucess>{props.modalTitle}</ModalSucess>
             <ModalContent>{props.modalContent}</ModalContent>
             <ModalButtonContainer>
@@ -183,7 +184,7 @@ const InstructorModal = (props) => {
                 {props.actionButtonText ? props.actionButtonText : "OK"}
               </Button>
             </ModalButtonContainer>
-          </ModalContainer>
+          </ModalContainerExam>
         );
 
       default:
