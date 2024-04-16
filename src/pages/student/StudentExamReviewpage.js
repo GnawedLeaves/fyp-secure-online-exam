@@ -40,7 +40,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamReviewpage = () => {
   //const studentId = "1221";
-  const [studentId, setStudent] = useState();
+  const [studentId, setStudentId] = useState(null);
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
@@ -54,9 +54,8 @@ const StudentExamReviewpage = () => {
         ...doc.data(),
       }));
       console.log("userInfo", userInfo);
-      setStudent(userInfo[0]?.id);
-
-
+      setStudentId(userInfo[0]?.id);
+      
       return userInfo;
     } catch (error) {
       console.error("Error getting profiles:", error);
@@ -83,8 +82,10 @@ const StudentExamReviewpage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid", authId);
-
+  useEffect(() => {
+    console.log("Updated studentId:", studentId);
+  }, [studentId]);
+  
   const { examId } = useParams();
   const submissionDisplayRef = useRef(null);
   const [examReview, setExamReview] = useState([]);

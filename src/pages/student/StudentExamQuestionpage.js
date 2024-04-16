@@ -142,7 +142,7 @@ const StudentExamQuestionpage = () => {
       // Create a query to get all messages where recipientId matches
       const questionsQuery = query(questionsRef, 
         where("examId", "==", examId),
-        where("questionNumber", "==", questionNo)
+        where("questionNumber", "==", Number(questionNo))
       );
 
       // Get the documents based on the query

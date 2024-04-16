@@ -35,6 +35,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const usersRef = collection(db, "users");
+
 const examsRef = collection(db, "exams");
 
 export const getExam = async (studentId) => {
@@ -45,17 +46,16 @@ export const getExam = async (studentId) => {
       return [];
     }
 
-    // Create a query to get exams for the specific studentId
-    const examsQuery = query(usersRef,where("id","==", studentId));
+    const userDocRef = doc(db, 'users', studentId);
 
     // Get the documents based on the query
-    const querySnapshot = await getDocs(examsQuery);
+    const docSnapshot = await getDoc(userDocRef);
 
     // Extract the data from the documents
-    const examsData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const examsData = {
+      id: docSnapshot.id,
+      ...docSnapshot.data(),
+    };
 
     console.log("examData", examsData);
     return examsData;
@@ -79,7 +79,7 @@ export function formatDateString(date) {
 
 const StudentExampage = () => {
   //const studentId = "1221";
-  const [studentId, setStudent] = useState();
+  const [studentId, setStudentId] = useState(null);
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
@@ -93,9 +93,8 @@ const StudentExampage = () => {
         ...doc.data(),
       }));
       console.log("userInfo", userInfo);
-      setStudent(userInfo[0]?.id);
+      setStudentId(userInfo[0]?.id);
       
-
       return userInfo;
     } catch (error) {
       console.error("Error getting profiles:", error);
@@ -122,7 +121,9 @@ const StudentExampage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid",authId);
+  useEffect(() => {
+    console.log("Updated studentId:", studentId);
+  }, [studentId]);
 
   const examDisplayRef = useRef(null);
   const [pastExams, setPastExams] = useState([]);
@@ -141,12 +142,13 @@ const StudentExampage = () => {
       const presentExams = [];
       const futureExams = [];
   
-      if (!examsData || examsData.length === 0 || !examsData[0].exams) {
+      if (!examsData || examsData.length === 0 || !examsData.modules) {
         console.warn(`No exams found for student with ID ${studentId}.`);
         return { pastExams, presentExams, futureExams };
       }
   
-      const examIdArray = examsData[0].exams;
+      const examIdArray = examsData.modules;
+      console.log("examIdArray",examIdArray)
   
       for (const examId of examIdArray) {
         // Perform a query to get the document with matching courseId
@@ -202,6 +204,7 @@ const StudentExampage = () => {
 
   const fetchExamData = async () => {
     try {
+      console.log("id for exam", studentId);
       const examsData = await getExam(studentId);
       const { pastExams, presentExams, futureExams } = await getExamDetails(examsData, studentId);
 

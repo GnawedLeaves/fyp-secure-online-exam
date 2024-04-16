@@ -37,7 +37,7 @@ const StudentExamDemoDetailpage = () => {
   const courseId = examId;
   const examDisplayRef = useRef(null);
   const [exams, setExams] = useState([]);
-  const examsRef = collection(db, "exams");
+  const examsRef = collection(db, "demo_exam");
   const navigate = useNavigate();
   
 

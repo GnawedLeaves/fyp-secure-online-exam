@@ -58,7 +58,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentExamQuestionpage = () => {
   //const studentId = "1221";
-  const [studentId, setStudent] = useState();
+  const [studentId, setStudentId] = useState(null);
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
@@ -72,9 +72,8 @@ const StudentExamQuestionpage = () => {
         ...doc.data(),
       }));
       console.log("userInfo", userInfo);
-      setStudent(userInfo[0]?.id);
-
-
+      setStudentId(userInfo[0]?.id);
+      
       return userInfo;
     } catch (error) {
       console.error("Error getting profiles:", error);
@@ -101,11 +100,13 @@ const StudentExamQuestionpage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid", authId);
+  useEffect(() => {
+    console.log("Updated studentId:", studentId);
+  }, [studentId]);
 
   const { examId, questionNo } = useParams();
-  const examsRef = collection(db, "exams");
-  const questionsRef = collection(db, "questions");
+  const examsRef = collection(db, "demo_exam");
+  const questionsRef = collection(db, "demoQuestions");
   const [exams, setExams] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [answerArray, setAnswerArray] = useState([]);
@@ -142,7 +143,7 @@ const StudentExamQuestionpage = () => {
       // Create a query to get all messages where recipientId matches
       const questionsQuery = query(questionsRef,
         where("examId", "==", examId),
-        where("questionNumber", "==", questionNo)
+        where("questionNumber", "==", Number(questionNo)) // Convert string to number using Number()
       );
 
       // Get the documents based on the query
@@ -273,7 +274,7 @@ const StudentExamQuestionpage = () => {
 
   if (endTime) {
     endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-
+    
   } else {
     console.error('No valid exam data found or endTime is not defined.');
   }
