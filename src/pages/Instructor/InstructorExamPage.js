@@ -132,8 +132,8 @@ const InstructorExamPage = () => {
       options: ["", "", "", ""],
       correct_answer: "",
     };
-    setExamData([...examData, newQuestion]);
-    setNumQuestions(numQuestions + 1);
+    setExamData((prevExamData) => [...prevExamData, newQuestion]); // Use functional update to ensure the latest state is used
+    setNumQuestions((prevNumQuestions) => prevNumQuestions + 1); // Increment numQuestions by 1
   };
 
   const handleDeleteQuestion = (index) => {
@@ -380,7 +380,7 @@ const InstructorExamPage = () => {
     setEditMode(false);
   };
 
-  // Function to save changes made by the tutor
+  // Function to save changes or updates made by the tutor
   const saveChanges = async () => {
     try {
       // Update existing questions in Firebase
@@ -420,32 +420,28 @@ const InstructorExamPage = () => {
       const totalMCQ = questions.length;
       console.log("number of mcq: ", totalMCQ);
 
-      const examRef = doc(db, "exams", currentExamId);
-
-      const updatedSections =
-        examData.sections && examData.sections.length > 0
-          ? [...examData.sections]
-          : [];
-      if (updatedSections.length > 0) {
-        await updateDoc(examRef, {
-          totalMCQ: totalMCQ,
-          sections: [
-            {
-              ...updatedSections[0], // Update the first section if it exists
-              description: `MCQ (${totalMCQ}) questions`,
-            },
-          ],
-        });
-        console.log("Exam document updated successfully");
-      } else {
-        console.error(
-          "Error updating questions: Exam sections are undefined or empty."
-        );
-      }
+      const examsSnapshot = await getDocs(collection(db, "exams"));
+      examsSnapshot.forEach(async (doc) => {
+        const examData = doc.data();
+        if (examData.examId === currentExamId) {
+          const examRef = doc.ref;
+          await updateDoc(examRef, {
+            totalMCQ: totalMCQ,
+            sections: [
+              {
+                description: `MCQ (${totalMCQ}) questions`,
+                section: "A",
+                weightage: "100",
+              },
+            ],
+          });
+          console.log(`TotalMCQ updated for exam with ID ${doc.id}`);
+        }
+      });
 
       setEditMode(false); // Exit edit mode after saving changes
     } catch (error) {
-      console.error("Error updating questionsv 1:", error);
+      console.error("Error updating questions:", error);
     }
   };
 
@@ -563,10 +559,11 @@ const InstructorExamPage = () => {
     return questions.map((question, index) => (
       <div key={index}>
         <br></br>
-        <label>
+        <label style={{ marginRight: "10px", fontSize: "17px" }}>
           <strong>Question {index + 1}: </strong>
         </label>
         <input
+          style={{ fontSize: "17px" }}
           type="text"
           value={question.question}
           onChange={(e) => handleQuestionTextChange(index, e)}
@@ -590,10 +587,11 @@ const InstructorExamPage = () => {
           </div>
         </div>
         <br></br>
-        <label>
+        <label style={{ fontSize: "18px" }}>
           <strong>Correct Answer: </strong>
         </label>
         <select
+          style={{ fontSize: "17px" }}
           value={question.correct_answer}
           onChange={(e) => handleNewAnswer(index, e)}
         >
@@ -605,13 +603,13 @@ const InstructorExamPage = () => {
         </select>
         <button
           onClick={() => deleteQuestion(index)}
-          style={{ marginLeft: "10px" }}
+          style={{ marginLeft: "10px", fontSize: "17px" }}
         >
           Delete
         </button>
         <button
           onClick={() => handleAddNewQuestion(index)}
-          style={{ marginLeft: "10px" }}
+          style={{ marginLeft: "10px", fontSize: "17px" }}
         >
           Add
         </button>
@@ -625,8 +623,15 @@ const InstructorExamPage = () => {
       return (
         <>
           <br />
-          <button onClick={saveChanges}>Save</button>
-          <button onClick={toggleEditMode}>Cancel</button>
+          <button style={{ fontSize: "17px" }} onClick={saveChanges}>
+            Save
+          </button>
+          <button
+            style={{ marginLeft: "10px", fontSize: "17px" }}
+            onClick={toggleEditMode}
+          >
+            Cancel
+          </button>
         </>
       );
     } else {
@@ -676,7 +681,7 @@ const InstructorExamPage = () => {
               <br></br>
               <br></br>
               <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                Course ID:
+                Course ID:{" "}
               </label>
               <QuestionInput
                 type="text"
@@ -688,7 +693,7 @@ const InstructorExamPage = () => {
               ></QuestionInput>
               <br></br>
               <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                Exam Name:
+                Exam Name:{" "}
               </label>
               <QuestionInput
                 type="text"
@@ -704,7 +709,7 @@ const InstructorExamPage = () => {
                 <SetExamTableRow>
                   <SetExamTableData>
                     <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                      Exam Date:
+                      Exam Date:{" "}
                     </label>
                     <QuestionInput
                       type="date"
@@ -717,7 +722,7 @@ const InstructorExamPage = () => {
 
                   <SetExamTableData></SetExamTableData>
                   <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                    Exam Time:
+                    Exam Time:{" "}
                   </label>
                   <QuestionInput
                     type="time"
@@ -731,7 +736,7 @@ const InstructorExamPage = () => {
                 <SetExamTableRow>
                   <SetExamTableData>
                     <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                      Number of Questions:
+                      Number of Questions:{" "}
                     </label>
                     <QuestionInput
                       type="number"
@@ -744,7 +749,7 @@ const InstructorExamPage = () => {
 
                   <SetExamTableData></SetExamTableData>
                   <label style={{ fontSize: "16px", fontWeight: "bold" }}>
-                    Exam Duration:
+                    Exam Duration:{" "}
                   </label>
                   <QuestionInput
                     type="text"
@@ -766,7 +771,7 @@ const InstructorExamPage = () => {
               {examData.map((question, index) => (
                 <div key={index}>
                   <br></br>
-                  <label>
+                  <label style={{ fontSize: "18px", marginBottom: "5px" }}>
                     Question <strong>{index + 1}</strong>:
                   </label>
                   <input
@@ -775,6 +780,7 @@ const InstructorExamPage = () => {
                     value={question.question}
                     onChange={(e) => handleQuestionChange(index, e)}
                     required
+                    style={{ fontSize: "17px", marginBottom: "5px" }}
                   />
                   <button
                     onClick={() => handleDeleteQuestion(index)}
@@ -784,7 +790,7 @@ const InstructorExamPage = () => {
                   </button>
                   {question.options.map((option, optionIndex) => (
                     <div key={optionIndex}>
-                      <label>
+                      <label style={{ fontSize: "18px" }}>
                         Option {String.fromCharCode(65 + optionIndex)}:
                       </label>
                       <input
@@ -794,15 +800,17 @@ const InstructorExamPage = () => {
                           handleOptionChange(index, optionIndex, e)
                         }
                         required
+                        style={{ fontSize: "17px", marginBottom: "5px" }}
                       />
                     </div>
                   ))}
                   <br></br>
 
-                  <label>Correct Answer:</label>
+                  <label style={{ fontSize: "18px" }}>Correct Answer:</label>
                   <select
                     value={question.correct_answer}
                     onChange={(e) => handleCorrectAnswerChange(index, e)}
+                    style={{ fontSize: "18px" }}
                   >
                     {question.options.map((option, optionIndex) => (
                       <option key={optionIndex} value={option}>
