@@ -67,7 +67,8 @@ const ExamDetailModal = ({ isOpen, onClose, questions }) => (
                 ) : (
                   option
                 )}
-                {option === questionItem.correct_answer && " (Correct)"}
+                {option === questionItem.correct_answer && (
+                  <strong>(Correct)</strong>)}
                 </li>
             ))}
           </ul>
