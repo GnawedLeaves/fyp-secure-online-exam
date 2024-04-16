@@ -67,7 +67,7 @@ const AdminPersonnelDetailsPage = () => {
   const [signUpFailureModalTitle, setSignUpFailureModalTitle] = useState("");
   const [allModulesData, setAllModulesData] = useState([]);
   const [allModulesName, setAllModuleNames] = useState([]);
-  const [currentUserData, setCurrentUserData] = useState();
+  const [currentUserData, setCurrentUserData] = useState(null);
   const dropdownOptions = ["1", "2", "3", "4", "5", "6"];
   const dropdownOptionsStudentType = [
     "Undergraduate",
@@ -154,6 +154,8 @@ const AdminPersonnelDetailsPage = () => {
         const userData = docSnap.data();
         setCurrentUserData(userData);
       } else {
+        setCurrentUserData(null);
+
         console.log("user does not exist");
       }
     } catch (e) {
@@ -243,25 +245,27 @@ const AdminPersonnelDetailsPage = () => {
             modalContent={editFailureReason}
           />
           <AdminNewPersonnelAlignContainer>
-            <AdminPersonnelDetailsHeader>
-              Edit{" "}
-              {currentUserType.charAt(0).toUpperCase() +
-                currentUserType.slice(1)}
-              : <br />
-              {userId}
-            </AdminPersonnelDetailsHeader>
-            {currentUserType === "student" && (
+            {currentUserData !== null ? (
               <>
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Name</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserName}
-                    onChange={(e) => {
-                      setNewUserName(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
-                {/* <AdminNewFieldContainer>
+                <AdminPersonnelDetailsHeader>
+                  Edit{" "}
+                  {currentUserType.charAt(0).toUpperCase() +
+                    currentUserType.slice(1)}
+                  : <br />
+                  {userId}
+                </AdminPersonnelDetailsHeader>
+                {currentUserType === "student" && (
+                  <>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Name</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserName}
+                        onChange={(e) => {
+                          setNewUserName(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     value={currentUserData?.email}
@@ -270,94 +274,94 @@ const AdminPersonnelDetailsPage = () => {
                     }}
                   />
                 </AdminNewFieldContainer> */}
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Course</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserCourse}
-                    onChange={(e) => {
-                      setNewUserCourse(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Year</AdminNewFieldTitle>
-                  {newUserYear ? (
-                    <Dropdown
-                      defaultValue={newUserYear}
-                      onChange={(e) => {
-                        setNewUserYear(e);
-                      }}
-                      options={dropdownOptions}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Course</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserCourse}
+                        onChange={(e) => {
+                          setNewUserCourse(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Year</AdminNewFieldTitle>
+                      {newUserYear ? (
+                        <Dropdown
+                          defaultValue={newUserYear}
+                          onChange={(e) => {
+                            setNewUserYear(e);
+                          }}
+                          options={dropdownOptions}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Student Type</AdminNewFieldTitle>
-                  {newUserStudentType ? (
-                    <Dropdown
-                      defaultValue={newUserStudentType}
-                      onChange={(e) => {
-                        setNewUserStudentType(e);
-                      }}
-                      options={dropdownOptionsStudentType}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Student Type</AdminNewFieldTitle>
+                      {newUserStudentType ? (
+                        <Dropdown
+                          defaultValue={newUserStudentType}
+                          onChange={(e) => {
+                            setNewUserStudentType(e);
+                          }}
+                          options={dropdownOptionsStudentType}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Enrollment Year</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserEnrollmentYear}
-                    onChange={(e) => {
-                      setNewUserEnrollmentYear(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Enrollment Year</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserEnrollmentYear}
+                        onChange={(e) => {
+                          setNewUserEnrollmentYear(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Enrollment Status</AdminNewFieldTitle>
-                  {newUserEnrollmentStatus ? (
-                    <Dropdown
-                      defaultValue={newUserEnrollmentStatus}
-                      onChange={(e) => {
-                        setNewUserEnrollmentStatus(e);
-                      }}
-                      options={dropdownOptionsEnrollmentStatus}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Enrollment Status</AdminNewFieldTitle>
+                      {newUserEnrollmentStatus ? (
+                        <Dropdown
+                          defaultValue={newUserEnrollmentStatus}
+                          onChange={(e) => {
+                            setNewUserEnrollmentStatus(e);
+                          }}
+                          options={dropdownOptionsEnrollmentStatus}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>CGPA</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserCgpa}
-                    onChange={(e) => {
-                      setNewUserCgpa(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>CGPA</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserCgpa}
+                        onChange={(e) => {
+                          setNewUserCgpa(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                  {newUserModules ? (
-                    <BubbleSelect
-                      preSelectedOptions={newUserModules}
-                      allOptions={allModulesName}
-                      handleOptionsSelected={handleModulesSelected}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
+                      {newUserModules ? (
+                        <BubbleSelect
+                          preSelectedOptions={newUserModules}
+                          allOptions={allModulesName}
+                          handleOptionsSelected={handleModulesSelected}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </AdminNewFieldContainer>
 
-                {/* <AdminNewFieldContainer>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle> New Password</AdminNewFieldTitle>
                   <AdminNewField
                     type="password"
@@ -373,21 +377,21 @@ const AdminPersonnelDetailsPage = () => {
                     setNewUserPasswordConfirm(e)
                   }} />
                 </AdminNewFieldContainer> */}
-              </>
-            )}
-            {currentUserType === "teacher" && (
-              <>
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Name</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserName}
-                    onChange={(e) => {
-                      setNewUserName(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
+                  </>
+                )}
+                {currentUserType === "teacher" && (
+                  <>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Name</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserName}
+                        onChange={(e) => {
+                          setNewUserName(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
 
-                {/* <AdminNewFieldContainer>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
@@ -396,20 +400,20 @@ const AdminPersonnelDetailsPage = () => {
                   />
                 </AdminNewFieldContainer> */}
 
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
-                  {newUserModules ? (
-                    <BubbleSelect
-                      preSelectedOptions={newUserModules}
-                      allOptions={allModulesName}
-                      handleOptionsSelected={handleModulesSelected}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
+                      {newUserModules ? (
+                        <BubbleSelect
+                          preSelectedOptions={newUserModules}
+                          allOptions={allModulesName}
+                          handleOptionsSelected={handleModulesSelected}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </AdminNewFieldContainer>
 
-                {/* <AdminNewFieldContainer>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Password</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
@@ -417,11 +421,11 @@ const AdminPersonnelDetailsPage = () => {
                     }}
                   />
                 </AdminNewFieldContainer> */}
-              </>
-            )}
-            {currentUserType === "admin" && (
-              <>
-                {/* <AdminNewFieldContainer>
+                  </>
+                )}
+                {currentUserType === "admin" && (
+                  <>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Email</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
@@ -429,17 +433,17 @@ const AdminPersonnelDetailsPage = () => {
                     }}
                   />
                 </AdminNewFieldContainer> */}
-                <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Name</AdminNewFieldTitle>
-                  <AdminNewField
-                    value={newUserName}
-                    onChange={(e) => {
-                      setNewUserName(e.target.value);
-                    }}
-                  />
-                </AdminNewFieldContainer>
+                    <AdminNewFieldContainer>
+                      <AdminNewFieldTitle>Name</AdminNewFieldTitle>
+                      <AdminNewField
+                        value={newUserName}
+                        onChange={(e) => {
+                          setNewUserName(e.target.value);
+                        }}
+                      />
+                    </AdminNewFieldContainer>
 
-                {/* <AdminNewFieldContainer>
+                    {/* <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Password</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
@@ -447,36 +451,40 @@ const AdminPersonnelDetailsPage = () => {
                     }}
                   />
                 </AdminNewFieldContainer> */}
+                  </>
+                )}
+                <AdminNewButtonsContainer>
+                  <Button
+                    filled={true}
+                    filledColor={theme.primary}
+                    defaultColor={theme.primary}
+                    onClick={() => {
+                      updateUser();
+                    }}
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </AdminNewButtonsContainer>
+                {currentUserData?.dateEdited
+                  ? "Last Edited: " +
+                    handleFirebaseDate(currentUserData?.dateEdited)
+                  : ""}{" "}
+                <br />
+                {currentUserData?.dateCreated
+                  ? "Date Created: " +
+                    handleFirebaseDate(currentUserData?.dateCreated)
+                  : ""}{" "}
               </>
+            ) : (
+              <>User Not Found</>
             )}
-            <AdminNewButtonsContainer>
-              <Button
-                filled={true}
-                filledColor={theme.primary}
-                defaultColor={theme.primary}
-                onClick={() => {
-                  updateUser();
-                }}
-              >
-                Update
-              </Button>
-              <Button
-                onClick={() => {
-                  navigate(-1);
-                }}
-              >
-                Cancel
-              </Button>
-            </AdminNewButtonsContainer>
-            {currentUserData?.dateEdited
-              ? "Last Edited: " +
-                handleFirebaseDate(currentUserData?.dateEdited)
-              : ""}{" "}
-            <br />
-            {currentUserData?.dateCreated
-              ? "Date Created: " +
-                handleFirebaseDate(currentUserData?.dateCreated)
-              : ""}
           </AdminNewPersonnelAlignContainer>
         </AdminPersonnelDetailsContainer>
       </AdminPersonnelBigContainer>
