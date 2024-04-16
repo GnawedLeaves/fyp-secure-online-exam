@@ -42,7 +42,7 @@ const BubbleSelect = (props) => {
       const filteredOptions = allOptions.filter(
         (option) => !selectedOptions.includes(option)
       );
-      console.log("updating all options", filteredOptions);
+
       setAllOptions(filteredOptions);
     }
   };

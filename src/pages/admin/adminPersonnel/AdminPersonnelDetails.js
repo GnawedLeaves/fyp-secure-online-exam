@@ -93,6 +93,7 @@ const AdminPersonnelDetailsPage = () => {
         newUserCgpa !== currentUserData.cgpa
       ) {
         try {
+          await addUserToExamArray();
           await updateDoc(userRef, {
             name: newUserName,
             year: newUserYear,
@@ -180,6 +181,7 @@ const AdminPersonnelDetailsPage = () => {
         a.name.localeCompare(b.name)
       );
       setAllModulesData(sortedItems);
+      console.log("sortedItems", sortedItems);
     } catch (e) {
       console.log("Error getting module data: ", e);
     }
@@ -210,6 +212,84 @@ const AdminPersonnelDetailsPage = () => {
     const namesArray = allModulesData.map((obj) => obj.name);
     setAllModuleNames(namesArray);
   }, [allModulesData]);
+
+  const addUserToExamArray = async () => {
+    const querySnapshot = await getDocs(collection(db, "exams"));
+    const allExamsData = querySnapshot.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    });
+    allExamsData.forEach(async (exam) => {
+      //Check if the student exists, if student exists, check if updated modules dont have this exam, remove the student
+      if (!dateInPast(exam.startTime)) {
+        if (exam.students?.length > 0) {
+          const studentExists = exam.students.some(
+            (student) => student.id === userId
+          );
+          console.log(
+            "studentExists",
+            studentExists,
+            exam.courseId,
+            updatedUserModules,
+            exam.id
+          );
+          if (studentExists) {
+            if (!updatedUserModules.includes(exam.courseId)) {
+              let updatedStudentsArray = exam.students.filter(
+                (student) => student.id !== userId
+              );
+              const examRef = doc(db, "exams", exam.id);
+              try {
+                await updateDoc(examRef, { students: updatedStudentsArray });
+              } catch (e) {
+                console.log("Error removing student from exam: ", e);
+              }
+            }
+          } else {
+            //if student does not exist, and if the updated modules contain the exam, add the studen into the array
+            console.log("Student doesnt exist in exam");
+            if (updatedUserModules.includes(exam.courseId)) {
+              console.log("Time to add student into exam");
+              let updatedStudentsArray = [
+                ...exam.students,
+                {
+                  id: userId,
+                  status: "Not submitted yet",
+                },
+              ];
+              const examRef = doc(db, "exams", exam.id);
+              try {
+                await updateDoc(examRef, { students: updatedStudentsArray });
+              } catch (e) {
+                console.log("Error adding student to exam", e);
+              }
+            }
+          }
+        }
+      } else {
+        console.log("Exam in past not added");
+      }
+    });
+    console.log("allExamsData", allExamsData);
+  };
+
+  useEffect(() => {
+    console.log("updatedUserModules", updatedUserModules);
+  }, [updatedUserModules]);
+
+  const dateInPast = (date) => {
+    const startTimeMilliseconds =
+      date.seconds * 1000 + Math.floor(date.nanoseconds / 1000000);
+    const startTimeDate = new Date(startTimeMilliseconds);
+    const currentDate = new Date();
+    if (startTimeDate < currentDate) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const handleEditSuccessModalClose = () => {};
   return (
@@ -247,8 +327,15 @@ const AdminPersonnelDetailsPage = () => {
           <AdminNewPersonnelAlignContainer>
             {currentUserData !== null ? (
               <>
+                <button
+                  onClick={() => {
+                    addUserToExamArray();
+                  }}
+                >
+                  Update exams
+                </button>
                 <AdminPersonnelDetailsHeader>
-                  Edit{" "}
+                  Edit
                   {currentUserType.charAt(0).toUpperCase() +
                     currentUserType.slice(1)}
                   : <br />
