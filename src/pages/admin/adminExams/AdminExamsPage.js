@@ -152,7 +152,7 @@ const AdminExamsPage = () => {
                     title={exam.courseId}
                     examId={exam.id}
                     studentsCount={exam.students?.length}
-                    timeLeft={exam.calculatedDurationHours + "h"}
+                    timeLeft={exam.calculatedDurationHours}
                     alertsCount={exam.alertsCount}
                     status={exam.status}
                   />

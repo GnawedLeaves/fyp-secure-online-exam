@@ -42,7 +42,13 @@ const NewPersonnelPage = () => {
   const [newUserType, setNewUserType] = useState("student");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserYear, setNewUserYear] = useState("");
-  const [newUserCourse, setNewUserCourse] = useState("");
+  const [newUserProgramme, setNewUserProgramme] = useState("");
+
+  const [newUserStudentType, setNewUserStudentType] = useState("");
+  const [newUserEnrollmentYear, setNewUserEnrollmentYear] = useState("");
+  const [newUserEnrollmentStatus, setNewUserEnrollmentStatus] = useState("");
+  const [newUserCgpa, setNewUserCgpa] = useState("");
+
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserPasswordConfirm, setNewUserPasswordConfirm] = useState("");
   const [newUserModules, setNewUserModules] = useState([]);
@@ -54,15 +60,25 @@ const NewPersonnelPage = () => {
   const [signUpFailureModalTitle, setSignUpFailureModalTitle] = useState("");
 
   const dropdownOptions = ["1", "2", "3", "4", "5", "6"];
+  const dropdownOptionsStudentType = [
+    "Undergraduate",
+    "Postgraduate",
+    "Exchange Student",
+  ];
+  const dropdownOptionsEnrollmentStatus = ["Full Time", "Part Time"];
 
   const resetInputFields = () => {
     setNewUserName("");
     setNewUserType("student");
     setNewUserEmail("");
     setNewUserYear("");
-    setNewUserCourse("");
+    setNewUserProgramme("");
     setNewUserPassword("");
     setNewUserModules([]);
+    setNewUserStudentType("");
+    setNewUserEnrollmentYear("");
+    setNewUserEnrollmentStatus("");
+    setNewUserCgpa("");
   };
 
   //SIGN UP METHODS
@@ -89,10 +105,14 @@ const NewPersonnelPage = () => {
               authId: id,
               name: newUserName,
               year: newUserYear,
-              course: newUserCourse,
+              programme: newUserProgramme,
               modules: newUserModules,
               type: newUserType,
               dateCreated: timestamp,
+              studentType: newUserStudentType,
+              enrollmentYear: newUserEnrollmentYear,
+              enrollmentStatus: newUserEnrollmentStatus,
+              cgpa: newUserCgpa,
               // Add user data here
             }
           : newUserType === "teacher"
@@ -292,10 +312,10 @@ const NewPersonnelPage = () => {
                   />
                 </AdminNewFieldContainer>
                 <AdminNewFieldContainer>
-                  <AdminNewFieldTitle>Course</AdminNewFieldTitle>
+                  <AdminNewFieldTitle>Programme</AdminNewFieldTitle>
                   <AdminNewField
                     onChange={(e) => {
-                      setNewUserCourse(e.target.value);
+                      setNewUserProgramme(e.target.value);
                     }}
                   />
                 </AdminNewFieldContainer>
@@ -308,6 +328,45 @@ const NewPersonnelPage = () => {
                     options={dropdownOptions}
                   />
                 </AdminNewFieldContainer>
+
+                <AdminNewFieldContainer>
+                  <AdminNewFieldTitle>Student Type</AdminNewFieldTitle>
+                  <Dropdown
+                    onChange={(e) => {
+                      setNewUserStudentType(e);
+                    }}
+                    options={dropdownOptionsStudentType}
+                  />
+                </AdminNewFieldContainer>
+
+                <AdminNewFieldContainer>
+                  <AdminNewFieldTitle>Enrollment Year</AdminNewFieldTitle>
+                  <AdminNewField
+                    onChange={(e) => {
+                      setNewUserEnrollmentYear(e.target.value);
+                    }}
+                  />
+                </AdminNewFieldContainer>
+
+                <AdminNewFieldContainer>
+                  <AdminNewFieldTitle>Enrollment Status</AdminNewFieldTitle>
+                  <Dropdown
+                    onChange={(e) => {
+                      setNewUserEnrollmentStatus(e);
+                    }}
+                    options={dropdownOptionsEnrollmentStatus}
+                  />
+                </AdminNewFieldContainer>
+
+                <AdminNewFieldContainer>
+                  <AdminNewFieldTitle>CPGA</AdminNewFieldTitle>
+                  <AdminNewField
+                    onChange={(e) => {
+                      setNewUserCgpa(e.target.value);
+                    }}
+                  />
+                </AdminNewFieldContainer>
+
                 <AdminNewFieldContainer>
                   <AdminNewFieldTitle>Modules</AdminNewFieldTitle>
                   <BubbleSelect
