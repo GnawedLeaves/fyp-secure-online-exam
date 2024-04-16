@@ -26,6 +26,20 @@ export const ModalContainer = styled.dialog`
   padding: 2rem;
 `;
 
+export const ModalContainerExam = styled.dialog`
+  border-radius: 1rem;
+  width: 40rem;
+  max-height: 80vh;
+  border: none;
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds modal height */
+  display: ${(props) => (props.display ? "flex" : "none")};
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 2rem;
+`;
+
 export const ModalExamContainer = styled.dialog`
 max-height: calc(100vh - 200px);
 overflow-y: auto; 
