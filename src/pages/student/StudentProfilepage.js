@@ -26,6 +26,8 @@ import {
   onSnapshot,
   query,
   where,
+  doc,
+  getDoc
 } from "firebase/firestore";
 import { db } from "../../backend/firebase/firebase";
 import { storage } from '../../backend/firebase/firebase';
@@ -36,7 +38,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const StudentProfilepage = () => {
   //const studentId = "1221";
-  const [studentId, setStudent] = useState();
+  const [studentId, setStudentId] = useState(null);
   const [authId, setAuthId] = useState(null);
   const getUser = async (authId) => {
     try {
@@ -50,9 +52,8 @@ const StudentProfilepage = () => {
         ...doc.data(),
       }));
       console.log("userInfo", userInfo);
-      setStudent(userInfo[0]?.id);
-
-
+      setStudentId(userInfo[0]?.id);
+      
       return userInfo;
     } catch (error) {
       console.error("Error getting profiles:", error);
@@ -79,25 +80,25 @@ const StudentProfilepage = () => {
       getUser(authId);
     }
   }, [authId]); // Run effect when authId changes
-  console.log("authid", authId);
+  useEffect(() => {
+    console.log("Updated studentId:", studentId);
+  }, [studentId]);
 
   const profileDisplayRef = useRef(null);
   const [profile, setProfiles] = useState([]);
-  const profilesRef = collection(db, "users");
+  
 
   const getProfile = async (studentId) => {
     try {
-      // Create a query to get all messages where recipientId matches
-      const profilesQuery = query(profilesRef, where("id", "==", studentId));
+      const userDocRef = doc(db, 'users', studentId);
+      const docSnapshot = await getDoc(userDocRef);
 
-      // Get the documents based on the query
-      const querySnapshot = await getDocs(profilesQuery);
+    // Extract the data from the documents
+    const profilesData = {
+      id: docSnapshot.id,
+      ...docSnapshot.data(),
+    };
 
-      // Extract the data from the documents
-      const profilesData = querySnapshot.docs.map((doc) => ({
-        id: doc.Id,
-        ...doc.data(),
-      }));
       console.log("profileData", profilesData);
       setProfiles(profilesData);
 
@@ -131,18 +132,6 @@ const StudentProfilepage = () => {
     getImageUrl(`student_${studentId}.jpg`);
   }, [studentId]);
 
-  const dummy_profile = [
-    {
-      name: "Wei jie",
-      matric: "U2020520F",
-      programme: "Information Engineering & Media",
-      year: "year 4",
-      studentType: "undergraduate",
-      enrollment: "enrolled",
-      enrollmentYear: "2020",
-      cgpa: 4.5,
-    },
-  ];
   return (
     <ThemeProvider theme={theme}>
       <StudentHomePageContainer>
@@ -152,15 +141,14 @@ const StudentProfilepage = () => {
           <ProfileContainer>
             <StudentProfileSection ref={profileDisplayRef}>
               <LeftContainer>
-                <DataSection><b>Name: </b>{profile[0]?.name}</DataSection>
-                <DataSection><b>Matric Card: </b>{profile[0]?.matric}</DataSection>
-                <DataSection><b>Email Address: </b>{profile[0]?.email}</DataSection>
-                <DataSection><b>Programme: </b>{profile[0]?.programme}</DataSection>
-                <DataSection><b>Year: </b>Year {profile[0]?.year}</DataSection>
-                <DataSection><b>Student Type: </b>{profile[0]?.studentType}</DataSection>
-                <DataSection><b>Enrollment Status: </b>{profile[0]?.enrollmentStatus}</DataSection>
-                <DataSection><b>Enrollment Year: </b>{profile[0]?.enrollmentYear}</DataSection>
-                <DataSection><b>CGPA: </b>{profile[0]?.cgpa.toFixed(1)}</DataSection>
+                <DataSection><b>Name: </b>{profile.name}</DataSection>
+                <DataSection><b>Email Address: </b>{profile.email}</DataSection>
+                <DataSection><b>Programme: </b>{profile.programme}</DataSection>
+                <DataSection><b>Year: </b>Year {profile.year}</DataSection>
+                <DataSection><b>Student Type: </b>{profile.studentType}</DataSection>
+                <DataSection><b>Enrollment Status: </b>{profile.enrollmentStatus}</DataSection>
+                <DataSection><b>Enrollment Year: </b>{profile.enrollmentYear}</DataSection>
+                <DataSection><b>CGPA: </b>{profile.cgpa}</DataSection>
               </LeftContainer>
               <RightContainer>
                 <SampleImage src={imageUrl} alt="Sample Image of Face Registration" />
