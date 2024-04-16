@@ -32,7 +32,6 @@ const Navbar = (props) => {
   const navigate = useNavigate();
 
   const changePage = (path) => {
-
     navigate(`/${path}`);
   };
   const currentURL = window.location.href;
@@ -42,8 +41,6 @@ const Navbar = (props) => {
   const [userLoggedIn, setUserLoggedIn] = useState();
   const [userData, setUserData] = useState();
 
-
-
   const auth = getAuth();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -51,44 +48,46 @@ const Navbar = (props) => {
         const uid = user.uid;
         setLoggedInUserId(uid);
         setUserLoggedIn(true);
-      }
-
-
-      else {
+      } else {
         setUserLoggedIn(false);
         //TODO: uncomment this when project finished
         // navigate("/login");
       }
     });
-
-
   }, []);
 
   useEffect(() => {
     //check user is in the correct domain
-    if (userData?.type === "student" && (window.location.pathname.includes('admin') || window.location.pathname.includes('Instructor'))) {
+    if (
+      userData?.type === "student" &&
+      (window.location.pathname.includes("admin") ||
+        window.location.pathname.includes("Instructor"))
+    ) {
       navigate("/student/home");
-
-    }
-    else if (userData?.type === "teacher" && (window.location.pathname.includes('student') || window.location.pathname.includes('admin'))) {
+    } else if (
+      userData?.type === "teacher" &&
+      (window.location.pathname.includes("student") ||
+        window.location.pathname.includes("admin"))
+    ) {
       navigate("/Instructor/InstructorPage");
-
     }
-  }, [userData])
+  }, [userData]);
 
   useEffect(() => {
     if (loggedInUserId !== "") {
-      getUserData(loggedInUserId)
+      getUserData(loggedInUserId);
     }
-  }, [loggedInUserId])
+  }, [loggedInUserId]);
 
   const getUserData = async (loggedInUserId) => {
     const userRef = collection(db, "users");
-    const querySnapshot = await getDocs(query(userRef, where("authId", "==", loggedInUserId)))
+    const querySnapshot = await getDocs(
+      query(userRef, where("authId", "==", loggedInUserId))
+    );
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
-    setUserData(userData)
-  }
+    setUserData(userData);
+  };
 
   const handleSignOut = () => {
     signOut(auth)
@@ -102,8 +101,7 @@ const Navbar = (props) => {
   };
 
   //Function to check user domain + change page if they are in the wrong domain
-  const checkUserDomain = () => {
-  }
+  const checkUserDomain = () => {};
 
   return (
     <ThemeProvider theme={theme}>
@@ -138,7 +136,8 @@ const Navbar = (props) => {
         </NavbarContentContainer>
         <NavbarProfileContainer>
           <NavbarProfile>
-            {userLoggedIn ? userData?.name : "Not Logged In"} <br />{userData?.course ? "(" + userData.course + ")" : ""}
+            {userLoggedIn ? userData?.name : "Not Logged In"} <br />
+            {userData?.programme ? "(" + userData.programme + ")" : ""}
           </NavbarProfile>
           <NavbarLogoutButton
             onClick={() => {

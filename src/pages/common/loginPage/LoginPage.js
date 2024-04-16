@@ -38,7 +38,7 @@ const Loginpage = () => {
         navigate("/Instructor/InstructorPage");
         break;
       case "Admin":
-        navigate("/admin/home");
+        navigate("/admin/exams");
         break;
     }
   };
@@ -79,7 +79,7 @@ const Loginpage = () => {
           navigate("/Instructor/InstructorPage");
         } else if (userType === "admin") {
           setLoggedInUserData(null);
-          navigate("/admin/home");
+          navigate("/admin/exams");
         }
       } else {
         //Not signed in
