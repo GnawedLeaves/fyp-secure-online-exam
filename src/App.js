@@ -40,13 +40,13 @@ import StudentCardVerificationpage from "./pages/student/StudentCardVerification
 import AdminExamDetailsPage2 from "./pages/admin/adminExams/AdminExamDetailsPage2";
 
 export const adminRoutes = [
+  // {
+  //   title: "Admin Home",
+  //   link: "/admin/home",
+  //   element: <AdminHomePage />,
+  // },
   {
-    title: "Admin Home",
-    link: "/admin/home",
-    element: <AdminHomePage />,
-  },
-  {
-    title: "Admin Settings",
+    title: "Admin Modules",
     link: "/admin/modules",
     element: <AdminModulesPage />,
   },
@@ -79,6 +79,11 @@ export const adminRoutes = [
     title: "Admin New Personnel",
     link: "/admin/personnel/newuser",
     element: <NewPersonnelPage />,
+  },
+  {
+    title: "Admin Exams",
+    link: "/admin/*",
+    element: <AdminExamsPage />,
   },
 ];
 

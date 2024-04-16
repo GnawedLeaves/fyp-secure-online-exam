@@ -16,8 +16,10 @@ import {
   AdminHomePageContainer,
   EditTimeModalButtonContainer,
   EditTimeModalContainer,
+  EditTimeModalEditIconContainer,
   EditTimeModalInput,
   EditTimeModalTitle,
+  EditTimeModalTitleAndIcon,
 } from "../AdminPagesStyles";
 import Navbar from "../../../components/Navbar/Navbar";
 import Exambox from "../../../components/Exambox/Exambox";
@@ -30,13 +32,22 @@ import OverviewCheatingBox from "../../../components/admin/OverviewCheatingBox/O
 import { GoArrowRight } from "react-icons/go";
 import ShortcutBox from "../../../components/admin/ShortcutBox/ShortcutBox";
 import { db } from "../../../backend/firebase/firebase";
-import { collection, doc, getDoc, query, where } from "firebase/firestore";
+import {
+  Timestamp,
+  collection,
+  doc,
+  getDoc,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import {
   calculateDifferenceInHours,
   handleFirebaseDate,
   handleFirebaseDateWithSeconds,
 } from "../../../backend/firebase/handleFirebaseDate";
 import Modal from "../../../components/Modal/Modal";
+import { MdOutlineEdit } from "react-icons/md";
 
 const AdminExamDetailsPage2 = () => {
   const [examData, setExamData] = useState();
@@ -67,11 +78,49 @@ const AdminExamDetailsPage2 = () => {
   }, [examData]);
 
   const [showEditStartTimeModal, setShowEditStartTimeModal] = useState(false);
-  const [showEditEndTimeModal, setShowEditEndTimeModal] = useState(true);
+  const [showEditEndTimeModal, setShowEditEndTimeModal] = useState(false);
   const [newStartTime, setNewStartTime] = useState("");
   const [newEndTime, setNewEndTime] = useState("");
 
-  const handleNewStartTime = () => {};
+  const handleNewStartTime = () => {
+    if (newStartTime !== "") {
+      const date = new Date(newStartTime); // Convert date-time string to Date object
+      const timestamp = Timestamp.fromDate(date);
+      updateExamStartTime(timestamp);
+    }
+  };
+  const handleNewEndTime = () => {
+    if (newEndTime !== "") {
+      const date = new Date(newEndTime); // Convert date-time string to Date object
+      const timestamp = Timestamp.fromDate(date);
+      updateExamEndTime(timestamp);
+    }
+  };
+
+  const updateExamStartTime = async (newStartTime) => {
+    try {
+      const examRef = doc(db, "exams", examId);
+      await updateDoc(examRef, {
+        startTime: newStartTime,
+      });
+      getExamById(examId);
+      setNewStartTime("");
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
+  const updateExamEndTime = async (newEndTime) => {
+    try {
+      const examRef = doc(db, "exams", examId);
+      await updateDoc(examRef, {
+        endTime: newEndTime,
+      });
+      getExamById(examId);
+      setNewEndTime("");
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -96,23 +145,43 @@ const AdminExamDetailsPage2 = () => {
             <EditTimeModalTitle>Choose New Start Time</EditTimeModalTitle>
             <EditTimeModalInput
               type="datetime-local"
+              value={newStartTime}
               onChange={(e) => {
                 console.log(e.target.value);
                 setNewStartTime(e.target.value);
               }}
             />
-            {/* <EditTimeModalButtonContainer>
-              <Button filled={theme.primary}>Confirm</Button>
-              <Button
-                onClick={() => {
-                  setShowEditStartTimeModal(false);
-                }}
-              >
-                Cancel
-              </Button>
-            </EditTimeModalButtonContainer> */}
           </EditTimeModalContainer>
         </Modal>
+
+        <Modal
+          handleModalClose={() => {
+            setShowEditEndTimeModal(false);
+          }}
+          actionButtonText="OK"
+          actionButtonColor={theme.primary}
+          filled={true}
+          modalType={"action2"}
+          show={showEditEndTimeModal}
+          actionButtonText={"Confirm"}
+          closingButtonText={"Cancel"}
+          actionButtonClick={() => {
+            handleNewEndTime();
+          }}
+        >
+          <EditTimeModalContainer>
+            <EditTimeModalTitle>Choose New End Time</EditTimeModalTitle>
+            <EditTimeModalInput
+              type="datetime-local"
+              value={newEndTime}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setNewEndTime(e.target.value);
+              }}
+            />
+          </EditTimeModalContainer>
+        </Modal>
+
         <AdminExamDetailsPage>
           {examData ? (
             <>
@@ -131,7 +200,7 @@ const AdminExamDetailsPage2 = () => {
               <AdminExamDetailsTimeContainer>
                 <AdminExamDetailsTimeField>
                   Time Left:
-                  <div style={{ fontSize: "2rem", fontWeight: "bold" }}>
+                  <div style={{ fontSize: "1.7rem", fontWeight: "bold" }}>
                     {calculateDifferenceInHours(
                       examData.startTime,
                       examData.endTime
@@ -139,19 +208,31 @@ const AdminExamDetailsPage2 = () => {
                   </div>
                 </AdminExamDetailsTimeField>
                 <AdminExamDetailsTimeField>
-                  Start Time:{" "}
+                  <EditTimeModalTitleAndIcon>
+                    Start Time
+                    <EditTimeModalEditIconContainer
+                      onClick={() => {
+                        setShowEditStartTimeModal(true);
+                      }}
+                    >
+                      <MdOutlineEdit size={"1.5rem"} />
+                    </EditTimeModalEditIconContainer>
+                  </EditTimeModalTitleAndIcon>
                   {handleFirebaseDateWithSeconds(examData?.startTime)}{" "}
-                  <Button
-                    onClick={() => {
-                      setShowEditStartTimeModal(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
                 </AdminExamDetailsTimeField>
+
                 <AdminExamDetailsTimeField>
-                  End Time: {handleFirebaseDateWithSeconds(examData?.endTime)}
-                  <Button>Edit</Button>
+                  <EditTimeModalTitleAndIcon>
+                    End Time
+                    <EditTimeModalEditIconContainer
+                      onClick={() => {
+                        setShowEditEndTimeModal(true);
+                      }}
+                    >
+                      <MdOutlineEdit size={"1.5rem"} />
+                    </EditTimeModalEditIconContainer>
+                  </EditTimeModalTitleAndIcon>
+                  {handleFirebaseDateWithSeconds(examData?.endTime)}{" "}
                 </AdminExamDetailsTimeField>
               </AdminExamDetailsTimeContainer>
 

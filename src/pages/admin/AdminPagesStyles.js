@@ -373,7 +373,7 @@ export const AdminExamDetailsTimeContainer = styled.div`
   ${(props) => props.theme.boxShadow};
   border-top: 1px solid ${(props) => props.theme.grey};
   box-sizing: border-box;
-  padding: 1rem;
+  padding: 2rem 1rem;
   border-radius: 1rem;
   width: 30rem;
   // min-height: 20rem;
@@ -389,6 +389,10 @@ export const AdminExamDetailsTimeContainer = styled.div`
 export const AdminExamDetailsTimeField = styled.div`
   font-size: 1.1rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.4rem;
 `;
 
 export const AdminExamDetailsPage = styled.div`
@@ -450,6 +454,8 @@ export const EditTimeModalContainer = styled.div`
 
 export const EditTimeModalInput = styled.input`
   height: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
 `;
 
 export const EditTimeModalButtonContainer = styled.div`
@@ -457,4 +463,15 @@ export const EditTimeModalButtonContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+`;
+
+export const EditTimeModalEditIconContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+`;
+export const EditTimeModalTitleAndIcon = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  align-items: center;
 `;
