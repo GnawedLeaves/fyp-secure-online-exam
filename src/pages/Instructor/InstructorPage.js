@@ -3,12 +3,20 @@ import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../../theme";
 import {
+  CloseButton,
+  CustomModalContainer,
+  GroupTitle,
   InstructorDashboardContainer,
+  InstructorGroupBox,
   InstructorHomeContainer,
   InstructorNavBarContainer,
+  InstructorNotificationBox,
+  InstructorNotificationMessage,
+  ModalOverlay,
   NavContainer,
   NavItem,
   PageTitleInstructor,
+  StudentCount,
 } from "./InstructorStyle";
 import { instructorNavBarItems } from "./ContactAdmin";
 import Navbar from "../../components/Navbar/Navbar";
@@ -29,29 +37,25 @@ export const InstructorNotificationBox = styled.div`
   width: 90%;
 `;
 
-export const InstructorNotificationMessage = styled.div `
-  margin: 0;
-  font-size: 16px;
-`;
-const InstructorGroupBox = styled.div`
-  background-color: #e6f7ff;
-  padding: 15px;
-  margin: 20px 0;
-  border: 1px solid #ccc;
-  width: 90%;
-`;
+const Modal = ({ isOpen, onClose, students }) => {
+  if (!isOpen) return null;
 
-const GroupTitle = styled.h3`
-  margin: 0;
-`;
-
-const StudentCount = styled.p`
-  margin: 5px 0;
-  font-weight: bold;
-  cursor: pointer;
-  color: blue;
-`;
-
+  return (
+    <ModalOverlay onClick={onClose}>
+      <CustomModalContainer>
+        <h2 style={{ textAlign: 'center' }}>Students in Group</h2>
+        <ol>
+          {students.map((student, index) => (
+            <li key={index} style={{ fontFamily: 'Arial, sans-serif', fontSize: '24px' }}>{student.name}</li>
+          ))}
+        </ol>
+        <CloseButton onClick={onClose}>
+        Closed &times; 
+      </CloseButton>
+      </CustomModalContainer>
+    </ModalOverlay>
+  );
+};
 
 const InstructorPage = () => {
   const [activeContent, setActiveContent] = useState("examCalendar");
@@ -59,6 +63,7 @@ const InstructorPage = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [students, setStudents] = useState([]);
   const [studentsCounts, setStudentsCounts] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   //get the exams courseId and courseName
   useEffect(() => {
@@ -128,6 +133,10 @@ const InstructorPage = () => {
     fetchStudents();
   }, [selectedGroup]);
 
+  const handleStudentCountClick = (groupId) => {
+    setSelectedGroup(groupId);
+    setIsModalOpen(true);
+  };
   
   return (
     <ThemeProvider theme={theme}>
@@ -169,7 +178,7 @@ const InstructorPage = () => {
                 {tutorialGroups.map((group) => (
                 <InstructorGroupBox key={group.id}>
                   <GroupTitle>{group.name}</GroupTitle>
-                  <StudentCount onClick={() => setSelectedGroup(group.id)}>
+                  <StudentCount onClick={() => handleStudentCountClick(group.id)}>
                   Total Students: {studentsCounts[group.id] || 0}
                   </StudentCount>
                 </InstructorGroupBox>
@@ -187,7 +196,11 @@ const InstructorPage = () => {
                 </InstructorNotificationBox>
               </div>
             )}
-
+            <Modal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              students={students}
+            />
         </InstructorDashboardContainer>
 
       </InstructorHomeContainer>
