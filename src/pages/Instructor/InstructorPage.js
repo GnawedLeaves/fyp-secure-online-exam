@@ -29,6 +29,21 @@ import {
   doc,
 } from "firebase/firestore";
 
+const thStyle = {
+  textAlign: 'left',
+  padding: '10px 0',
+
+};
+
+const trStyle = {
+  borderBottom: '1px solid #ccc',
+};
+
+const tdStyle = {
+  textAlign: 'left',
+  padding: '10px 0',
+};
+
 const Modal = ({ isOpen, onClose, students }) => {
   if (!isOpen) return null;
 
@@ -36,14 +51,30 @@ const Modal = ({ isOpen, onClose, students }) => {
     <ModalOverlay onClick={onClose}>
       <CustomModalContainer>
         <h2 style={{ textAlign: 'center' }}>Students in Group</h2>
-        <ol>
-          {students.map((student, index) => (
-            <li key={index} style={{ fontFamily: 'Arial, sans-serif', fontSize: '24px' }}>{student.name}</li>
-          ))}
-        </ol>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '18px' }}>
+          <thead>
+            <tr style={{ borderBottom: '2px solid #333' }}>
+              <th style={thStyle}>No.</th>
+              <th style={thStyle}>Student Name</th>
+              <th style={thStyle}>Student Year</th>
+              <th style={thStyle}>Programme</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((student, index) => (
+               <tr key={student.authId} style={{ borderBottom: '1px solid #ccc' }}>
+               <td style={{ ...tdStyle, width: '10%' }}>{index + 1}</td>
+               <td style={{ ...tdStyle, width: '45%' }}>{student.name}</td>
+               <td style={{ ...tdStyle, width: '20%' }}>{student.programme}</td>
+              <td style={{ ...tdStyle, width: '20%' }}>{student.year}</td>
+             </tr>
+            ))}
+          </tbody>
+        </table>
+        <br></br>
         <CloseButton onClick={onClose}>
-        Closed &times; 
-      </CloseButton>
+          Closed &times; 
+        </CloseButton>
       </CustomModalContainer>
     </ModalOverlay>
   );
