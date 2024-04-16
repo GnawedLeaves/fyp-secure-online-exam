@@ -121,8 +121,8 @@ const InstructorExamPage =() => {
 
   const handleAddQuestion = () => {
   const newQuestion = { question: '', options: ['', '', '', ''], correct_answer: '' };
-  setExamData([...examData, newQuestion]);
-  setNumQuestions(numQuestions + 1); 
+  setExamData(prevExamData => [...prevExamData, newQuestion]); // Use functional update to ensure the latest state is used
+  setNumQuestions(prevNumQuestions => prevNumQuestions + 1); // Increment numQuestions by 1
   };
 
   const handleDeleteQuestion = (index) => {
@@ -356,7 +356,7 @@ const InstructorExamPage =() => {
     setEditMode(false);
   };
 
-  // Function to save changes made by the tutor
+  // Function to save changes or updates made by the tutor
 const saveChanges = async () => {
   try {
     // Update existing questions in Firebase
@@ -388,27 +388,31 @@ const saveChanges = async () => {
     const totalMCQ = questions.length;
     console.log('number of mcq: ', totalMCQ)
 
-    const examRef = doc(db, 'exams', currentExamId);
-
-    const updatedSections = examData.sections && examData.sections.length > 0 ? [...examData.sections] : [];
-    if (updatedSections.length > 0) {
-      await updateDoc(examRef, {
-        totalMCQ: totalMCQ,
-        sections: [{
-          ...updatedSections[0], // Update the first section if it exists
-          description: `MCQ (${totalMCQ}) questions`
-        }]
+  const examsSnapshot = await getDocs(collection(db, 'exams'));
+      examsSnapshot.forEach(async (doc) => {
+        const examData = doc.data();
+        if (examData.examId === currentExamId) {
+          const examRef = doc.ref;
+          await updateDoc(examRef, { 
+            totalMCQ: totalMCQ,
+            sections: [
+              {
+                description: `MCQ (${totalMCQ}) questions`,
+                section: 'A',
+                weightage: '100',
+              }
+            ]
+          });
+          console.log(`TotalMCQ updated for exam with ID ${doc.id}`);
+        }
       });
-      console.log('Exam document updated successfully');
-    } else {
-      console.error('Error updating questions: Exam sections are undefined or empty.');
+      
+      setEditMode(false); // Exit edit mode after saving changes
+    } catch (error) {
+      console.error('Error updating questions:', error);
     }
+  };
 
-    setEditMode(false); // Exit edit mode after saving changes
-  } catch (error) {
-    console.error('Error updating questionsv 1:', error);
-  }
-};
 
 useEffect(() => {
   const unsubscribe = onSnapshot(collection(db, 'exams'), (snapshot) => {
@@ -517,8 +521,9 @@ const renderEditableFields = () => {
   return questions.map((question, index) => (
     <div key={index}>
        <br></br>
-       <label><strong>Question {index + 1}: </strong></label>
+       <label style={{ marginRight: '10px', fontSize: '17px' }}><strong>Question {index + 1}: </strong></label>
       <input
+        style={{ fontSize: '17px' }}
         type="text"
         value={question.question}
         onChange={(e) => handleQuestionTextChange(index, e)}
@@ -541,16 +546,16 @@ const renderEditableFields = () => {
         </div>
       </div>
       <br></br>
-      <label><strong>Correct Answer: </strong></label>
-      <select value={question.correct_answer} onChange={(e) => handleNewAnswer(index, e)}>
+      <label style={{ fontSize: '18px' }}><strong>Correct Answer: </strong></label>
+      <select style={{ fontSize: '17px' }} value={question.correct_answer} onChange={(e) => handleNewAnswer(index, e)}>
         {question.options.map((option, optionIndex) => (
           <option key={optionIndex} value={option}>{option}</option>
         ))}
       </select>
       <button onClick={() => deleteQuestion(index)}
-      style={{ marginLeft: '10px' }}>Delete</button>
+      style={{ marginLeft: '10px', fontSize: '17px' }}>Delete</button>
       <button onClick={() => handleAddNewQuestion(index)}
-      style={{ marginLeft: '10px' }}>Add</button>
+      style={{ marginLeft: '10px', fontSize: '17px' }}>Add</button>
       <br></br>
     </div>
   ));
@@ -561,8 +566,8 @@ const renderActionButtons = () => {
     return (
       <>
         <br />
-        <button onClick={saveChanges}>Save</button>
-        <button onClick={toggleEditMode}>Cancel</button>
+        <button style={{ fontSize: '17px' }} onClick={saveChanges}>Save</button>
+        <button style={{  marginLeft: '10px', fontSize: '17px' }} onClick={toggleEditMode}>Cancel</button>
       </>
     );
   } else {
@@ -615,17 +620,17 @@ return (
 
           <br></br>
           <br></br>
-      <label style={{ fontSize: '16px', fontWeight: 'bold', }}>Course ID:</label>
+      <label style={{ fontSize: '16px', fontWeight: 'bold', }}>Course ID: </label>
       <QuestionInput type="text" value={courseId} onChange={(e) => setCourseId(e.target.value)} placeholder="Enter Course Code" required style={{ width: '140px', }}></QuestionInput>
       <br></br>
-      <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Name:</label>
+      <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Name: </label>
       <QuestionInput type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Exam Title" required style={{ width: '140px', }}></QuestionInput>
       <br/>
   
       <SetExamTableContainer>
           <SetExamTableRow>
             <SetExamTableData>
-            <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Date:</label>
+            <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Date: </label>
       <QuestionInput type="date" value={startTime} onChange={(e) => setstartTime(e.target.value)} min={getMinDate()} required></QuestionInput>
 
         </SetExamTableData>
@@ -633,7 +638,7 @@ return (
         <SetExamTableData>
 
         </SetExamTableData>
-        <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Time:</label>
+        <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Time: </label>
       <QuestionInput type="time" value={examTime} onChange={(e) => setExamTime(e.target.value)} required></QuestionInput>
       <br></br>
           </SetExamTableRow>
@@ -641,7 +646,7 @@ return (
           <SetExamTableRow>
 
           <SetExamTableData>
-          <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Number of Questions:</label>
+          <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Number of Questions: </label>
       <QuestionInput type="number" value={numQuestions} onChange={handleNumQuestionsChange} style={{ width: '140px', }} ></QuestionInput>{errorMsg && <ErrorText>{errorMsg}</ErrorText>}
  
           </SetExamTableData>
@@ -649,7 +654,7 @@ return (
           <SetExamTableData>
 
           </SetExamTableData>
-          <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Duration:</label>
+          <label style={{ fontSize: '16px', fontWeight: 'bold' }}>Exam Duration: </label>
       <QuestionInput type="text" value={examDuration} onChange={(e) => setExamDuration(formatExamDuration(e.target.value))} placeholder="HH:MM" required style={{ width: '80px', }}></QuestionInput>
 
           </SetExamTableRow>
@@ -664,19 +669,19 @@ return (
       {examData.map((question, index) => (
         <div key={index}>
           <br></br>
-          <label>Question <strong>{index + 1}</strong>:</label>
-          <input type="text" name="question" value={question.question} onChange={(e) => handleQuestionChange(index, e)} required />
+          <label style={{ fontSize: '18px', marginBottom: '5px' }}>Question <strong>{index + 1}</strong>:</label>
+          <input type="text" name="question" value={question.question} onChange={(e) => handleQuestionChange(index, e)} required style={{ fontSize: '17px', marginBottom: '5px' }} />
           <button onClick={() => handleDeleteQuestion(index)}style={{ marginLeft: '20px' }}>Delete</button>
           {question.options.map((option, optionIndex) => (
             <div key={optionIndex}>
-              <label>Option {String.fromCharCode(65 + optionIndex)}:</label>
-              <input type="text" value={option} onChange={(e) => handleOptionChange(index, optionIndex, e)} required />
+              <label style={{ fontSize: '18px' }}>Option {String.fromCharCode(65 + optionIndex)}:</label>
+              <input type="text" value={option} onChange={(e) => handleOptionChange(index, optionIndex, e)} required style={{ fontSize: '17px', marginBottom: '5px' }} />
             </div>
           ))}
           <br></br>
 
-          <label>Correct Answer:</label>
-          <select value={question.correct_answer} onChange={(e) => handleCorrectAnswerChange(index, e)}>
+          <label style={{ fontSize: '18px' }}>Correct Answer:</label>
+          <select value={question.correct_answer} onChange={(e) => handleCorrectAnswerChange(index, e)} style={{ fontSize: '18px' }}>
             {question.options.map((option, optionIndex) => (
               <option key={optionIndex} value={option}>{option}</option>
             ))}
