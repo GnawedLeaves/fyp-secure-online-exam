@@ -280,7 +280,7 @@ const InstructorLibrary = () => {
           {activeContent === "examsFor" && selectedModule && moduleExams[selectedModule] && (
             <>
 
-          <button onClick={handleBackButtonClick}>Back</button>
+          <BackButton onClick={handleBackButtonClick}>Back</BackButton>
           {selectedModule && moduleExams[selectedModule] ? (
               <div>
                 <h2>Exams for {selectedModule}</h2>
