@@ -205,10 +205,6 @@ const AdminPersonnelDetailsPage = () => {
   }, [currentUserData]);
 
   useEffect(() => {
-    console.log("newUserModules", newUserModules);
-  }, [newUserModules]);
-
-  useEffect(() => {
     const namesArray = allModulesData.map((obj) => obj.name);
     setAllModuleNames(namesArray);
   }, [allModulesData]);
@@ -228,13 +224,7 @@ const AdminPersonnelDetailsPage = () => {
           const studentExists = exam.students.some(
             (student) => student.id === userId
           );
-          console.log(
-            "studentExists",
-            studentExists,
-            exam.courseId,
-            updatedUserModules,
-            exam.id
-          );
+
           if (studentExists) {
             if (!updatedUserModules.includes(exam.courseId)) {
               let updatedStudentsArray = exam.students.filter(
@@ -249,9 +239,8 @@ const AdminPersonnelDetailsPage = () => {
             }
           } else {
             //if student does not exist, and if the updated modules contain the exam, add the studen into the array
-            console.log("Student doesnt exist in exam");
+
             if (updatedUserModules.includes(exam.courseId)) {
-              console.log("Time to add student into exam");
               let updatedStudentsArray = [
                 ...exam.students,
                 {
@@ -274,11 +263,6 @@ const AdminPersonnelDetailsPage = () => {
     });
     console.log("allExamsData", allExamsData);
   };
-
-  useEffect(() => {
-    console.log("updatedUserModules", updatedUserModules);
-  }, [updatedUserModules]);
-
   const dateInPast = (date) => {
     const startTimeMilliseconds =
       date.seconds * 1000 + Math.floor(date.nanoseconds / 1000000);
