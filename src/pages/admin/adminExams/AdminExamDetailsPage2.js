@@ -172,6 +172,24 @@ const AdminExamDetailsPage2 = () => {
     }
   };
 
+  const deleteModuleFromStudent = async (userId) => {
+    //examData?.courseId
+    try {
+      const userRef = doc(db, "users", userId);
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        const modulesArray = userData.modules;
+        const filteredArray = modulesArray.filter((module) => {
+          return module !== examData.courseId;
+        });
+        updateDoc(userRef, {
+          modules: filteredArray,
+        });
+      }
+    } catch (e) {}
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AdminHomePageContainer>
