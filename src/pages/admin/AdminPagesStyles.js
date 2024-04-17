@@ -35,6 +35,7 @@ font-weight: 600;
 
 export const OngoingExamsContainer = styled.div`
   width: 85%;
+  margin: 2rem 0;
 `;
 
 export const OngoingExamsTitle = styled.div`
@@ -49,6 +50,11 @@ export const OngoingExams = styled.div`
   flex-wrap: wrap;
   gap: 2rem;
   margin: 3rem 0;
+`;
+
+export const NoExamsTitle = styled.div`
+  font-size: 1.2rem;
+  margin: 1rem;
 `;
 
 export const AdminExamDetailsPageTitle = styled.div`

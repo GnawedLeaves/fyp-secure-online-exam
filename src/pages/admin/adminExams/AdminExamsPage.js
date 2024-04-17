@@ -4,6 +4,7 @@ import {
   AdminHomePageContainer,
   AdminNavbarContainer,
   AdminNavbarContentContainer,
+  NoExamsTitle,
   OngoingExams,
   OngoingExamsContainer,
   OngoingExamsTitle,
@@ -83,7 +84,23 @@ const AdminExamsPage = () => {
   const [completedExams, setCompletedExams] = useState([]);
   const [upcomingExams, setUpcomingExams] = useState([]);
 
-  const sortExams = () => {};
+  const sortExams = () => {
+    const allExams = allExamsData;
+    const ongoingExams = allExams.filter((exam) => exam.status === "Ongoing");
+    const upcomingExams = allExams.filter(
+      (exam) => exam.status === "Not Started"
+    );
+    const completedExams = allExams.filter(
+      (exam) => exam.status === "Completed"
+    );
+
+    setOngoingExams(ongoingExams);
+    setCompletedExams(completedExams);
+    setUpcomingExams(upcomingExams);
+    console.log("ongoingExams", ongoingExams);
+    console.log("upcomingExams", upcomingExams);
+    console.log("allExams", allExams);
+  };
 
   useEffect(() => {
     sortExams();
@@ -118,53 +135,66 @@ const AdminExamsPage = () => {
           <Navbar linksArray={adminNavbarItems} />
           <AdminNavbarContentContainer>
             <PageTitle>Exams</PageTitle>
+
             <OngoingExamsContainer>
               <OngoingExamsTitle>Ongoing Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {allExamsData.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.courseId}
-                    examId={exam.id}
-                    studentsCount={exam.students?.length}
-                    timeLeft={exam.calculatedDurationHours}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
+              {ongoingExams.length > 0 ? (
+                <OngoingExams>
+                  {ongoingExams.map((exam, index) => (
+                    <Exambox
+                      key={index}
+                      title={exam.courseId}
+                      examId={exam.id}
+                      studentsCount={exam.students?.length}
+                      timeLeft={exam.calculatedDurationHours}
+                      alertsCount={exam.alertsCount}
+                      status={exam.status}
+                    />
+                  ))}
+                </OngoingExams>
+              ) : (
+                <NoExamsTitle>No Ongoing Exams</NoExamsTitle>
+              )}
             </OngoingExamsContainer>
             <OngoingExamsContainer>
               <OngoingExamsTitle>Upcoming Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList2.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
+              {upcomingExams.length > 0 ? (
+                <OngoingExams>
+                  {upcomingExams.map((exam, index) => (
+                    <Exambox
+                      key={index}
+                      title={exam.courseId}
+                      examId={exam.id}
+                      studentsCount={exam.students?.length}
+                      timeLeft={exam.calculatedDurationHours}
+                      alertsCount={exam.alertsCount}
+                      status={exam.status}
+                    />
+                  ))}
+                </OngoingExams>
+              ) : (
+                <NoExamsTitle>No Upcoming Exams</NoExamsTitle>
+              )}
             </OngoingExamsContainer>
             <OngoingExamsContainer>
               <OngoingExamsTitle>Completed Exams</OngoingExamsTitle>
-              <OngoingExams>
-                {examList2.map((exam, index) => (
-                  <Exambox
-                    key={index}
-                    title={exam.title}
-                    examId={exam.examId}
-                    studentsCount={exam.studentsCount}
-                    timeLeft={exam.timeLeft}
-                    alertsCount={exam.alertsCount}
-                    status={exam.status}
-                  />
-                ))}
-              </OngoingExams>
+              {completedExams.length > 0 ? (
+                <OngoingExams>
+                  {completedExams.map((exam, index) => (
+                    <Exambox
+                      key={index}
+                      title={exam.title}
+                      examId={exam.examId}
+                      studentsCount={exam.studentsCount}
+                      timeLeft={exam.timeLeft}
+                      alertsCount={exam.alertsCount}
+                      status={exam.status}
+                    />
+                  ))}
+                </OngoingExams>
+              ) : (
+                <NoExamsTitle>No Competed Exams</NoExamsTitle>
+              )}
             </OngoingExamsContainer>
           </AdminNavbarContentContainer>
         </AdminHomePageContainer>

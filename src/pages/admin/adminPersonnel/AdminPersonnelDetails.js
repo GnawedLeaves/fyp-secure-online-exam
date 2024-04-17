@@ -311,13 +311,6 @@ const AdminPersonnelDetailsPage = () => {
           <AdminNewPersonnelAlignContainer>
             {currentUserData !== null ? (
               <>
-                <button
-                  onClick={() => {
-                    addUserToExamArray();
-                  }}
-                >
-                  Update exams
-                </button>
                 <AdminPersonnelDetailsHeader>
                   Edit
                   {currentUserType.charAt(0).toUpperCase() +
