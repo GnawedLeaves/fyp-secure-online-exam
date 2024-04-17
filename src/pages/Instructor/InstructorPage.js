@@ -28,6 +28,7 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore";
+import AdminChat from "./AdminChat";
 
 const thStyle = {
   textAlign: 'left',
@@ -221,9 +222,11 @@ const InstructorPage = () => {
               <div >
                 <InstructorNotificationBox>
                   <InstructorNotificationMessage>
-                  There is currently no message from Admin.
+                  There is message from Admin.
                   </InstructorNotificationMessage>
                 </InstructorNotificationBox>
+
+                <AdminChat></AdminChat>
               </div>
             )}
             <Modal
