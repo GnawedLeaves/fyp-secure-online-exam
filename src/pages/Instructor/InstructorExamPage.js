@@ -348,14 +348,14 @@ const InstructorExamPage = () => {
         });
 
         // Create answers document
-        await addDoc(collection(db, "answers"), {
-          examId: examId,
-          question: question.question,
-          answers: question.options.map((option, optionIndex) => ({
-            option: option,
-            isCorrect: option === question.correct_answer,
-          })),
-        });
+        // await addDoc(collection(db, "answers"), {
+        //   examId: examId,
+        //   question: question.question,
+        //   answers: question.options.map((option, optionIndex) => ({
+        //     option: option,
+        //     isCorrect: option === question.correct_answer,
+        //   })),
+        // });
       }
 
       console.log("Exam data, questions, and answers added to Firestore");
