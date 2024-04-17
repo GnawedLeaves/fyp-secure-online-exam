@@ -113,7 +113,7 @@ const Proctoring =() => {
   console.log('Current ExamId: ',examId);
   console.log('And the courseId: ',courseId);
 
-    const roomId = "e3695c3f-ef0c-4ab3-a971-ac58bb9142751221";
+    const roomId = examId;
     const teacherId = "Instructor";
     
     const myMeeting = async (element) => {
