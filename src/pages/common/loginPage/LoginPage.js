@@ -25,6 +25,7 @@ import {
 import Modal from "../../../components/Modal/Modal";
 import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../backend/firebase/firebase";
+import Button from "../../../components/Button/Button";
 
 const Loginpage = () => {
   const navigate = useNavigate();
@@ -143,13 +144,17 @@ const Loginpage = () => {
             <DomainOption>Instructor</DomainOption>
             <DomainOption>Admin</DomainOption>
           </DomainSelect>
-          <LoginButton
+          <Button
+            filled={true}
+            defaultColor={theme.primary}
+            filledColor={theme.primary}
             onClick={() => {
               handleLogin();
             }}
           >
             Log In
-          </LoginButton>
+          </Button>
+
           {/* <LoginButton onClick={changePage}>
             Enter without logging in
           </LoginButton> */}
