@@ -115,10 +115,10 @@ const Proctoring =() => {
 
     const roomId = "e3695c3f-ef0c-4ab3-a971-ac58bb9142751221";
     const teacherId = "Instructor";
-
+    
     const myMeeting = async (element) => {
-      const appID=552252558;
-      const serverSecret="2679f71641820de66f51b17a7960ad32";
+      const appID=1599339194;
+      const serverSecret="c0721e9dee7caadce11d42e66595cb36";
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
           appID, 
           serverSecret, 

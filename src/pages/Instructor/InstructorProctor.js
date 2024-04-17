@@ -49,19 +49,22 @@ const InstructorProctorPage = () => {
 
   const fetchExams = async () => {
     try {
-      const currentDate = Timestamp.fromDate(new Date());
-      const querySnapshot = await getDocs(collection(db, 'exams'));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);  // Reset time to 00:00 hours to include all exams from today onward
+      const currentDate = Timestamp.fromDate(today);
+
+      const examsRef = collection(db, 'exams');
+      const q = query(examsRef, where("startTime", ">=", currentDate));
+      const querySnapshot = await getDocs(q);
       const examsData = [];
 
       querySnapshot.forEach((doc) => {
         const examData = doc.data();
-        if (examData.startTime && examData.startTime >= currentDate) {
-          examsData.push({ id: doc.id, ...examData });
-        }
+        examsData.push({ id: doc.id, ...examData });
       });
 
       // Sort exams by startTime in ascending order
-      examsData.sort((a, b) => a.startTime - b.startTime);
+      examsData.sort((a, b) => a.startTime.seconds - b.startTime.seconds);
 
       console.log('Exams fetched successfully:', examsData);
       setExams(examsData);
@@ -69,6 +72,7 @@ const InstructorProctorPage = () => {
       console.error("Error fetching exams:", error);
     }
   };
+
 
 
   return (
