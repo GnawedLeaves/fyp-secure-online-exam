@@ -183,10 +183,10 @@ const AdminExamsPage = () => {
                   {completedExams.map((exam, index) => (
                     <Exambox
                       key={index}
-                      title={exam.title}
-                      examId={exam.examId}
-                      studentsCount={exam.studentsCount}
-                      timeLeft={exam.timeLeft}
+                      title={exam.courseId}
+                      examId={exam.id}
+                      studentsCount={exam.students?.length}
+                      timeLeft={exam.calculatedDurationHours}
                       alertsCount={exam.alertsCount}
                       status={exam.status}
                     />
