@@ -153,7 +153,7 @@ const AdminChat = () => {
         }));
         return messages;
       } catch (error) {
-        console.error("Error getting messages:", error);
+        console.error("Error getting messages 1:", error);
         return [];
       }
     };
@@ -177,7 +177,7 @@ const AdminChat = () => {
   
         return messages;
       } catch (error) {
-        console.error("Error getting messages:", error);
+        console.error("Error getting messages2:", error);
         return [];
       }
     };
