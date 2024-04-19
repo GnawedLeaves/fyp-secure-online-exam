@@ -5,7 +5,7 @@ export const AdminMessagesBigContainer = styled.div`
 `;
 export const AdminMessagesContainer = styled.div`
   padding: 2rem;
-  width:100%;
+  width: 100%;
 `;
 
 export const AdminMessagingContainer = styled.div`
@@ -65,7 +65,7 @@ export const AdminMessageInput = styled.textarea`
   border: none;
   padding: 1rem;
   font-size: 1rem;
-  font-family: ${props => props.theme.font};
+  font-family: ${(props) => props.theme.font};
   word-wrap: break-word;
   resize: none;
 
@@ -114,69 +114,72 @@ export const MessageDisplayContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-
 export const AdminMessagesTitle = styled.div`
-font-size: 2rem;
-font-weight: bold;
-margin-bottom: 2rem;
-
-`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+`;
 
 export const AdminMessagesDisplayBigContainer = styled.div`
-display: flex;
-justify-content: center;
-height: 85vh;
-width: 100%;
-border: 2px solid ${(props) => props.theme.grey};
-
-`
+  display: flex;
+  justify-content: center;
+  height: 85vh;
+  width: 100%;
+  border: 2px solid ${(props) => props.theme.grey};
+`;
 
 export const AdminMessagesChatsContainer = styled.div`
-width: 30%;
-overflow-y: auto;
-height: 100%;
-border-right: 2px solid ${(props) => props.theme.grey};
-cursor: pointer;
-`
+  width: 30%;
+  overflow-y: auto;
+  height: 100%;
+  border-right: 2px solid ${(props) => props.theme.grey};
+  cursor: pointer;
+`;
 
 export const AdminMessageChatTab = styled.div`
-width: 100%;
-// height:3.5rem;
-box-sizing: border-box;
-border-bottom: 2px solid ${(props) => props.theme.grey};
-padding: 0.8rem 1rem;
-background: ${(props) => props.selected ? props.theme.primary : props.theme.background};
-color: ${(props) => props.selected ? props.theme.background : props.theme.text};
-box-shadow: ${props => props.theme.boxShadow};
-border-radius: 4px;
-cursor: pointer;
-`
+  width: 100%;
+  // height:3.5rem;
+  box-sizing: border-box;
+  border-bottom: 2px solid ${(props) => props.theme.grey};
+  padding: 0.8rem 1rem;
+  background: ${(props) =>
+    props.selected ? props.theme.primary : props.theme.background};
+  color: ${(props) =>
+    props.selected ? props.theme.background : props.theme.text};
+  box-shadow: ${(props) => props.theme.boxShadow};
+  border-radius: 4px;
+  cursor: pointer;
+`;
 
 export const AdminMessageChatTabTitle = styled.div`
-font-size: 1.4rem;
-margin-bottom:0.3rem;
-font-weight: bold;
-`
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+`;
 export const AdminMessageChatTabPreview = styled.div`
-overflow: hidden;
-font-size: 1rem;
-`
+  overflow: hidden;
+  font-size: 1rem;
+`;
 
 export const AdminMessagesMessageContainer = styled.div`
-width: 100%;
-`
+  width: 100%;
+`;
 
 export const AdminNoChatSelectedContainer = styled.div`
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const AdminNoChatDisplay = styled.div`
-width: 100%;
-height: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DemoChatBoxContainer = styled.div`
+  height: 30rem;
+`;

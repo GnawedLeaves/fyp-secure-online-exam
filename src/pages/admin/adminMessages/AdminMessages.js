@@ -23,6 +23,7 @@ import {
   AdminRecievedMessageContainer,
   AdminSentMessage,
   AdminSentMessageContainer,
+  DemoChatBoxContainer,
   MessageDisplayContainer,
 } from "./AdminMessagesStyles";
 import { theme } from "../../../theme";
@@ -100,36 +101,6 @@ const AdminMessagesPage = () => {
     const uniqueArray = [...new Set(filteredSenderIDs)];
     setUniqueSenderIds(uniqueArray);
   }, [allMessagesData]);
-
-  //Unique Conversations which doesnt really work
-  // useEffect(() => {
-  //   console.log("allMessagesData", allMessagesData);
-  //   console.log("uniqueSenderIds", uniqueSenderIds);
-  //   const uniqueSenderIds2 = uniqueSenderIds;
-  //   const checkedUniqueSenderIds = [];
-  //   let messageNameAndPreviews = [];
-  //   uniqueSenderIds2.map((id) => {
-  //     const messagesFromId = allMessagesData.filter(
-  //       (message) => message.senderId === id || message.recipientId === id
-  //     );
-  //     const firstMessage = messagesFromId.reverse()[0];
-
-  //     messageNameAndPreviews = [
-  //       ...messageNameAndPreviews,
-  //       {
-  //         id: id,
-  //         message: firstMessage.messageBody,
-  //       },
-  //     ];
-  //   });
-  //   console.log("messageNameAndPreviews", messageNameAndPreviews);
-  //   const userNamesPromises = messageNameAndPreviews.map((message) => ({
-  //     ...message,
-  //     name: getUserNameFromId(message.id),
-  //   }));
-  //   console.log("userNamesPromises", userNamesPromises);
-  //   // setUniquePreviewChats(userNamesPromises);
-  // }, [uniqueSenderIds]);
 
   //function to get all messages with the specific userId
   const constructPreviews = async () => {
@@ -250,6 +221,8 @@ const AdminMessagesPage = () => {
     }
   };
 
+  const [showDemoChatbox, setShowDemoChatbox] = useState(false);
+
   return (
     <ThemeProvider theme={theme}>
       <AdminMessagesBigContainer>
@@ -307,10 +280,24 @@ const AdminMessagesPage = () => {
                 height: "50vh",
               }}
             >
-              {/* <ChatboxBig
-                userId={"lSdjlreJxFMmwsuDZlOS"}
-                otherPersonId={userId}
-              /> */}
+              <DemoChatBoxContainer
+                style={{ display: showDemoChatbox ? "" : "none" }}
+              >
+                <ChatboxBig
+                  userId={"lSdjlreJxFMmwsuDZlOS"}
+                  otherPersonId={"GlXzcInUYDFjlR7Hph2c"}
+                />
+              </DemoChatBoxContainer>
+
+              <DemoChatBoxContainer>
+                <button
+                  onClick={() => {
+                    setShowDemoChatbox(!showDemoChatbox);
+                  }}
+                >
+                  Show Chat box
+                </button>
+              </DemoChatBoxContainer>
             </div>
           </MessageDisplayContainer>
         </AdminMessagesContainer>

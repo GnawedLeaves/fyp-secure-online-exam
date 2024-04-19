@@ -91,21 +91,29 @@ const ChatboxBig = (props) => {
 
       try {
         let attachmentUrl = null;
+        let attachmentName = "";
 
         // Check if an attachment is provided
         if (messageFile) {
-          // Get a reference to the storage location and the path where the file is saved
-          const fileRef = ref(storage, `messages/${messageFile}`);
+          // // Get a reference to the storage location and the path where the file is saved
+          // // const fileRef = ref(storage, `messages/${messageFile}`);
 
-          // Upload the file to Firebase Storage
+          // // Upload the file to Firebase Storage
+          // await uploadBytes(fileRef, messageFile);
+
+          // // Get the download URL of the uploaded file
+          // attachmentUrl = await getDownloadURL(fileRef);
+
+          // console.log("File uploaded successfully!", attachmentUrl);
+          const timestamp = new Date().getTime();
+          attachmentName = `file_${timestamp}_${messageFile.name}`;
+          const fileRef = ref(storage, `messages/${attachmentName}`);
           await uploadBytes(fileRef, messageFile);
-
-          // Get the download URL of the uploaded file
           attachmentUrl = await getDownloadURL(fileRef);
-
-          console.log("File uploaded successfully!", attachmentUrl);
+          console.log("File uploaded successfully!", fileRef, attachmentUrl);
           setMessageFile(null);
         }
+
         // Use the addDoc method to add a document and obtain the DocumentReference
         const messageDocRef = await addDoc(messagesRef, {
           messageBody: messageContent,
