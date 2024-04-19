@@ -1,34 +1,52 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { TimerContainer, TimerText } from "./TimerStyles";
 
-const Timer = ({ endTime }) => {
+const Timer = ({ endTime, onTimerTick, setTimerExpired }) => {
   const calculateTimeRemaining = useCallback(() => {
     const now = new Date().getTime();
     const difference = endTime - now;
-    return Math.max(0, Math.floor(difference / 1000)); // Convert milliseconds to seconds
-  }, [endTime]); // Include endTime in the dependency array
+    const seconds = Math.max(0, Math.floor(difference / 1000));
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds - hours * 3600) / 60);
+    const remainingSeconds = seconds - hours * 3600 - minutes * 60;
+  
+    return {
+      hours: hours,
+      minutes: minutes,
+      seconds: remainingSeconds,
+    };
+  }, [endTime]);
 
-  const [seconds, setSeconds] = useState(calculateTimeRemaining());
+  const [remainingTime, setRemainingTime] = useState(calculateTimeRemaining());
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setSeconds(calculateTimeRemaining());
+      const { hours, minutes, seconds } = calculateTimeRemaining();
+      setRemainingTime({ hours, minutes, seconds });
+
+      // Call the onTimerTick prop with remaining seconds
+      if (onTimerTick && typeof onTimerTick === 'function') {
+        const totalRemainingSeconds = hours * 3600 + minutes * 60 + seconds;
+        onTimerTick(totalRemainingSeconds);
+      }
+
+      // Check if timer has expired
+      if (hours <= 0 && minutes <= 0 && seconds <= 0) {
+        setTimerExpired(true);
+        clearInterval(intervalId); // Stop the interval when timer expires
+      }
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [calculateTimeRemaining]); // Include calculateTimeRemaining in the dependency array
+  }, [calculateTimeRemaining, onTimerTick]);
 
-  const formatTime = (timeInSeconds) => {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
-    const remainingSeconds = timeInSeconds % 60;
-
-    return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  const formatTime = ({ hours, minutes, seconds }) => {
+    return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
   return (
     <TimerContainer>
-      <TimerText>Time Remaining: {formatTime(seconds)}</TimerText>
+      <TimerText>Time Remaining: {formatTime(remainingTime)}</TimerText>
     </TimerContainer>
   );
 };

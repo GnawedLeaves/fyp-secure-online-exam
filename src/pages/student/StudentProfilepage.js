@@ -154,6 +154,7 @@ const StudentProfilepage = () => {
                 <DataSection><b>Email Address: </b>{userEmail}</DataSection>
                 <DataSection><b>Programme: </b>{profile.programme}</DataSection>
                 <DataSection><b>Year: </b>Year {profile.year}</DataSection>
+                <DataSection><b>Matriculation Number: </b>{profile.matric}</DataSection>
                 <DataSection><b>Student Type: </b>{profile.studentType}</DataSection>
                 <DataSection><b>Enrollment Status: </b>{profile.enrollmentStatus}</DataSection>
                 <DataSection><b>Enrollment Year: </b>{profile.enrollmentYear}</DataSection>
