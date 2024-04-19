@@ -26,7 +26,7 @@ const Examlist = (props) => {
             ) : props.examStatus ==="In Progress" ? (
               <ExamAction onClick={() => navigate("/student/exam/" + props.examId)}>Continue</ExamAction>
             ) :(
-              <ExamAction onClick={() => navigate("/student/exam/" + props.examId +"/cardVerify")}>Start</ExamAction>
+              <ExamAction onClick={() => navigate("/student/exam/" + props.examId +"/faceVerify")}>Start</ExamAction>
             )}
         </ExamDetail>
       </ExamlistContainer>

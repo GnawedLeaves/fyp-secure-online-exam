@@ -61,6 +61,7 @@ const StudentExamQuestionpage = () => {
   //const studentId = "1221";
   const [studentId, setStudent] = useState();
   const [authId, setAuthId] = useState(null);
+  const [timerExpired, setTimerExpired] = useState(false);
   const getUser = async (authId) => {
     try {
       const usersRef = collection(db, "users");
@@ -272,7 +273,7 @@ const StudentExamQuestionpage = () => {
   const endTime = exams.length > 0 && exams[0]?.endTime?.toDate();
 
   if (endTime) {
-    endTime.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
+    endTime.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds(), 0);
     
   } else {
     console.error('No valid exam data found or endTime is not defined.');
@@ -337,39 +338,39 @@ const StudentExamQuestionpage = () => {
 
     const [existingRecordSnapshot] = await Promise.all([getDocs(existingRecordQuery)]);
 
-    // If there is an existing record, update it
-    if (!existingRecordSnapshot.empty) {
-      const existingRecordDoc = existingRecordSnapshot.docs[0];
-      const existingRecordRef = doc(answersCollection, existingRecordDoc.id);
+      // If there is an existing record, update it
+      if (!existingRecordSnapshot.empty) {
+        const existingRecordDoc = existingRecordSnapshot.docs[0];
+        const existingRecordRef = doc(answersCollection, existingRecordDoc.id);
 
-      // Retrieve the existing answers array
-      const existingAnswers = existingRecordDoc.data().answers;
+        // Retrieve the existing answers array
+        const existingAnswers = existingRecordDoc.data().answers;
 
-      // Update the answers array with the new optionSelected for the specific questionNo
-      existingAnswers[questionNo - 1] = selectedOption;
+        // Update the answers array with the new optionSelected for the specific questionNo
+        existingAnswers[questionNo - 1] = selectedOption;
 
-      // Update the document in the "answers" collection
-      await updateDoc(existingRecordRef, { answers: existingAnswers });
-    } else {
-      // If there is no existing record, create a new one with an array of null values
-      const newAnswers = new Array(totalMCQ).fill(null);
-      newAnswers[questionNo - 1] = selectedOption;
+        // Update the document in the "answers" collection
+        await updateDoc(existingRecordRef, { answers: existingAnswers });
+      } else {
+        // If there is no existing record, create a new one with an array of null values
+        const newAnswers = new Array(totalMCQ).fill(null);
+        newAnswers[questionNo - 1] = selectedOption;
 
-      await addDoc(answersCollection, {
-        studentId,
-        examId,
-        answers: newAnswers,
-      });
+        await addDoc(answersCollection, {
+          studentId,
+          examId,
+          answers: newAnswers,
+        });
+      }
+
+      console.log("Answer saved successfully!");
+      //console.log(studentId);
+      //console.log(examId);
+      //console.log(selectedOption);
+    } catch (error) {
+      console.error("Error saving answer:", error);
     }
-
-    console.log("Answer saved successfully!");
-    //console.log(studentId);
-    //console.log(examId);
-    //console.log(selectedOption);
-  } catch (error) {
-    console.error("Error saving answer:", error);
-  }
-};
+  };
   
 const getAnswerArray = async (studentId, examId) => {
   try {
@@ -534,6 +535,22 @@ const navigateToQuestion = (exam,number) => {
   navigate(`/student/exam/${exam}/${number}`);
 };
 
+useEffect(() => {
+  console.log("Timer expired effect triggered:", timerExpired);
+
+  if (timerExpired) {
+    // Auto-save and auto-submit logic here
+    console.log("Timer expired! Auto-saving and auto-submitting...");
+    saveQuestion(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+    reviewExam(studentId, examId, exams[0]?.totalMCQ, questionNo, selectedOption);
+  }
+}, [timerExpired, studentId, examId, exams, questionNo, selectedOption]);
+
+const handleTimerTick = (remainingSeconds) => {
+  // Optionally, you can perform actions on each tick of the timer
+  console.log(`Time remaining: ${remainingSeconds} seconds`);
+};
+
   const grid = [];
 
   for (let i = 0; i < Math.ceil(exams[0]?.totalMCQ / 5); i++) {
@@ -655,7 +672,7 @@ const navigateToQuestion = (exam,number) => {
               </LeftContainer>
               <RightContainer>
                 <FaClock style={{ float: 'left', marginTop: '3px' }} />
-                <Timer endTime={endTime} />
+                <Timer endTime={endTime} onTimerTick={handleTimerTick} setTimerExpired={setTimerExpired} />
                 <QuestionGrid>{grid}</QuestionGrid>
               </RightContainer>
             </>

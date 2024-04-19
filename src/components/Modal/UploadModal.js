@@ -79,7 +79,6 @@ const UploadModal = (props) => {
   }, [props.show]);
 
   const getModalType = () => {
-    console.log('props.imageCaptured:', props.imageCaptured);
     switch (modalType) {
       case "empty":
         return (

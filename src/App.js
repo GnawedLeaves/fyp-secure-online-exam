@@ -18,6 +18,7 @@ import AdminPersonnelPage from "./pages/admin/adminPersonnel/AdminPersonnelPage"
 import Loginpage from "./pages/common/loginPage/LoginPage";
 import StudentExamReviewpage from "./pages/student/StudentExamReviewpage";
 import StudentFaceRegistrationpage from "./pages/student/StudentFaceRegistrationpage";
+import StudentFaceVerificationpage from "./pages/student/StudentFaceVerificationpage";
 import StudentProfilepage from "./pages/student/StudentProfilepage";
 import InstructorProctorPage from "./pages/Instructor/InstructorProctor";
 import InstructorExamPage from "./pages/Instructor/InstructorExamPage";
@@ -144,24 +145,19 @@ export const studentRoutes = [
     element: <StudentExamDemoDetailpage />,
   },
   {
-    title: "call test",
-    link: "/student/test",
+    title: "test",
+    link: "student/exam/test",
     element: <Testcall />,
-  },
-  {
-    title: "call test student",
-    link: "/student/test2",
-    element: <Testcall2 />,
-  },
-  {
-    title: "test recoring",
-    link: "/student/testrecord",
-    element: <TestRecordingpage />,
   },
   {
     title: "card verification",
     link: "student/exam/:examId/cardVerify",
     element: <StudentCardVerificationpage />,
+  },
+  {
+    title: "face verification",
+    link: "student/exam/:examId/faceVerify",
+    element: <StudentFaceVerificationpage /> ,
   },
 ];
 
