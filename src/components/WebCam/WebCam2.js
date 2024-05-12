@@ -208,7 +208,7 @@ const WebCam2 = (props) => {
         await extractTextFromImage(objectUrl);
         //await updateCardStatusToVerified(examId, studentId)
         await updateStudentStatusInExam(examId, studentId, "In Progress");
-        //window.location.href = '/student/exam/' + examId;
+        window.location.href = '/student/exam/' + examId;
       } catch (error) {
         console.error('Error uploading image:', error.message);
       }
