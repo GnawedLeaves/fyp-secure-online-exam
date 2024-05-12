@@ -26,7 +26,6 @@ import { ThemeProvider } from "styled-components";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import Button from "../../components/Button/Button";
-import Timer from "../../components/Timer/Timer";
 import { theme } from '../../theme';
 import { studentNavbarItems } from "./StudentHomepage";
 import { useNavigate } from "react-router-dom";
@@ -637,8 +636,6 @@ const StudentExamQuestionpage = () => {
                   </QuestionSection>
                 </LeftContainer>
                 <RightContainer>
-                  <FaClock style={{ float: 'left', marginTop: '3px' }} />
-                  <Timer endTime={endTime} />
                   <QuestionGrid>{grid}</QuestionGrid>
                 </RightContainer>
               </>
