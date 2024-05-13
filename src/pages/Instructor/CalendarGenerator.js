@@ -32,20 +32,30 @@ const buttonStyle = {
 const ExamCalendar = () => {
   const [date, setDate] = useState(new Date());
   const [examDates, setExamDates] = useState([]);
+  const [examNames, setExamNames] = useState([]);
+  const [examTimes, setExamTimes] = useState([]);
   
   const fetchExams = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'exams'));
       const dates = [];
+      const names = [];
+      const times = [];
 
       querySnapshot.forEach((doc) => {
         const examData = doc.data();
         const startTime = new Date(examData.startTime.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date object
         dates.push(new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate())); // Extract date portion only
+        names.push(examData.name);
+        times.push(startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
       });
 
       setExamDates(dates);
+      setExamNames(names);
+      setExamTimes(times);
       console.log("Fetched exam dates:", dates); 
+      console.log("Fetched exam names:", names);
+      console.log("Fetched exam names:", times);
     } catch (error) {
       console.error("Error fetching exams:", error);
     }
@@ -163,6 +173,8 @@ const ExamCalendar = () => {
     }
   };
 
+
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
     <div style={{ width: "100%", textAlign: "center", paddingTop: "2%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", margin: "20px 0", boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}>
@@ -230,8 +242,21 @@ const ExamCalendar = () => {
         </div>
       </div>
     </div>
+    <div style={{ width: "90%", }}>
+        <h2>Upcoming Exams</h2>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {examDates.map((examDate, index) => (
+             <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
+               <strong>Date:</strong> {examDate.getDate()}/{monthNames[examDate.getMonth()].substr(0, 3)}/{examDate.getFullYear().toString().substr(-2)}{" "} <span style={{ marginRight: "15px" }}></span>
+              <strong>Time:</strong> <span style={{ marginRight: "5px" }}></span>{examTimes[index]}{" "} <span style={{ marginRight: "15px" }}></span>
+              <strong>Exam Name:</strong> {examNames[index]}
+            </li>
+          ))}
+        </ul>
+      </div>
   </div>
 );
 };
+
 
 export default ExamCalendar;
