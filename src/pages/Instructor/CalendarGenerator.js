@@ -185,7 +185,8 @@ const ExamCalendar = () => {
     }
     return acc;
   }, []);
-
+ const sortedExams = filteredExams.sort((a, b) => a.date - b.date);
+  
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
     <div style={{ width: "100%", textAlign: "center", paddingTop: "2%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", margin: "20px 0", boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}>
@@ -256,7 +257,7 @@ const ExamCalendar = () => {
     <div style={{ width: "90%", }}>
         <h2>Upcoming Exams</h2>
         <ul style={{ listStyleType: "none", padding: 0 }}>
-        {filteredExams.map((filteredExam, index) => (
+        {sortedExams.map((filteredExam, index) => (
       <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
         <strong>Date:</strong> {filteredExam.date.getDate()}/{monthNames[filteredExam.date.getMonth()].substr(0, 3)}/{filteredExam.date.getFullYear().toString().substr(-2)}{" "} <span style={{ marginRight: "15px" }}></span>
         <strong>Time:</strong> <span style={{ marginRight: "5px" }}>{filteredExam.time}</span>{" "} <span style={{ marginRight: "15px" }}></span>
