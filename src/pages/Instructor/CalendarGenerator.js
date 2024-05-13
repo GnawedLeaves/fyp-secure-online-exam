@@ -39,6 +39,8 @@ const ExamCalendar = () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'exams'));
       const dates = [];
+      const names = [];
+      const times = [];
 
       querySnapshot.forEach((doc) => {
         const examData = doc.data();
@@ -51,7 +53,7 @@ const ExamCalendar = () => {
       setExamDates(dates);
       setExamNames(names);
       setExamTimes(times);
-      console.log("Fetched exam dates:", dates);
+      console.log("Fetched exam dates:", dates); 
       console.log("Fetched exam names:", names);
       console.log("Fetched exam names:", times);
     } catch (error) {
@@ -171,6 +173,8 @@ const ExamCalendar = () => {
     }
   };
 
+
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
     <div style={{ width: "100%", textAlign: "center", paddingTop: "2%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", margin: "20px 0", boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}>
@@ -238,7 +242,7 @@ const ExamCalendar = () => {
         </div>
       </div>
     </div>
-      <div style={{ width: "90%", }}>
+    <div style={{ width: "90%", }}>
         <h2>Upcoming Exams</h2>
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {examDates.map((examDate, index) => (
@@ -253,5 +257,6 @@ const ExamCalendar = () => {
   </div>
 );
 };
+
 
 export default ExamCalendar;
