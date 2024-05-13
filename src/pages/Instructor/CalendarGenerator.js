@@ -173,7 +173,18 @@ const ExamCalendar = () => {
     }
   };
 
-
+  const filteredExams = examDates.reduce((acc, examDate, index) => {
+    const examMonth = examDate.getMonth();
+    const currentMonth = date.getMonth();
+    if (examMonth === currentMonth) {
+      acc.push({
+        date: examDate,
+        time: examTimes[index],
+        name: examNames[index]
+      });
+    }
+    return acc;
+  }, []);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -245,14 +256,14 @@ const ExamCalendar = () => {
     <div style={{ width: "90%", }}>
         <h2>Upcoming Exams</h2>
         <ul style={{ listStyleType: "none", padding: 0 }}>
-          {examDates.map((examDate, index) => (
-             <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
-               <strong>Date:</strong> {examDate.getDate()}/{monthNames[examDate.getMonth()].substr(0, 3)}/{examDate.getFullYear().toString().substr(-2)}{" "} <span style={{ marginRight: "15px" }}></span>
-              <strong>Time:</strong> <span style={{ marginRight: "5px" }}></span>{examTimes[index]}{" "} <span style={{ marginRight: "15px" }}></span>
-              <strong>Exam Name:</strong> {examNames[index]}
-            </li>
-          ))}
-        </ul>
+        {filteredExams.map((filteredExam, index) => (
+      <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
+        <strong>Date:</strong> {filteredExam.date.getDate()}/{monthNames[filteredExam.date.getMonth()].substr(0, 3)}/{filteredExam.date.getFullYear().toString().substr(-2)}{" "} <span style={{ marginRight: "15px" }}></span>
+        <strong>Time:</strong> <span style={{ marginRight: "5px" }}>{filteredExam.time}</span>{" "} <span style={{ marginRight: "15px" }}></span>
+        <strong>Exam Name:</strong> {filteredExam.name}
+      </li>
+        ))}
+      </ul>
       </div>
   </div>
 );
